@@ -1,0 +1,411 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   BRS DESIGN TOKENS
+   Phase 0 deliverable. Authored from PROJECT_SPEC.md §5.1–5.5 BEFORE any
+   component exists (implementation_plan.md §5.2).
+
+   THIS FILE IS THE ONLY PLACE DESIGN VALUES ARE DEFINED.
+   Arbitrary Tailwind values (bg-[#22d3ee], text-[13px]) fail lint rule 3.
+
+   Colour provenance: every accent traces to pixel-frequency analysis of
+   logo/BRS Logo transparent.png — 1,878,553 opaque pixels sampled.
+     #0E516E petrol  33.2%      #7B1223 oxblood 17.9%
+     #FFFFFF bone    30.9%      #3A3A3C graphite 14.3%
+   These are measured, not invented. Do not "modernise" toward cyan.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────────────────
+   THEME VALUES — runtime-switchable
+   Dark is canonical (laboratory / exhibition). Light ships at launch and
+   is the preferred reading mode for Blog long-form (§5.1 rule 5).
+   ─────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Surfaces. Never pure #000 — §17.5 ── */
+  --brs-bg-base: #0b0d0e;
+  --brs-bg-raised: #131618;
+  --brs-bg-inset: #090b0c;
+  --brs-bg-overlay: rgb(11 13 14 / 0.88);
+
+  /* ── Hairlines. The primary structural device: prefer a 1px rule over
+        a filled panel, a filled panel over a shadow. §5.1 rule 4 ── */
+  --brs-line-faint: rgb(244 243 241 / 0.07);
+  --brs-line-hairline: rgb(244 243 241 / 0.12);
+  --brs-line-strong: rgb(244 243 241 / 0.24);
+  --brs-line-accent: rgb(79 168 206 / 0.4);
+
+  /* ── Text. Contrast on --brs-bg-base, computed not estimated ── */
+  --brs-text-primary: #f4f3f1; /* 15.8:1 */
+  --brs-text-secondary: #a8adb0; /*  7.2:1 */
+  --brs-text-tertiary: #6e7579; /*  3.6:1 — large text and labels ONLY */
+
+  /* ── Accent: petrol, luminance-lifted for dark surfaces.
+        NEVER used as a glow. No accent-hue box-shadow. §5.1 rule 2 ── */
+  --brs-accent: #4fa8ce; /*  7.4:1 */
+  --brs-accent-muted: #2e6e8c;
+  --brs-accent-deep: #0e516e; /* large fills only, never text */
+
+  /* ── Signal: oxblood. RARE. Awards, podium placement, live status,
+        destructive actions, form errors. Target <= 2 per viewport.
+        Three instances on one screen means the page is wrong. ── */
+  --brs-signal: #c2394b; /*  4.9:1 */
+  --brs-signal-deep: #7b1223;
+
+  /* ── Utility ── */
+  --brs-focus-ring: #4fa8ce;
+  --brs-success: #3f9a7a;
+  --brs-warning: #c08a2e;
+}
+
+/* Light theme — bone paper, brand values used directly.
+   Applied by explicit toggle, and set on Blog routes. */
+:root[data-theme="light"] {
+  --brs-bg-base: #f4f3f1; /* bone, not white */
+  --brs-bg-raised: #ffffff;
+  --brs-bg-inset: #ebe9e6;
+  --brs-bg-overlay: rgb(244 243 241 / 0.9);
+
+  --brs-line-faint: rgb(22 25 26 / 0.07);
+  --brs-line-hairline: rgb(22 25 26 / 0.14);
+  --brs-line-strong: rgb(22 25 26 / 0.28);
+  --brs-line-accent: rgb(14 81 110 / 0.4);
+
+  --brs-text-primary: #16191a;
+  --brs-text-secondary: #4a5052;
+  --brs-text-tertiary: #767c7f;
+
+  --brs-accent: #0e516e; /* measured brand value, used directly */
+  --brs-accent-muted: #2e6e8c;
+  --brs-accent-deep: #0e516e;
+
+  --brs-signal: #7b1223;
+  --brs-signal-deep: #7b1223;
+
+  --brs-focus-ring: #0e516e;
+}
+
+/* Respect an explicit OS light preference when no toggle has been set.
+   Dark remains canonical; this is the considerate escape hatch. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --brs-bg-base: #f4f3f1;
+    --brs-bg-raised: #ffffff;
+    --brs-bg-inset: #ebe9e6;
+    --brs-bg-overlay: rgb(244 243 241 / 0.9);
+
+    --brs-line-faint: rgb(22 25 26 / 0.07);
+    --brs-line-hairline: rgb(22 25 26 / 0.14);
+    --brs-line-strong: rgb(22 25 26 / 0.28);
+    --brs-line-accent: rgb(14 81 110 / 0.4);
+
+    --brs-text-primary: #16191a;
+    --brs-text-secondary: #4a5052;
+    --brs-text-tertiary: #767c7f;
+
+    --brs-accent: #0e516e;
+    --brs-accent-deep: #0e516e;
+    --brs-signal: #7b1223;
+    --brs-focus-ring: #0e516e;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   TAILWIND NAMESPACE MAPPING
+   `inline` so utilities emit var() references rather than resolved copies
+   — that is what makes the theme switch at runtime.
+   ─────────────────────────────────────────────────────────────────────── */
+
+@theme inline {
+  --color-bg-base: var(--brs-bg-base);
+  --color-bg-raised: var(--brs-bg-raised);
+  --color-bg-inset: var(--brs-bg-inset);
+  --color-bg-overlay: var(--brs-bg-overlay);
+
+  --color-line-faint: var(--brs-line-faint);
+  --color-line-hairline: var(--brs-line-hairline);
+  --color-line-strong: var(--brs-line-strong);
+  --color-line-accent: var(--brs-line-accent);
+
+  --color-text-primary: var(--brs-text-primary);
+  --color-text-secondary: var(--brs-text-secondary);
+  --color-text-tertiary: var(--brs-text-tertiary);
+
+  --color-accent: var(--brs-accent);
+  --color-accent-muted: var(--brs-accent-muted);
+  --color-accent-deep: var(--brs-accent-deep);
+
+  --color-signal: var(--brs-signal);
+  --color-signal-deep: var(--brs-signal-deep);
+
+  --color-focus-ring: var(--brs-focus-ring);
+  --color-success: var(--brs-success);
+  --color-warning: var(--brs-warning);
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   STATIC TOKENS — type, space, motion, structure
+   ─────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* ── Families. Two only. Self-hosted, no font CDN — §17.6.
+        The wdth axis on Archivo is load-bearing (§3.2, §4.4):
+        do NOT substitute a static-width build. ── */
+  --font-display:
+    var(--font-archivo), "Archivo", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-mono:
+    var(--font-plex-mono), "IBM Plex Mono", ui-monospace, "SF Mono", Menlo,
+    monospace;
+
+  /* ── Type scale. Fluid; line-height tightens as size increases.
+        §5.2. Optical tracking curve by size band, never one global value
+        (§3.2 craft marker, rubric check 13). ── */
+  --text-display-hero: clamp(3.5rem, 9vw, 8.5rem);
+  --text-display-hero--line-height: 0.86;
+  --text-display-hero--letter-spacing: -0.03em;
+
+  --text-display-xl: clamp(2.75rem, 7.5vw, 7rem);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.03em;
+
+  --text-display-l: clamp(2.25rem, 5vw, 4.5rem);
+  --text-display-l--line-height: 0.95;
+  --text-display-l--letter-spacing: -0.025em;
+
+  --text-display-m: clamp(1.875rem, 3.5vw, 3rem);
+  --text-display-m--line-height: 1.02;
+  --text-display-m--letter-spacing: -0.02em;
+
+  --text-heading-l: 1.75rem;
+  --text-heading-l--line-height: 1.15;
+  --text-heading-l--letter-spacing: -0.015em;
+
+  --text-heading-m: 1.375rem;
+  --text-heading-m--line-height: 1.25;
+  --text-heading-m--letter-spacing: -0.01em;
+
+  --text-heading-s: 1.125rem;
+  --text-heading-s--line-height: 1.35;
+  --text-heading-s--letter-spacing: 0em;
+
+  --text-body-l: 1.125rem;
+  --text-body-l--line-height: 1.6;
+
+  --text-body-m: 1rem;
+  --text-body-m--line-height: 1.65;
+
+  --text-body-s: 0.875rem;
+  --text-body-s--line-height: 1.55;
+
+  /* Mono placards. Always uppercase WITH this tracking — uppercase at
+     default tracking is a defect (§5.2, rubric check 17). */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.12em;
+
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1;
+  --text-micro--letter-spacing: 0.14em;
+
+  /* ── Spacing. 4px base. Values outside this scale fail lint rule 3. ── */
+  --spacing-1: 0.25rem; /*   4 */
+  --spacing-2: 0.5rem; /*   8 */
+  --spacing-3: 0.75rem; /*  12 */
+  --spacing-4: 1rem; /*  16 */
+  --spacing-6: 1.5rem; /*  24 */
+  --spacing-8: 2rem; /*  32 */
+  --spacing-12: 3rem; /*  48 */
+  --spacing-16: 4rem; /*  64 */
+  --spacing-24: 6rem; /*  96 — section padding, mobile */
+  --spacing-32: 8rem; /* 128 */
+  --spacing-40: 10rem; /* 160 — section padding, desktop */
+  --spacing-56: 14rem; /* 224 — Zone A top offset */
+
+  /* ── Structure. §5.3 ── */
+  --container-shell: 1440px;
+  --container-content: 1200px;
+  --container-prose: 72ch; /* hard cap — rubric check 18 sibling */
+
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1280px;
+  --breakpoint-xl: 1536px;
+
+  /* ── Radius. This system is square by intent. Large radii read as
+        consumer-app friendliness and fight the archive concept. §17.5 ── */
+  --radius-none: 0px; /* plates, structural surfaces */
+  --radius-input: 2px; /* inputs only */
+
+  /* ── Motion. Precision = fast, short, decisive. NO spring, NO bounce,
+        NO overshoot. Mechanisms settle. §5.5 ── */
+  --duration-micro: 120ms;
+  --duration-base: 180ms;
+  --duration-enter: 240ms;
+  --duration-large: 400ms;
+
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-inout: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Scroll reveal: 8px, not 40px. Fires once. §5.5 */
+  --brs-reveal-distance: 8px;
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   BASE
+   ─────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-body-m);
+    line-height: 1.65;
+    /* The page body must never scroll horizontally. Wide content
+       (tables, the Record axis) scrolls inside its own container. */
+    overflow-x: hidden;
+  }
+
+  /* Focus: 2px ring, 2px offset. `outline: none` without a visible
+     replacement is a defect — §17.7. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Tabular figures are mandatory in every numeric context. Proportional
+     numerals in a roster table destroy the precision claim instantly.
+     §5.2, rubric check 14. */
+  table,
+  time,
+  [data-numeric],
+  .font-mono,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-deep);
+    color: #f4f3f1;
+  }
+
+  /* Images never distort. §17.5 */
+  img,
+  picture,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   UTILITIES — the few things Tailwind cannot express
+   ─────────────────────────────────────────────────────────────────────── */
+
+@layer utilities {
+  /* True sub-pixel hairline on high-DPI. Do NOT approximate this with
+     border-[0.5px] — §10.4. A 1px border is the fallback below 2dppx. */
+  .hairline-t,
+  .hairline-b {
+    position: relative;
+  }
+  .hairline-t::before,
+  .hairline-b::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: var(--color-line-hairline);
+    pointer-events: none;
+  }
+  .hairline-t::before {
+    top: 0;
+  }
+  .hairline-b::after {
+    bottom: 0;
+  }
+
+  @media (min-resolution: 2dppx) {
+    .hairline-t::before,
+    .hairline-b::after {
+      transform: scaleY(0.5);
+      transform-origin: top;
+    }
+    .hairline-b::after {
+      transform-origin: bottom;
+    }
+  }
+
+  /* Signature transition: the hairline draw. scaleX 0→1 from the left.
+     This is the site's one flourish and it is a 1px line. §5.5 */
+  .hairline-draw {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-large) var(--ease-out);
+  }
+  .hairline-draw[data-drawn="true"] {
+    transform: scaleX(1);
+  }
+
+  /* Optical left correction for display type — §3.2, §4.4 */
+  .optical-left {
+    margin-left: -0.06em;
+  }
+
+  /* Prose measure, enforced by container not per-element — §5.2 */
+  .prose-measure {
+    max-width: var(--container-prose);
+  }
+
+  /* Placard: mono, uppercase, tracked. The museum wall label. §5.9.1 */
+  .placard {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   REDUCED MOTION — a launch blocker, not a nice-to-have. §5.5, §14
+   All translation and scale removed. Opacity only.
+   ─────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* The hairline draw resolves instantly rather than animating. */
+  .hairline-draw {
+    transform: scaleX(1);
+  }
+}

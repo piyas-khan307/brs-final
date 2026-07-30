@@ -1,0 +1,20 @@
+{
+  "$comment": [
+    "Human-verified false positives for the PII gate (scripts/audit-pii.mjs).",
+    "",
+    "Add entries SPARINGLY and ALWAYS with a written reason. Never weaken the",
+    "detection pattern to make a finding go away — that is how a real number",
+    "eventually ships. If you are tempted to allowlist something that looks",
+    "like a real personal number, the correct action is to remove the number.",
+    "",
+    "Matching is on digits only, after separators are stripped."
+  ],
+  "allow": [
+    {
+      "value": "01700000000",
+      "reason": "Synthetic test fixture in packages/contract/test/contract.test.ts. Proves MemberDTO strips injected phone/contact/contactNo keys (implementation_plan.md §12.1 control 3). The value is deliberately '017' followed by eight zeros — no real subscriber number takes that form, so allowlisting it cannot mask genuine PII.",
+      "addedBy": "Phase 0 scaffold",
+      "addedOn": "2026-07-30"
+    }
+  ]
+}

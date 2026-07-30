@@ -1,0 +1,65 @@
+# ─────────────────────────────────────────────────────────────
+# BRS — .gitignore
+# Written BEFORE `git init` on purpose. The archive is ~2 GB of
+# images; a stray `git add .` without this file would be painful
+# to undo. Do not remove the archive block.
+# ─────────────────────────────────────────────────────────────
+
+# ── The archive (Plane 1 source material, ~2 GB) ──────────────
+# These live in place for now. See docs/adr/0003-asset-source.md
+# for the recommended move into assets-source/.
+/BRS/
+/BRS ExCom/
+/logo/
+/assets-source/
+
+# Never commit raw or non-web source files
+*.ai
+*.eps
+*.ARW
+*.arw
+*.heic
+*.HEIC
+*.psd
+*.lnk
+
+# ── Node ──────────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+*.tsbuildinfo
+
+# ── Next.js ───────────────────────────────────────────────────
+.next/
+out/
+next-env.d.ts
+
+# ── Turborepo ─────────────────────────────────────────────────
+.turbo/
+
+# ── Build output ──────────────────────────────────────────────
+dist/
+build/
+.wrangler/
+
+# ── Env & secrets ─────────────────────────────────────────────
+# Graph credentials, Directus tokens, DB URLs. §12.2 — secrets
+# live in the secret store, never in the repo.
+.env
+.env.*
+!.env.example
+
+# ── Test & audit artefacts ────────────────────────────────────
+coverage/
+playwright-report/
+test-results/
+lighthouse-report*
+.audit/
+
+# ── Editor / OS ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp

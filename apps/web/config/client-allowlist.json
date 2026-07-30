@@ -1,0 +1,31 @@
+{
+  "$comment": [
+    "Every file declaring 'use client' MUST appear here. Enforced by lint rule",
+    "brs/client-component-allowlist (implementation_plan.md §13.4 rule 5).",
+    "",
+    "WHY: the Next.js 15 App Router ships a ~110 KB gzip React runtime floor",
+    "before a line of our code. The only budget we control is first-party JS,",
+    "capped at 15 KB (§4.7). That budget erodes one convenient 'use client' at",
+    "a time, so adding an island must be a deliberate, reviewable act.",
+    "",
+    "Phase L permits exactly TWO islands. Both are listed below and neither",
+    "exists yet — they are reserved so the intent is on record.",
+    "",
+    "Before adding an entry, ask: can this be a Server Component? On an",
+    "archive site the answer is almost always yes."
+  ],
+  "allow": [
+    {
+      "file": "src/components/landing/ZoneRail.tsx",
+      "reason": "Scroll-position observation and aria-current updates on the zone rail. Must remain a real <nav> of anchor links, keyboard traversable (§4.3).",
+      "phase": "L",
+      "status": "reserved"
+    },
+    {
+      "file": "src/components/landing/ZoneD_RecordStrip.tsx",
+      "reason": "Drag/wheel scrubbing and arrow-key navigation on the 2005-2026 Record axis. Renders as a semantic <ol> and becomes a static list under prefers-reduced-motion (§4.5).",
+      "phase": "L",
+      "status": "reserved"
+    }
+  ]
+}

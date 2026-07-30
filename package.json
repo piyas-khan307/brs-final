@@ -1,0 +1,33 @@
+{
+  "name": "brs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BUET Robotics Society — website and content platform",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "audit:pii": "node scripts/audit-pii.mjs",
+    "audit:pii:selftest": "node scripts/audit-pii.mjs --selftest",
+    "contract:generate": "turbo run generate --filter=@brs/contract",
+    "gate": "pnpm typecheck && pnpm lint && pnpm audit:pii:selftest && pnpm audit:pii"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@next/eslint-plugin-next": "^16.2.12",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "eslint-plugin-brs": "workspace:*",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.65.0"
+  }
+}

@@ -1,0 +1,57 @@
+# Local development stack: Plane 1 (Postgres) + Plane 2 (Directus).
+#
+# Production uses managed Postgres with PITR — we do not self-host a
+# database for a student club (§15 risk 5). This file is for local work
+# and for the CI schema check.
+
+name: brs
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: brs
+      POSTGRES_PASSWORD: brs
+      POSTGRES_DB: brs
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Applied on first boot of an empty volume.
+      - ./packages/db/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brs -d brs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Plane 2. A UI over OUR schema — note it is pointed at the same database
+  # the migrations own. Directus does not get to define structure.
+  directus:
+    image: directus/directus:11
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8055:8055"
+    environment:
+      SECRET: "dev-only-change-me"
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: brs
+      DB_USER: brs
+      DB_PASSWORD: brs
+      ADMIN_EMAIL: "admin@example.invalid"
+      ADMIN_PASSWORD: "dev-only-change-me"
+      # Assets live in object storage, never in the CMS container.
+      STORAGE_LOCATIONS: local
+      WEBSOCKETS_ENABLED: "false"
+    volumes:
+      - directus_uploads:/directus/uploads
+
+volumes:
+  pgdata:
+  directus_uploads:

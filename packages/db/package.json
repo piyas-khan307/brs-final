@@ -1,0 +1,12 @@
+{
+  "name": "@brs/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PostgreSQL schema — the source of truth (Plane 1). Directus reads this; it does not define it.",
+  "scripts": {
+    "migrate": "node scripts/migrate.mjs",
+    "verify": "node scripts/verify-schema.mjs",
+    "typecheck": "echo 'no TS in @brs/db'"
+  }
+}

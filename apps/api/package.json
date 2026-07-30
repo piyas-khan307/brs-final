@@ -1,0 +1,23 @@
+{
+  "name": "@brs/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Plane 3 — the contract facade. Stateless, disposable, the only CMS-aware service.",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "deploy": "wrangler deploy",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@brs/contract": "workspace:*",
+    "hono": "^4.10.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251004.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.45.0"
+  }
+}

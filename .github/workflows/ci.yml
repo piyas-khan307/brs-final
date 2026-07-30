@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The frontend's only backend coordinate. Not a secret.
+  NEXT_PUBLIC_BRS_API: http://localhost:8787
+
+jobs:
+  gate:
+    name: Quality gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # ── The PII gate proves itself before it is trusted ──────────────
+      # implementation_plan.md §12.1 control 5. An unverified gate is not a
+      # gate, so the self-test runs first: if the scanner has been weakened
+      # or broken, this fails before the real scan can pass vacuously.
+      - name: PII gate — self-test
+        run: pnpm audit:pii:selftest
+
+      - name: Schema verifier (no contact columns, ever)
+        run: node packages/db/scripts/verify-schema.mjs
+
+      - name: Lint rules — self-test
+        run: node --test tools/eslint-plugin-brs/test/rules.test.mjs
+
+      - name: Contract tests
+        run: pnpm --filter @brs/contract test
+
+      - name: Lint
+        run: pnpm exec eslint apps packages tools scripts
+
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit -p apps/web/tsconfig.json
+
+      - name: Contract — regenerate and check for drift
+        run: |
+          pnpm --filter @brs/contract generate
+          if ! git diff --quiet packages/contract/openapi.json; then
+            echo "::error::openapi.json is stale. Run 'pnpm contract:generate' and commit."
+            git diff --stat packages/contract/openapi.json
+            exit 1
+          fi
+
+      - name: Build
+        run: pnpm --filter @brs/web build
+
+      # ── The real scan, against BUILT output ─────────────────────────
+      # Runs last because apps/web/out must exist for this to be meaningful.
+      - name: PII gate — built output
+        run: pnpm audit:pii
+
+      - name: JS budget
+        run: node scripts/check-budgets.mjs
