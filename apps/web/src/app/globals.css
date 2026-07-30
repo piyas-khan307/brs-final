@@ -226,6 +226,12 @@
   --container-shell: 1440px;
   --container-content: 1200px;
   --container-prose: 72ch; /* hard cap — rubric check 18 sibling */
+  /* Minimum width of the Record axis before it scrolls horizontally, and of
+     one labelled anchor within it. Tokens rather than inline values so the
+     axis geometry stays part of the system. */
+  --container-record: 64rem;
+  --container-anchor: 13rem;
+  --container-action: 34rem;
 
   --breakpoint-xs: 480px;
   --breakpoint-sm: 768px;
@@ -375,6 +381,21 @@
   /* Prose measure, enforced by container not per-element — §5.2 */
   .prose-measure {
     max-width: var(--container-prose);
+  }
+
+  /* Plate hover: a 1.5% scale inside a fixed-overflow frame. Nothing else —
+     no lift, no shadow bloom, no tilt (§5.5). Expressed here rather than as
+     an arbitrary Tailwind value so the magnitude stays in the system. */
+  .plate-zoom {
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .group:hover .plate-zoom {
+    transform: scale(1.015);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .group:hover .plate-zoom {
+      transform: none;
+    }
   }
 
   /* Placard: mono, uppercase, tracked. The museum wall label. §5.9.1 */

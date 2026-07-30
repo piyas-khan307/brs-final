@@ -70,6 +70,8 @@ export default [
         console: "readonly",
         URL: "readonly",
         fetch: "readonly",
+        Buffer: "readonly",
+        __dirname: "readonly",
       },
     },
     rules: {
