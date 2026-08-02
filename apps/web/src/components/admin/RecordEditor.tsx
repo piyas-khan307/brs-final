@@ -195,9 +195,9 @@ export function RecordEditor({
               <button
                 type="button"
                 onClick={() => startEdit(r)}
-                className="flex w-full flex-wrap items-baseline justify-between gap-3 border border-line-hairline bg-bg-raised px-4 py-3 text-left transition-colors duration-micro ease-out hover:border-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+                className="adm-row flex w-full flex-wrap items-baseline justify-between gap-3 px-5 py-4"
               >
-                <span className="text-body-m text-text-primary">
+                <span className="text-body-l text-text-primary">
                   {String(r[titleField] ?? "(untitled)")}
                 </span>
                 <span className="flex flex-wrap gap-4">

@@ -23,17 +23,23 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   busy?: boolean;
 };
 
+/**
+ * Every state a button has, and none of them invented here — the whole
+ * interaction language lives in the `.adm-btn` block in globals.css, so
+ * "what does hover do" is one question with one answer in one place.
+ *
+ * rest → hover → active(depressed 1px) → focus-visible → disabled → busy
+ */
 export function Button({ variant = "secondary", busy, children, className = "", ...rest }: ButtonProps) {
-  const base =
-    "inline-flex items-center justify-center gap-2 border px-4 py-2.5 text-body-s transition-colors duration-micro ease-out disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring";
-  const variants = {
-    primary: "border-accent bg-accent text-white hover:bg-accent-deep",
-    secondary: "border-line-strong bg-bg-raised text-text-primary hover:bg-bg-inset",
-    danger: "border-accent bg-bg-raised text-accent hover:bg-accent hover:text-white",
-    quiet: "border-transparent bg-transparent text-text-secondary hover:text-text-primary",
-  };
   return (
-    <button className={`${base} ${variants[variant]} ${className}`} disabled={busy || rest.disabled} {...rest}>
+    <button
+      className={`adm-btn adm-btn-${variant} ${className}`}
+      disabled={busy || rest.disabled}
+      // Tells a screen reader the press was received and is still
+      // working. Without it, a spinner is a purely visual promise.
+      aria-busy={busy || undefined}
+      {...rest}
+    >
       {busy ? <Spinner /> : null}
       {children}
     </button>
@@ -44,8 +50,7 @@ function Spinner() {
   return (
     <span
       aria-hidden="true"
-      className="inline-block h-3.5 w-3.5 animate-spin border-2 border-current border-t-transparent"
-      style={{ borderRadius: "50%" }}
+      className="adm-spin inline-block h-4 w-4 border-2 border-current border-t-transparent"
     />
   );
 }
@@ -74,12 +79,18 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-body-s text-text-primary" style={{ fontVariationSettings: "'wght' 550" }}>
+      {/* Required is MARKED; optional is simply unmarked.
+          Labelling every optional field "optional" put the word on nine
+          fields out of ten — including a dropdown, where it means
+          nothing — and a marker that appears almost everywhere has
+          stopped being a marker. */}
+      <span className="block text-body-m text-text-primary" style={{ fontVariationSettings: "'wght' 600" }}>
         {label}
-        {required ? <span className="ml-1 text-accent" aria-hidden="true">*</span> : null}
-        {!required ? <span className="ml-2 text-body-s text-text-tertiary">optional</span> : null}
+        {required ? (
+          <span className="ml-2 font-mono text-micro uppercase text-accent">required</span>
+        ) : null}
       </span>
-      {hint ? <span className="mt-1 block max-w-prose text-body-s text-text-secondary">{hint}</span> : null}
+      {hint ? <span className="mt-1.5 block max-w-prose text-body-s text-text-secondary">{hint}</span> : null}
       <span className="mt-2 block">{children}</span>
       {error ? (
         <span className="mt-2 block text-body-s text-accent" role="alert">
@@ -90,19 +101,16 @@ export function Field({
   );
 }
 
-const controlClass =
-  "w-full border border-line-strong bg-bg-raised px-3 py-2.5 text-body-m text-text-primary placeholder:text-text-tertiary focus:border-accent focus:outline-2 focus:outline-offset-0 focus:outline-focus-ring";
-
 export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className={`${controlClass} ${props.className ?? ""}`} />;
+  return <input {...props} className={`adm-input ${props.className ?? ""}`} />;
 }
 
 export function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} className={`${controlClass} ${props.className ?? ""}`} />;
+  return <textarea {...props} className={`adm-input ${props.className ?? ""}`} />;
 }
 
 export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select {...props} className={`${controlClass} ${props.className ?? ""}`} />;
+  return <select {...props} className={`adm-input ${props.className ?? ""}`} />;
 }
 
 /* ── Feedback ─────────────────────────────────────────────────────────── */
@@ -122,7 +130,7 @@ export function Notice({
   };
   return (
     <div
-      className={`border-l-2 px-4 py-3 text-body-s ${tones[tone]}`}
+      className={`border-l-2 px-5 py-4 text-body-m ${tones[tone]}`}
       role={tone === "error" ? "alert" : "status"}
     >
       {children}
@@ -149,23 +157,41 @@ export function useFlash() {
 
 /* ── Structure ────────────────────────────────────────────────────────── */
 
+/**
+ * The page title, set on the display scale rather than as a slightly bold
+ * paragraph. An admin screen with timid headings reads as a form someone
+ * generated; the club's site has a voice and this is still the club's
+ * site.
+ *
+ * The rule under it is `line-strong`, not `hairline` — the heaviest
+ * hairline the system has. It is the one structural division on the page
+ * and it should be the one you see first.
+ */
 export function PageHeader({
   title,
   description,
   action,
+  eyebrow,
 }: {
   title: string;
   description?: string;
   action?: React.ReactNode;
+  eyebrow?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line-hairline pb-6">
-      <div>
-        <h1 className="text-heading-l text-text-primary" style={{ fontVariationSettings: "'wght' 600" }}>
+    <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line-strong pb-6">
+      <div className="min-w-0">
+        {eyebrow ? (
+          <span className="block font-mono text-micro uppercase text-text-tertiary">{eyebrow}</span>
+        ) : null}
+        <h1
+          className="mt-2 text-display-m text-text-primary"
+          style={{ fontVariationSettings: "'wght' 600" }}
+        >
           {title}
         </h1>
         {description ? (
-          <p className="mt-2 max-w-prose text-body-m text-text-secondary">{description}</p>
+          <p className="mt-3 max-w-prose text-body-l text-text-secondary">{description}</p>
         ) : null}
       </div>
       {action}
@@ -175,7 +201,7 @@ export function PageHeader({
 
 export function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`border border-line-hairline bg-bg-raised p-6 ${className}`}>{children}</div>
+    <div className={`border border-line-hairline bg-bg-raised p-6 md:p-8 ${className}`}>{children}</div>
   );
 }
 
@@ -183,7 +209,7 @@ export function Card({ children, className = "" }: { children: React.ReactNode; 
  *  An empty state that does not say what to do next is a dead end. */
 export function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border border-dashed border-line-strong px-6 py-12 text-center text-body-m text-text-secondary">
+    <div className="border border-dashed border-line-strong px-6 py-16 text-center text-body-l text-text-secondary">
       {children}
     </div>
   );
@@ -191,7 +217,14 @@ export function Empty({ children }: { children: React.ReactNode }) {
 
 export function Loading({ what }: { what: string }) {
   return (
-    <p className="py-12 text-center text-body-m text-text-tertiary" role="status">
+    <p
+      className="flex items-center justify-center gap-3 py-16 text-body-m text-text-tertiary"
+      role="status"
+    >
+      <span
+        aria-hidden="true"
+        className="adm-spin inline-block h-4 w-4 border-2 border-current border-t-transparent"
+      />
       Loading {what}…
     </p>
   );

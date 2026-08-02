@@ -88,14 +88,20 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-line-hairline bg-bg-raised">
         <div className="mx-auto flex max-w-shell flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-baseline gap-3">
-            <span className="text-heading-s text-text-primary" style={{ fontVariationSettings: "'wght' 600" }}>
+            <span
+              className="text-heading-m text-text-primary"
+              style={{ fontVariationSettings: "'wght' 700" }}
+            >
               BRS
             </span>
             <span className="font-mono text-micro uppercase text-text-tertiary">Website admin</span>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-body-s text-text-secondary">
+          <div className="flex items-center gap-5">
+            <span className="text-body-m text-text-secondary">
               {name}
+              {/* The role, in the placard voice. It is a fact about the
+                  session rather than part of the person's name, and the
+                  mono register says so without a coloured badge. */}
               <span className="ml-2 font-mono text-micro uppercase text-text-tertiary">
                 {user.isAdministrator ? "Administrator" : "Member"}
               </span>
@@ -132,13 +138,20 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   <Link
                     href={`${e.href}/`}
                     aria-current={active ? "page" : undefined}
-                    className={`block border-l-2 px-3 py-2 no-underline transition-colors duration-micro ease-out ${
+                    // The left rule is the whole navigation device: it is
+                    // the site's own structural hairline, thickened to 2px
+                    // and coloured oxblood for the page you are on. No
+                    // pill, no fill, no icon set.
+                    className={`block border-l-2 px-4 py-2.5 no-underline transition-colors duration-micro ease-out ${
                       active
                         ? "border-accent bg-bg-raised text-text-primary"
-                        : "border-transparent text-text-secondary hover:border-line-strong hover:text-text-primary"
+                        : "border-transparent text-text-secondary hover:border-line-strong hover:bg-bg-raised hover:text-text-primary"
                     }`}
                   >
-                    <span className="block text-body-m" style={{ fontVariationSettings: "'wght' 550" }}>
+                    <span
+                      className="block text-body-l"
+                      style={{ fontVariationSettings: active ? "'wght' 620" : "'wght' 500" }}
+                    >
                       {e.label}
                     </span>
                     <span className="mt-0.5 hidden text-body-s text-text-tertiary md:block">{e.hint}</span>

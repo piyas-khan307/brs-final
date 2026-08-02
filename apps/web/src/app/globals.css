@@ -478,6 +478,205 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────
+   THE ADMIN PANEL — /admin only.
+
+   A tool, not a catalogue page, and it may look like one: bigger type,
+   controls with a real sense of touch. What it may NOT do is become a
+   different product. So the vocabulary is the site's own — hairlines,
+   oxblood, mono placards — and the additions are state, not decoration.
+
+   Held to the house rules deliberately:
+     · no soft drop shadows on static surfaces (§5.1 rule 4)
+     · no accent-hue glow (§5.1)
+     · no lift-on-hover (§5.5)
+
+   What a control does instead is DEPRESS. A button that moves one pixel
+   down under the pointer and shifts its own border reads as a physical
+   key, and it costs no shadow to say so.
+
+   Magnitudes live here rather than as arbitrary Tailwind values, so the
+   whole interaction language can be read and changed in one place.
+   ─────────────────────────────────────────────────────────────────────── */
+
+@layer components {
+  .adm-btn {
+    --adm-btn-bg: transparent;
+    --adm-btn-fg: var(--color-text-primary);
+    --adm-btn-border: var(--color-line-strong);
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+
+    /* Larger than the site's body text on purpose. This is a control
+       being aimed at, not prose being read. */
+    font-family: var(--font-display);
+    font-size: var(--text-body-m);
+    font-variation-settings: "wght" 560;
+    line-height: 1;
+    letter-spacing: -0.005em;
+
+    padding: 0.6875rem var(--spacing-6);
+    min-height: 2.75rem; /* 44px — the pointer/touch target floor */
+
+    color: var(--adm-btn-fg);
+    background-color: var(--adm-btn-bg);
+    border: 1px solid var(--adm-btn-border);
+    border-radius: var(--radius-none);
+
+    cursor: pointer;
+    user-select: none;
+    transition:
+      background-color var(--duration-micro) var(--ease-out),
+      border-color var(--duration-micro) var(--ease-out),
+      color var(--duration-micro) var(--ease-out),
+      transform var(--duration-micro) var(--ease-out);
+  }
+
+  /* The depress. 1px is enough to be felt and not enough to reflow
+     anything next to it. */
+  .adm-btn:not(:disabled):active {
+    transform: translateY(1px);
+  }
+
+  .adm-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .adm-btn:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* ── Primary: the one action this screen is for ──────────────────── */
+  .adm-btn-primary {
+    --adm-btn-bg: var(--color-accent);
+    --adm-btn-fg: #fff;
+    --adm-btn-border: var(--color-accent);
+  }
+  .adm-btn-primary:not(:disabled):hover {
+    --adm-btn-bg: var(--color-accent-deep);
+    --adm-btn-border: var(--color-accent-deep);
+  }
+
+  /* ── Secondary: everything else that writes ──────────────────────── */
+  .adm-btn-secondary {
+    --adm-btn-bg: var(--color-bg-raised);
+  }
+  .adm-btn-secondary:not(:disabled):hover {
+    --adm-btn-bg: var(--color-bg-base);
+    --adm-btn-border: var(--color-text-primary);
+  }
+
+  /* ── Danger: reads as ordinary until pointed at, then commits ────── */
+  .adm-btn-danger {
+    --adm-btn-bg: transparent;
+    --adm-btn-fg: var(--color-accent);
+    --adm-btn-border: var(--color-line-accent);
+  }
+  .adm-btn-danger:not(:disabled):hover {
+    --adm-btn-bg: var(--color-accent);
+    --adm-btn-fg: #fff;
+    --adm-btn-border: var(--color-accent);
+  }
+
+  /* ── Quiet: a text action. Earns a hairline on approach rather than
+     shouting with a border it does not need. ───────────────────────── */
+  .adm-btn-quiet {
+    --adm-btn-border: transparent;
+    --adm-btn-fg: var(--color-text-secondary);
+    padding-left: var(--spacing-3);
+    padding-right: var(--spacing-3);
+  }
+  .adm-btn-quiet:not(:disabled):hover {
+    --adm-btn-fg: var(--color-text-primary);
+    --adm-btn-border: var(--color-line-hairline);
+  }
+
+  /* ── Fields ──────────────────────────────────────────────────────────
+     A 2px accent rule on the left of the focused control, drawn from
+     zero. It replaces the ring-and-glow convention with the site's own
+     structural device — a rule — and it tells you where you are in a
+     long form at a glance. */
+  .adm-input {
+    width: 100%;
+    font-family: var(--font-display);
+    font-size: var(--text-body-m);
+    line-height: 1.4;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-line-strong);
+    border-left-width: 2px;
+    border-left-color: transparent;
+    padding: 0.625rem var(--spacing-3);
+    transition:
+      border-color var(--duration-micro) var(--ease-out),
+      background-color var(--duration-micro) var(--ease-out);
+  }
+  .adm-input:hover:not(:disabled) {
+    border-color: var(--color-text-tertiary);
+    border-left-color: transparent;
+  }
+  .adm-input:focus {
+    outline: none;
+    border-color: var(--color-text-primary);
+    border-left-color: var(--color-accent);
+    background-color: var(--color-bg-base);
+  }
+  .adm-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .adm-input::placeholder {
+    color: var(--color-text-tertiary);
+  }
+
+  /* ── Rows that behave like buttons ───────────────────────────────── */
+  .adm-row {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-line-hairline);
+    border-left-width: 2px;
+    border-left-color: transparent;
+    transition:
+      border-color var(--duration-micro) var(--ease-out),
+      background-color var(--duration-micro) var(--ease-out);
+  }
+  .adm-row:hover {
+    border-color: var(--color-line-strong);
+    border-left-color: var(--color-accent);
+  }
+  .adm-row:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* The busy spinner. Two exceptions, both deliberate and both confined
+     to this class:
+       · a rotation, permitted because it reports that something is
+         genuinely still happening rather than decorating a static thing
+       · a circle, in a system that is square by intent (§17.5). The
+         radius ban is about SURFACES — plates, panels, inputs. This is a
+         mechanism, and a square spinner reads as a glitch.
+     Declared here rather than as `rounded-full` in a component, so it is
+     one considered exception instead of a precedent. */
+  .adm-spin {
+    border-radius: 50%;
+    animation: adm-spin var(--duration-large) linear infinite;
+  }
+  @keyframes adm-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────
    REDUCED MOTION — a launch blocker, not a nice-to-have. §5.5, §14
    All translation and scale removed. Opacity only.
    ─────────────────────────────────────────────────────────────────────── */

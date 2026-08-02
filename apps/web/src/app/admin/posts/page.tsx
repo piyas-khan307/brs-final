@@ -64,10 +64,10 @@ export default function PostsPage() {
             <li key={p.id}>
               <Link
                 href={`/admin/posts/edit/?id=${p.id}`}
-                className="flex flex-wrap items-baseline justify-between gap-3 border border-line-hairline bg-bg-raised px-4 py-3 no-underline transition-colors duration-micro ease-out hover:border-line-strong"
+                className="adm-row flex flex-wrap items-baseline justify-between gap-3 px-5 py-4 no-underline"
               >
                 <span>
-                  <span className="block text-body-m text-text-primary">{p.title}</span>
+                  <span className="block text-body-l text-text-primary">{p.title}</span>
                   {p.author_name ? (
                     <span className="mt-0.5 block text-body-s text-text-tertiary">
                       by {p.author_name}

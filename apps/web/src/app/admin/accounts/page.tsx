@@ -186,10 +186,10 @@ export default function AccountsPage() {
             return (
               <li
                 key={u.id}
-                className="flex flex-wrap items-center justify-between gap-3 border border-line-hairline bg-bg-raised px-4 py-3"
+                className="flex flex-wrap items-center justify-between gap-3 border border-line-hairline bg-bg-raised px-5 py-4"
               >
                 <span>
-                  <span className="block text-body-m text-text-primary">
+                  <span className="block text-body-l text-text-primary">
                     {name || u.email}
                     {isSelf ? <span className="ml-2 text-body-s text-text-tertiary">(you)</span> : null}
                   </span>
