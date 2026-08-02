@@ -42,7 +42,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import type { CollectionDTO, CollectionItemDTO } from "@brs/contract";
+import type { CollectionDTO, CollectionItemDTO, CommitteeDTO, ImageDTO } from "@brs/contract";
 
 import { brs } from "../src/lib/content.js";
 
@@ -106,6 +106,18 @@ function toShowcase(item: CollectionItemDTO) {
     ...(item.caption.length ? { caption: item.caption.join(" ") } : {}),
   };
 }
+
+/**
+ * The same split, for a portrait. `sourcesOf` takes a CollectionItemDTO
+ * and a committee member carries a bare ImageDTO, so the shared part is
+ * lifted rather than duplicated — one place decides what a srcset looks
+ * like.
+ */
+const splitSources = (image: ImageDTO, format: "avif" | "webp"): Src[] =>
+  image.sources
+    .filter((s) => s.format === format)
+    .sort((a, b) => a.width - b.width)
+    .map((s) => ({ w: s.width, url: s.url }));
 
 /* ── Emit ─────────────────────────────────────────────────────────────── */
 
@@ -196,6 +208,92 @@ export const ASSEMBLY: ShowcaseAsset[] = ${json(assembly.map(toShowcase))};
 `;
 }
 
+/**
+ * The current committee, flattened just enough for a page to render it
+ * without knowing anything about the API.
+ *
+ * The nesting is kept — group → section → people is the structure the
+ * club actually publishes, and flattening it here would only force the
+ * page to rebuild it. What IS flattened is the image: srcsets are split
+ * per format, exactly as for plates and showcase assets.
+ *
+ * `portrait` is optional and that is load-bearing. Two of the 84 posters
+ * for the 11th committee have an empty frame — the person's name and role
+ * were set and no photograph was ever placed. They are members of the
+ * committee and must appear on the page; the page just has nothing to
+ * show for them.
+ */
+function committeeModule(committee: CommitteeDTO): string {
+  const shaped = {
+    ordinal: committee.ordinal,
+    label: committee.label,
+    termStart: committee.termStart,
+    termEnd: committee.termEnd,
+    groups: committee.groups.map((g) => ({
+      name: g.name,
+      ...(g.note ? { note: g.note } : {}),
+      sections: g.sections.map((s) => ({
+        name: s.name,
+        members: s.members.map((m) => ({
+          id: m.id,
+          name: m.name,
+          designation: m.designation,
+          department: m.department,
+          batch: m.batch,
+          ...(m.portrait
+            ? {
+                portrait: {
+                  alt: m.portrait.alt,
+                  width: m.portrait.width,
+                  height: m.portrait.height,
+                  lqip: m.portrait.lqip,
+                  avif: splitSources(m.portrait, "avif"),
+                  webp: splitSources(m.portrait, "webp"),
+                },
+              }
+            : {}),
+        })),
+      })),
+    })),
+  };
+
+  return `${HEADER(`/v1/committees?current=true`)}
+export type Portrait = {
+  alt: string;
+  width: number;
+  height: number;
+  lqip: string;
+  avif: { w: number; url: string }[];
+  webp: { w: number; url: string }[];
+};
+
+export type CommitteeMember = {
+  id: string;
+  name: string;
+  designation: string;
+  /** Null means not recorded. The posters carry neither. */
+  department: string | null;
+  batch: string | null;
+  /** Absent when the announcement poster had an empty frame. */
+  portrait?: Portrait;
+};
+
+export type CommitteeSection = { name: string; members: CommitteeMember[] };
+export type CommitteeGroup = { name: string; note?: string; sections: CommitteeSection[] };
+
+export type Committee = {
+  ordinal: number;
+  label: string;
+  /** Null when the term years are not recorded anywhere. */
+  termStart: number | null;
+  termEnd: number | null;
+  groups: CommitteeGroup[];
+};
+
+export const COMMITTEE: Committee = ${json(shaped)};
+`;
+}
+
 /* ── Main ─────────────────────────────────────────────────────────────── */
 
 let collections: CollectionDTO[];
@@ -221,9 +319,19 @@ if (missing.length) {
   process.exit(1);
 }
 
+const [current] = await brs.committees.current();
+if (!current) {
+  // A committee page that builds with nobody on it is worse than a build
+  // that stops and says why.
+  console.error(`\n  No committee is marked current.`);
+  console.error(`  Load one with:  pnpm --filter @brs/db seed:committee -- --write\n`);
+  process.exit(1);
+}
+
 const targets: [string, string][] = [
   [path.join(LIB, "plates.generated.ts"), platesModule(bySlug)],
   [path.join(LIB, "showcase.generated.ts"), showcaseModule(bySlug)],
+  [path.join(LIB, "committee.generated.ts"), committeeModule(current)],
 ];
 
 let stale = 0;
@@ -242,7 +350,21 @@ for (const [file, content] of targets) {
 }
 
 const counts = REQUIRED.map((s) => `${s} ${bySlug.get(s)!.items.length}`).join(" · ");
-console.log(`\n  ${counts}\n`);
+const people = current.groups.flatMap((g) => g.sections.flatMap((s) => s.members));
+const withoutPortrait = people.filter((m) => !m.portrait);
+console.log(`\n  ${counts}`);
+console.log(
+  `  ${current.label} — ${people.length} people in ${current.groups.length} groups` +
+    (withoutPortrait.length
+      ? `, ${withoutPortrait.length} without a portrait (${withoutPortrait
+          .map((m) => m.name)
+          .join(", ")})`
+      : ""),
+);
+if (current.termStart === null) {
+  console.log(`  ⚠ ${current.label} has no term years recorded — the page will omit them.`);
+}
+console.log("");
 
 if (CHECK_ONLY && stale) {
   console.error(`  ${stale} file(s) out of date. Run: pnpm --filter @brs/web content\n`);

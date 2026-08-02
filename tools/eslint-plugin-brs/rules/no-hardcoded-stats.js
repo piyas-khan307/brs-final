@@ -44,9 +44,23 @@ export default {
     const filename = context.filename ?? context.getFilename();
     const isStatFile = STAT_FILE_PATTERN.test(filename);
 
+    /**
+     * Base64 payloads are not prose and must never be scanned.
+     *
+     * The blur placeholders in *.generated.ts are `data:image/webp;base64,…`
+     * strings, and base64's alphabet includes both digits and `+`. One of
+     * the 84 committee portraits happened to encode a run reading "6+",
+     * which the rule dutifully reported as a rounded-up statistic inside
+     * a photograph. Any large enough set of generated images will produce
+     * that collision eventually, so this is a class of false positive
+     * rather than a one-off.
+     */
+    const isDataUri = (s) => /^data:[a-z/+.-]+;base64,/i.test(s);
+
     /** Flag "480+", "35 +", "~40" in any user-facing string. */
     function checkString(node, value) {
       if (typeof value !== "string") return;
+      if (isDataUri(value)) return;
       const plus = value.match(/\b(\d[\d,]*)\s*\+/);
       if (plus) {
         context.report({ node, messageId: "plusSuffix", data: { value: plus[0].trim() } });
