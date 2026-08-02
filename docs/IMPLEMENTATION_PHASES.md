@@ -400,88 +400,22 @@ CMS replaceable.
 
 ---
 
-### Phase B6 · Containerization and deploy — ✅ done
+### Phase B6 · Containerization and deploy
 
 **Goal:** `docker compose up` reproduces production anywhere.
 
-| # | Task | Output | |
-| --- | --- | --- | --- |
-| 1 | `apps/web/Dockerfile` — build → export → nginx | **39 MB**, uid 101 | ✅ |
-| 2 | `apps/api/Dockerfile` — multi-stage node, non-root | **55 MB**, uid 1000 | ✅ |
-| 3 | `docker-compose.prod.yml` | Full stack, profiles for CMS + MinIO | ✅ |
-| 4 | Healthchecks on every service | All three reached `healthy` | ✅ |
-| 5 | `.env.production.example` | Every variable, no working defaults | ✅ |
-| 6 | No secrets in images | Verified | ✅ |
-| 7 | Deploy runbook | `docs/DEPLOY.md` | ✅ |
+| # | Task | Output |
+| --- | --- | --- |
+| 1 | `apps/web/Dockerfile` — build → export → nginx:alpine | ~25 MB image |
+| 2 | `apps/api/Dockerfile` — multi-stage node, non-root | ~80 MB image |
+| 3 | `docker-compose.prod.yml` | Full stack |
+| 4 | Healthchecks on every service | Orchestrator-ready |
+| 5 | `.env.production.example` documenting every variable | Handover doc |
+| 6 | No secrets in images; all runtime-injected | Security baseline |
+| 7 | Deploy runbook | `docs/DEPLOY.md` |
 
-**Exit criteria met.** A clean stack came up from the repo plus an env file, all
-five migrations auto-applied to a fresh volume, and every service reported healthy.
-
-#### §6.2 proven rather than asserted
-
-```
-$ docker compose -f docker-compose.prod.yml stop api
-$ curl -o /dev/null -w '%{http_code}' http://localhost:8090/
-200                      ← 70,869 bytes, full page
-```
-
-The claim that "backend downtime is invisible to visitors" has been the
-justification for `output: "export"` since Phase 0. It is now a measurement.
-
-#### The API image was 268 MB before it was 55 MB
-
-`pnpm deploy --prod` builds the runtime `node_modules` from the *workspace*
-dependency graph, which includes `@aws-sdk/client-s3` — a transitive dependency of
-`@brs/storage`. A service that never makes an S3 call was shipping a 3 MB S3 client
-and everything under it.
-
-Two changes, both worth keeping:
-
-- **`@brs/storage/url` — a subpath export with zero dependencies.** The façade only
-  ever *names* objects; it never puts, gets, lists or deletes. Splitting the URL
-  helper out means the façade holds no bucket SDK, which makes *"the API cannot
-  write to storage"* true **by construction** rather than by review. Dependency
-  footprint is a security surface, not just image size.
-- **Bundle everything, externalise only `pg-native` and `pg-cloudflare`.** Both are
-  optional, behind conditional requires this deployment never takes. The runtime
-  image is now one 830 KB file — **no `node_modules`, no TypeScript, no
-  transpiler.** Nothing to audit at runtime and nothing to drift from what was
-  tested.
-
-The build **fails** if an AWS SDK reference reappears in the bundle, so this cannot
-silently regress.
-
-#### Three real bugs the nginx config had, found by curl
-
-| Symptom | Cause |
-| --- | --- |
-| `/nope/` returned **200** | `try_files … /404.html` is an internal redirect; nginx serves it with 200. Search engines index that and monitoring never fires. Fixed with `=404` + `error_page`. |
-| **Zero security headers** on the whole site | nginx does not merge `add_header` across levels — *any* `add_header` in a `location` discards every one inherited from `server`. Fixed with an included snippet in every location. |
-| **Two** conflicting `Cache-Control` headers on static assets | `expires` emits its own; combining it with `add_header` sends both. Removed `expires` entirely. |
-
-All three were invisible to `docker build`, to `nginx -t`, and to a browser that
-happened to load the page. Only `curl -I` showed them.
-
-#### `.gitignore` was hiding the handover document
-
-`.env.*` ignored `.env.production.example`, because `!.env.example` negates exactly
-one filename. The production environment document — the thing a future committee
-needs most — would never have been committed. Now `!.env*.example`.
-
-#### This image is environment-specific, on purpose
-
-`NEXT_PUBLIC_*` values are inlined into the JavaScript at build time. The usual fix
-is a sentinel string swapped by an entrypoint script; it was rejected because it
-buys nothing here — the site is a static export, so **the content is already baked
-in and every publish is a rebuild anyway**. A substitution layer would create an
-illusion of portability that the baked content already breaks.
-
-Staging and production are separate builds. A rebuild is about two minutes.
-
-#### Deliberately not done — see `docs/DEPLOY.md` §"Not yet done"
-
-No CI pipeline, no scheduled backups, no log aggregation, and **it has never been
-deployed to a real host** — DNS, TLS issuance and CDN configuration are untested.
+**Exit criteria:** a clean machine with Docker can bring up the entire stack from
+the repo plus an env file.
 
 ---
 
