@@ -74,6 +74,7 @@ export default function CommitteePage() {
   const [flash, setFlash] = useFlash();
   const [loading, setLoading] = useState(true);
   const [addingTo, setAddingTo] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const reload = useCallback(
     async (committeeId: string) => {
@@ -165,30 +166,81 @@ export default function CommitteePage() {
 
       {flash ? <Notice tone={flash.tone}>{flash.text}</Notice> : null}
 
-      {committees && committees.length > 1 ? (
-        <Field label="Which committee">
-          <Select
-            value={current ?? ""}
-            onChange={async (e) => {
-              setCurrent(e.target.value);
-              await reload(e.target.value);
+      {/* Always shown, even with one committee. Hiding the selector until
+          a second exists means nobody discovers that past committees are
+          a thing this site keeps — and the club has ten of them. */}
+      <Card>
+        <div className="flex flex-wrap items-end gap-4">
+          <span className="min-w-64 flex-1">
+            <Field label="Which committee">
+              <Select
+                value={current ?? ""}
+                onChange={async (e) => {
+                  setCurrent(e.target.value);
+                  setCreating(false);
+                  await reload(e.target.value);
+                }}
+              >
+                {(committees ?? []).map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.label}
+                    {c.is_current ? " — current" : ""}
+                  </option>
+                ))}
+                {!committees?.length ? <option value="">none yet</option> : null}
+              </Select>
+            </Field>
+          </span>
+          <Button variant="primary" onClick={() => setCreating((v) => !v)}>
+            {creating ? "Cancel" : "New committee"}
+          </Button>
+        </div>
+
+        {creating ? (
+          <NewCommittee
+            existing={committees ?? []}
+            onCreated={async (id, message) => {
+              setCreating(false);
+              const list = await items.list<Committee>("committees", { sort: "-ordinal", limit: -1 });
+              setCommittees(list);
+              setCurrent(id);
+              await reload(id);
+              setFlash({ tone: "success", text: message });
             }}
-          >
-            {committees.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}
-                {c.is_current ? " (current)" : ""}
-              </option>
-            ))}
-          </Select>
-        </Field>
-      ) : null}
+            onError={(text) => setFlash({ tone: "error", text })}
+          />
+        ) : null}
+      </Card>
 
       {!committee ? (
-        <Empty>No committee exists yet.</Empty>
+        <Empty>
+          No committee exists yet. Use “New committee” above — the 11th Executive
+          Committee would be number 11.
+        </Empty>
       ) : (
         <>
-          <CommitteeDetails committee={committee} onSaved={(m) => act(async () => {}, m)} setFlash={setFlash} />
+          <CommitteeDetails
+            committee={committee}
+            onChanged={async (message) => {
+              const list = await items.list<Committee>("committees", { sort: "-ordinal", limit: -1 });
+              setCommittees(list);
+              setFlash({ tone: "success", text: message });
+            }}
+            onDeleted={async (message) => {
+              const list = await items.list<Committee>("committees", { sort: "-ordinal", limit: -1 });
+              setCommittees(list);
+              const next = list[0];
+              setCurrent(next?.id ?? null);
+              if (next) await reload(next.id);
+              else {
+                setGroups([]);
+                setSections([]);
+                setMemberships([]);
+              }
+              setFlash({ tone: "success", text: message });
+            }}
+            setFlash={setFlash}
+          />
 
           {groups.length === 0 ? (
             <Empty>
@@ -540,25 +592,258 @@ function AddPerson({
   );
 }
 
-/** Committee-level details, including the term years the 11th is missing. */
+/**
+ * ══════════════════════════════════════════════════════════════════════
+ * A NEW COMMITTEE — the once-a-year job.
+ *
+ * The club elects a new executive committee annually, so this is the
+ * single most repeated task the panel will ever see, and the first
+ * version of this screen could not do it at all.
+ *
+ * ── COPYING LAST YEAR'S STRUCTURE ──
+ * The 11th has 7 sections holding 42 positions between them. Rebuilding
+ * that by hand for the 12th is 49 form submissions before a single
+ * person is added, and the structure is nearly always the same year to
+ * year. So the sections and positions can be copied across — the shape,
+ * never the people. Carrying last year's members into this year's
+ * committee would be a factual error about who holds office.
+ * ══════════════════════════════════════════════════════════════════════
+ */
+function NewCommittee({
+  existing,
+  onCreated,
+  onError,
+}: {
+  existing: Committee[];
+  onCreated: (id: string, message: string) => void;
+  onError: (message: string) => void;
+}) {
+  // Next number up from the highest on record — the usual answer, and
+  // still editable for a committee being added retrospectively.
+  const suggested = existing.length ? Math.max(...existing.map((c) => c.ordinal)) + 1 : 1;
+  const [ordinal, setOrdinal] = useState(String(suggested));
+  const [label, setLabel] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+  const [makeCurrent, setMakeCurrent] = useState(existing.length === 0);
+  const [copyFrom, setCopyFrom] = useState<string>(existing[0]?.id ?? "");
+  const [busy, setBusy] = useState(false);
+
+  const ordinalNumber = Number(ordinal);
+  const taken = existing.some((c) => c.ordinal === ordinalNumber);
+  /** 1st, 2nd, 3rd, 4th … 11th, 12th, 13th, 21st. The teens are the trap. */
+  const suffix = (n: number) => {
+    const v = n % 100;
+    if (v >= 11 && v <= 13) return `${n}th`;
+    return `${n}${["th", "st", "nd", "rd"][n % 10] ?? "th"}`;
+  };
+  const autoLabel = ordinalNumber ? `${suffix(ordinalNumber)} Executive Committee` : "";
+
+  async function create() {
+    setBusy(true);
+    try {
+      // Only one committee may be current — enforced by a unique index,
+      // so the old one has to be stood down first or the insert is
+      // refused with a message about an index nobody has heard of.
+      if (makeCurrent) {
+        const currentOnes = existing.filter((c) => c.is_current);
+        for (const c of currentOnes) {
+          await items.update("committees", c.id, { is_current: false });
+        }
+      }
+
+      const created = await items.create<Committee>("committees", {
+        ordinal: ordinalNumber,
+        label: label.trim() || autoLabel,
+        term_start: start ? Number(start) : null,
+        term_end: end ? Number(end) : null,
+        is_current: makeCurrent,
+      });
+
+      let copied = 0;
+      if (copyFrom) {
+        const groups = await items.list<Group>("committee_groups", {
+          "filter[committee_id][_eq]": copyFrom,
+          sort: "sort_order",
+          limit: -1,
+        });
+        for (const g of groups) {
+          const newGroup = await items.create<Group>("committee_groups", {
+            committee_id: created.id,
+            name: g.name,
+            note: g.note,
+            sort_order: g.sort_order,
+          });
+          const positions = await items.list<Section>("committee_sections", {
+            "filter[group_id][_eq]": g.id,
+            sort: "sort_order",
+            limit: -1,
+          });
+          for (const p of positions) {
+            await items.create("committee_sections", {
+              group_id: newGroup.id,
+              name: p.name,
+              sort_order: p.sort_order,
+            });
+            copied++;
+          }
+        }
+      }
+
+      onCreated(
+        created.id,
+        copied
+          ? `${created.label} created, with ${copied} positions copied across. Add people to them now.`
+          : `${created.label} created. Add its sections next.`,
+      );
+    } catch (e) {
+      onError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-6 space-y-5 border-t border-line-hairline pt-6">
+      <div className="flex flex-wrap gap-4">
+        <span className="min-w-32">
+          <Field
+            label="Number"
+            required
+            hint="11 for the 11th."
+            error={taken ? "A committee with that number already exists." : undefined}
+          >
+            <Input
+              inputMode="numeric"
+              value={ordinal}
+              onChange={(e) => setOrdinal(e.target.value.replace(/\D/g, ""))}
+            />
+          </Field>
+        </span>
+        <span className="min-w-64 flex-1">
+          <Field label="Name" hint={autoLabel ? `Leave blank for “${autoLabel}”.` : undefined}>
+            <Input value={label} placeholder={autoLabel} onChange={(e) => setLabel(e.target.value)} />
+          </Field>
+        </span>
+      </div>
+
+      <p className="max-w-prose text-body-s text-text-secondary">
+        Term years. Leave both empty if they are not recorded — blank is a true answer and a
+        guess is not. Fill both or neither.
+      </p>
+      <div className="flex flex-wrap gap-4">
+        <span className="min-w-32 flex-1">
+          <Field label="From">
+            <Input
+              inputMode="numeric"
+              value={start}
+              placeholder="2025"
+              onChange={(e) => setStart(e.target.value.replace(/\D/g, ""))}
+            />
+          </Field>
+        </span>
+        <span className="min-w-32 flex-1">
+          <Field label="To">
+            <Input
+              inputMode="numeric"
+              value={end}
+              placeholder="2026"
+              onChange={(e) => setEnd(e.target.value.replace(/\D/g, ""))}
+            />
+          </Field>
+        </span>
+      </div>
+
+      {existing.length ? (
+        <Field
+          label="Copy the structure from"
+          hint="Copies the sections and positions only — never the people. Saves rebuilding the same teams and ranks every year."
+        >
+          <Select value={copyFrom} onChange={(e) => setCopyFrom(e.target.value)}>
+            <option value="">Start empty</option>
+            {existing.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.label}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      ) : null}
+
+      <label className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={makeCurrent}
+          onChange={(e) => setMakeCurrent(e.target.checked)}
+          className="mt-1 h-4 w-4 accent-accent"
+        />
+        <span>
+          <span
+            className="block text-body-s text-text-primary"
+            style={{ fontVariationSettings: "'wght' 550" }}
+          >
+            This is the committee now in office
+          </span>
+          <span className="mt-1 block max-w-prose text-body-s text-text-secondary">
+            The website shows this one on the committee page. Only one can hold it, so
+            ticking this stands the previous one down — it stays in the archive.
+          </span>
+        </span>
+      </label>
+
+      <Button variant="primary" busy={busy} onClick={create} disabled={!ordinalNumber || taken}>
+        Create committee
+      </Button>
+    </div>
+  );
+}
+
+/** Committee-level details: name, number, term years, which one is live. */
 function CommitteeDetails({
   committee,
+  onChanged,
+  onDeleted,
   setFlash,
 }: {
   committee: Committee;
-  onSaved: (message: string) => void;
+  onChanged: (message: string) => void;
+  onDeleted: (message: string) => void;
   setFlash: (f: { tone: "success" | "error"; text: string }) => void;
 }) {
+  const [label, setLabel] = useState(committee.label);
   const [start, setStart] = useState(committee.term_start?.toString() ?? "");
   const [end, setEnd] = useState(committee.term_end?.toString() ?? "");
   const [busy, setBusy] = useState(false);
 
+  // Re-sync when the selected committee changes underneath this form.
+  useEffect(() => {
+    setLabel(committee.label);
+    setStart(committee.term_start?.toString() ?? "");
+    setEnd(committee.term_end?.toString() ?? "");
+  }, [committee.id, committee.label, committee.term_start, committee.term_end]);
+
+  async function save(patch: Record<string, unknown>, message: string) {
+    setBusy(true);
+    try {
+      await items.update("committees", committee.id, patch);
+      onChanged(message);
+    } catch (e) {
+      setFlash({ tone: "error", text: (e as Error).message });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <Card>
+      <Field label="Name">
+        <Input value={label} onChange={(e) => setLabel(e.target.value)} />
+      </Field>
+
       {/* The hint sits above BOTH fields rather than inside the first.
           A hint inside one field of a row pushes its input down and
           leaves the pair visibly misaligned. */}
-      <p className="mb-4 max-w-prose text-body-s text-text-secondary">
+      <p className="mb-4 mt-6 max-w-prose text-body-s text-text-secondary">
         Term years. Leave both empty if they are not recorded anywhere — blank is a true
         answer and a guess is not. Fill both or neither.
       </p>
@@ -586,23 +871,82 @@ function CommitteeDetails({
         <Button
           variant="secondary"
           busy={busy}
-          onClick={async () => {
-            setBusy(true);
-            try {
-              await items.update("committees", committee.id, {
+          onClick={() =>
+            save(
+              {
+                label: label.trim() || committee.label,
                 term_start: start ? Number(start) : null,
                 term_end: end ? Number(end) : null,
-              });
-              setFlash({ tone: "success", text: "Term years saved." });
-            } catch (e) {
-              setFlash({ tone: "error", text: (e as Error).message });
-            } finally {
-              setBusy(false);
-            }
-          }}
+              },
+              "Saved.",
+            )
+          }
         >
           Save
         </Button>
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-line-hairline pt-6">
+        {committee.is_current ? (
+          <p className="text-body-s text-success">
+            This is the committee now in office — it is the one the website shows.
+          </p>
+        ) : (
+          <div>
+            <p className="text-body-s text-text-secondary">
+              This is a past committee, kept in the archive.
+            </p>
+            <Button
+              variant="secondary"
+              busy={busy}
+              className="mt-2"
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  // Stand the incumbent down first: `one_current_committee`
+                  // is a unique index, and setting a second would be
+                  // refused with a message about an index nobody has
+                  // heard of.
+                  const currents = await items.list<Committee>("committees", {
+                    "filter[is_current][_eq]": "true",
+                    limit: -1,
+                  });
+                  for (const c of currents) {
+                    if (c.id !== committee.id) {
+                      await items.update("committees", c.id, { is_current: false });
+                    }
+                  }
+                  await items.update("committees", committee.id, { is_current: true });
+                  onChanged(`${committee.label} is now the committee in office.`);
+                } catch (e) {
+                  setFlash({ tone: "error", text: (e as Error).message });
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Make this the committee in office
+            </Button>
+          </div>
+        )}
+
+        <ConfirmButton
+          what={`${committee.label} and everyone's placement in it`}
+          onConfirm={async () => {
+            try {
+              // The people themselves survive: `members` rows are shared
+              // across committees, and deleting a committee cascades only
+              // to its placements. Somebody who served on the 9th and the
+              // 10th keeps their 9th.
+              await items.remove("committees", committee.id);
+              onDeleted(`${committee.label} deleted. The people remain on record.`);
+            } catch (e) {
+              setFlash({ tone: "error", text: (e as Error).message });
+            }
+          }}
+        >
+          Delete this committee
+        </ConfirmButton>
       </div>
     </Card>
   );

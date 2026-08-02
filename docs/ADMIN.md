@@ -95,6 +95,26 @@ Committee               11th Executive Committee
 person*. Name, title, photograph, done — the three underlying rows are written
 for you.
 
+### Every year: the new committee
+
+1. **Committee → New committee.** The number fills itself in, and the name
+   follows from it.
+2. Leave **Copy the structure from** set to last year's committee. It brings
+   across the sections and positions — the same seven teams and six ranks —
+   so you are not rebuilding 42 positions by hand. It copies the *shape*
+   only, never the people.
+3. Tick **This is the committee now in office**. The previous one is stood
+   down automatically and stays in the archive; only one can be current.
+4. Add people to the positions.
+
+Past committees are edited exactly the same way — pick them from the dropdown
+at the top. A committee added retrospectively just gets its own number and is
+left un-ticked.
+
+**Deleting a committee** removes it and everyone's placement in it. The people
+themselves stay on record, so somebody who served on both the 9th and the 10th
+keeps the 9th.
+
 If the name matches somebody already on record, the form offers them. Choose
 the existing person when it is the same person: that is what keeps their
 history intact across committees. Two students genuinely can share a name, so
