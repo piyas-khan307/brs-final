@@ -46,8 +46,8 @@ export type Committee = {
 export const COMMITTEE: Committee = {
     "ordinal": 11,
     "label": "11th Executive Committee",
-    "termStart": null,
-    "termEnd": null,
+    "termStart": 2025,
+    "termEnd": 2026,
     "groups": [
       {
         "name": "Standing Committee",

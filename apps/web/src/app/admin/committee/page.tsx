@@ -737,7 +737,7 @@ function NewCommittee({
             <Input
               inputMode="numeric"
               value={start}
-              placeholder="2025"
+              placeholder="year"
               onChange={(e) => setStart(e.target.value.replace(/\D/g, ""))}
             />
           </Field>
@@ -747,7 +747,7 @@ function NewCommittee({
             <Input
               inputMode="numeric"
               value={end}
-              placeholder="2026"
+              placeholder="year"
               onChange={(e) => setEnd(e.target.value.replace(/\D/g, ""))}
             />
           </Field>
@@ -853,7 +853,7 @@ function CommitteeDetails({
             <Input
               inputMode="numeric"
               value={start}
-              placeholder="2024"
+              placeholder="year"
               onChange={(e) => setStart(e.target.value.replace(/\D/g, ""))}
             />
           </Field>
@@ -863,7 +863,7 @@ function CommitteeDetails({
             <Input
               inputMode="numeric"
               value={end}
-              placeholder="2025"
+              placeholder="year"
               onChange={(e) => setEnd(e.target.value.replace(/\D/g, ""))}
             />
           </Field>
