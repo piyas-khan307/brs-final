@@ -102,6 +102,20 @@ pnpm --filter @brs/web content    # re-fetch from the API into src/lib/*.generat
 Needs the API running. In production a Directus Flow calls a build hook
 instead — see `REBUILD_WEBHOOK_URL` in `.env.example`.
 
+### Do not run `pnpm build` while `pnpm dev` is running
+
+They share `apps/web/.next`, so a build overwrites files the dev server is
+still holding open. Every page then 500s with `Cannot find module './330.js'`
+— which reads like a code error and is not one.
+
+```sh
+rm -rf apps/web/.next    # then start pnpm dev again
+```
+
+Setting a separate `distDir` for the build was tried and is not the fix: with
+`output: "export"` Next puts the exported site there instead of the build
+cache, leaving three output directories and the same collision.
+
 ### If nothing loads
 
 ```sh
