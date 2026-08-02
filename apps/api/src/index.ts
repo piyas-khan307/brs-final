@@ -6,8 +6,12 @@
  * Stateless. Holds no data. Disposable by design: it can be redeployed or
  * rewritten without touching Postgres (Plane 1) or the frontend (Plane 4).
  *
- * Its one job is to publish a stable, frontend-agnostic /v1 surface so that
- * neither side needs to know about the other.
+ * Its one job is to publish a stable, frontend-agnostic /v1 surface so
+ * that neither side needs to know about the other.
+ *
+ * This module exports the app but does not listen. src/server.ts does
+ * that, which is what keeps the routes runtime-agnostic and lets tests
+ * call `app.request()` without opening a socket.
  * ══════════════════════════════════════════════════════════════════════
  */
 
@@ -15,15 +19,9 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { CONTRACT_VERSION } from "@brs/contract";
 
-type Env = {
-  Bindings: {
-    DIRECTUS_URL: string;
-    DIRECTUS_TOKEN: string;
-    PUBLIC_API_BASE: string;
-  };
-};
+import { v1 } from "./routes.js";
 
-const app = new Hono<Env>();
+export const app = new Hono();
 
 /* Read-only public surface. Rate limiting is applied at the edge (§12.2). */
 app.use("/v1/*", cors({ origin: "*", allowMethods: ["GET", "OPTIONS"] }));
@@ -33,30 +31,31 @@ app.use("/v1/*", cors({ origin: "*", allowMethods: ["GET", "OPTIONS"] }));
 app.use("/v1/*", async (c, next) => {
   await next();
   if (c.req.method === "GET" && c.res.ok) {
-    c.res.headers.set("cache-control", "public, s-maxage=300, stale-while-revalidate=86400");
+    c.res.headers.set(
+      "cache-control",
+      "public, s-maxage=300, stale-while-revalidate=86400",
+    );
   }
 });
 
-app.get("/v1/health", (c) => c.json({ ok: true, version: CONTRACT_VERSION }));
+app.route("/v1", v1);
 
 /**
- * Remaining /v1 routes are implemented in Phase B1, once the schema is
- * applied and Directus is seeded. The contract (packages/contract) is
- * already authoritative, so the frontend can be built against it — and
- * Phase L can proceed — before these exist.
+ * One handler for every unexpected throw.
  *
- * Routes to implement, per §7.2:
- *   /v1/events            /v1/events/{slug}
- *   /v1/committees        /v1/committees/{ordinal}
- *   /v1/members           /v1/achievements
- *   /v1/projects/{slug}   /v1/posts   /v1/posts/{slug}
- *   /v1/partners          /v1/press   /v1/gallery
- *   /v1/stats             /v1/assets/{id}
+ * Without it, a dropped database connection returns Hono's default 500
+ * with an empty body, and the build that consumed it reports "Contract
+ * violation" — blaming the schema for what is actually an outage. Naming
+ * the failure costs four lines and saves an afternoon.
  */
-app.all("/v1/*", (c) =>
-  c.json({ error: "Not implemented until Phase B1", contract: CONTRACT_VERSION }, 501),
-);
+app.onError((err, c) => {
+  console.error(`[api] ${c.req.method} ${c.req.path}`, err);
+  return c.json(
+    { error: "Internal error", detail: err.message, contract: CONTRACT_VERSION },
+    500,
+  );
+});
 
-app.notFound((c) => c.json({ error: "Not found" }, 404));
+app.notFound((c) => c.json({ error: "Not found", contract: CONTRACT_VERSION }, 404));
 
 export default app;

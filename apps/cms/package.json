@@ -1,0 +1,14 @@
+{
+  "name": "@brs/cms",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Directus configuration as code (Plane 2). Directus presents OUR schema; it never defines it.",
+  "scripts": {
+    "configure": "node --env-file-if-exists=../../.env configure.mjs",
+    "configure:dry": "node --env-file-if-exists=../../.env configure.mjs --dry-run",
+    "typecheck": "echo 'no TS in @brs/cms'",
+    "lint": "eslint .",
+    "test": "node --env-file-if-exists=../../.env --test test/*.test.mjs"
+  }
+}

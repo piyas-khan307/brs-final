@@ -38,6 +38,11 @@ const ALLOWED_PATH_FRAGMENTS = [
   "packages/sync-sharepoint",
   "apps/api",
   "apps/cms",
+  // The uploader. It is Plane 2, writes `assets` rows directly, and is the
+  // one service holding storage write credentials — the very coupling this
+  // rule protects the FRONTEND from is this service's entire job. It is
+  // unroutable from outside; see apps/ingest/src/index.ts.
+  "apps/ingest",
 ];
 
 function isAllowed(filename) {

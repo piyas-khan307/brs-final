@@ -1,0 +1,154 @@
+#!/usr/bin/env node
+/**
+ * ══════════════════════════════════════════════════════════════════════
+ * SCROLL SEQUENCE PREPARATION.
+ *
+ * Source: mars-rover-frame/ — 240 JPEG frames, 1280x720, 8.4 MB, supplied
+ * by the client. The sequence is an exploded-view assembly: the rover
+ * starts whole, comes apart into PCBs, harnesses, gearing, optics and
+ * wheels, then settles into a held exploded state.
+ *
+ * WHY RE-ENCODE AT ALL. A scrubbed canvas sequence is not a download
+ * problem, it is a DECODE problem. Every frame the scroll crosses must be
+ * decoded and painted inside one frame budget (~16ms). JPEG decode is
+ * slower than WebP at these dimensions, and the source frames are wider
+ * than they will ever be displayed, so every pixel above the display size
+ * is decode cost spent on nothing.
+ *
+ * WHY WEBP AND NOT AVIF. AVIF encodes smaller but decodes markedly slower,
+ * and this is the one place on the site where decode speed beats file
+ * size: 240 AVIF frames scrubbed at speed will drop frames on a mid-range
+ * laptop. Everywhere else on this site AVIF is correct; here it is not.
+ *
+ * WHY ALL 240 FRAMES. Halving to 120 would halve memory and decode, and
+ * the sequence would visibly step — this is a rigid-body animation with
+ * fast-moving small parts, and dropped frames read as stutter rather than
+ * as lower frame rate. The full set is kept.
+ *
+ * PROVENANCE — WORTH SAYING OUT LOUD. This is a render of NASA's
+ * Perseverance/Curiosity-type rover. It is not a BRS machine. It reads as
+ * an illustration of engineering rather than a claim of authorship, and
+ * the section carries no caption asserting otherwise — but anyone in the
+ * room who knows rovers will recognise it, so it should be a deliberate
+ * choice rather than a surprise.
+ * ══════════════════════════════════════════════════════════════════════
+ */
+
+import sharp from "sharp";
+import { mkdirSync, readdirSync, writeFileSync, statSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const SRC = join(ROOT, "mars-rover-frame");
+const OUT = join(ROOT, "apps", "web", "public", "sequence");
+const MANIFEST = join(ROOT, "apps", "web", "src", "lib", "sequence.generated.ts");
+
+/** Displayed at most ~1100px wide inside a contained viewport. 1024 is
+ *  below that on a 1x screen and downsamples cleanly on a 2x one — going
+ *  to 1280 costs 55% more pixels to decode for no visible gain. */
+const WIDTH = 1024;
+const QUALITY = 72;
+
+const frames = readdirSync(SRC)
+  .filter((f) => /\.jpe?g$/i.test(f))
+  .sort(); // ezgif-frame-001 .. -240, zero-padded, so lexical order is correct
+
+if (frames.length === 0) {
+  console.error("  No frames found in mars-rover-frame/");
+  process.exit(1);
+}
+
+mkdirSync(OUT, { recursive: true });
+
+/* ── Sample the true backdrop ─────────────────────────────────────────
+   The section behind the canvas has to match the frames' own black or a
+   seam appears at the letterbox edge. Measured, not guessed: the mean of
+   a 24px block from each corner of the first frame. */
+const first = join(SRC, frames[0]);
+const corners = await Promise.all(
+  [
+    { left: 0, top: 0 },
+    { left: 1280 - 24, top: 0 },
+    { left: 0, top: 720 - 24 },
+    { left: 1280 - 24, top: 720 - 24 },
+  ].map(async (pos) =>
+    sharp(first).extract({ ...pos, width: 24, height: 24 }).stats(),
+  ),
+);
+const backdrop = corners
+  .reduce(
+    (acc, s) => acc.map((v, i) => v + s.channels[i].mean / corners.length),
+    [0, 0, 0],
+  )
+  .map((v) => Math.round(v));
+const hex =
+  "#" + backdrop.map((v) => v.toString(16).padStart(2, "0")).join("");
+
+console.log(`\nSEQUENCE  ${frames.length} frames`);
+console.log(`  measured backdrop: rgb(${backdrop.join(", ")})  ${hex}`);
+
+let total = 0;
+let widest = 0;
+let tallest = 0;
+
+// Bounded concurrency: sharp spawns a thread per call and 240 at once
+// will thrash on a laptop.
+const BATCH = 12;
+for (let i = 0; i < frames.length; i += BATCH) {
+  const slice = frames.slice(i, i + BATCH);
+  await Promise.all(
+    slice.map(async (file, j) => {
+      const n = i + j;
+      const out = join(OUT, `f-${String(n).padStart(3, "0")}.webp`);
+      const info = await sharp(join(SRC, file))
+        .resize(WIDTH, null, { fit: "inside", withoutEnlargement: true })
+        .webp({ quality: QUALITY, effort: 5 })
+        .toFile(out);
+      total += info.size;
+      widest = Math.max(widest, info.width);
+      tallest = Math.max(tallest, info.height);
+    }),
+  );
+  process.stdout.write(`\r  encoding ${Math.min(i + BATCH, frames.length)}/${frames.length}`);
+}
+
+console.log(
+  `\r  ${frames.length} frames  ${widest}x${tallest}  ` +
+    `${(total / 1024 / 1024).toFixed(1)} MB total  ` +
+    `${(total / frames.length / 1024).toFixed(1)} KB avg`,
+);
+
+writeFileSync(
+  MANIFEST,
+  `/**
+ * GENERATED by scripts/prepare-sequence.mjs — do not edit by hand.
+ *
+ * Exploded-view rover assembly, re-encoded for canvas scrubbing.
+ * See the script header for why WebP, why full frame count, and for the
+ * provenance note on the source render.
+ */
+
+/** Frame count. Files are /sequence/f-000.webp .. f-${String(frames.length - 1).padStart(3, "0")}.webp */
+export const SEQUENCE_FRAMES = ${frames.length};
+
+/** Intrinsic size of every frame, for canvas letterboxing maths. */
+export const SEQUENCE_WIDTH = ${widest};
+export const SEQUENCE_HEIGHT = ${tallest};
+
+/**
+ * The frames' own backdrop, measured from the corners of frame 000 rather
+ * than eyeballed. The section behind the canvas uses this exact value so
+ * the letterbox edge has no visible seam.
+ */
+export const SEQUENCE_BACKDROP = "${hex}";
+
+export const sequenceFrameUrl = (i: number) =>
+  \`/sequence/f-\${String(i).padStart(3, "0")}.webp\`;
+`,
+);
+
+console.log(`  manifest: src/lib/sequence.generated.ts`);
+console.log(`  backdrop token: ${hex}\n`);
+
+void statSync;

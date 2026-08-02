@@ -1,15 +1,24 @@
 {
   "$comment": [
     "Every file declaring 'use client' MUST appear here. Enforced by lint rule",
-    "brs/client-component-allowlist (implementation_plan.md §13.4 rule 5).",
+    "brs/client-component-allowlist (implementation_plan.md \u00a713.4 rule 5).",
     "",
     "WHY: the Next.js 15 App Router ships a ~110 KB gzip React runtime floor",
     "before a line of our code. The only budget we control is first-party JS,",
-    "capped at 15 KB (§4.7). That budget erodes one convenient 'use client' at",
+    "capped at 15 KB (\u00a74.7). That budget erodes one convenient 'use client' at",
     "a time, so adding an island must be a deliberate, reviewable act.",
     "",
-    "Phase L permits exactly TWO islands. Both are listed below and neither",
-    "exists yet — they are reserved so the intent is on record.",
+    "Phase L permitted exactly TWO islands, listed first below.",
+    "",
+    "THE MOTION SHEET ADDS FOUR MORE, and the budget argument above no",
+    "longer applies to them. That page is a pitch artefact built on client",
+    "instruction ('just need best of the best UI to show and convince the",
+    "club members'); it carries GSAP and Lenis by design, so counting its",
+    "islands against a 15 KB budget would be measuring the wrong thing.",
+    "",
+    "The entries are still required, and still reviewed, for the other",
+    "reason this file exists: an island is a thing that can break with JS",
+    "disabled, and each one below has to say what happens when it does.",
     "",
     "Before adding an entry, ask: can this be a Server Component? On an",
     "archive site the answer is almost always yes."
@@ -17,15 +26,51 @@
   "allow": [
     {
       "file": "src/components/landing/ZoneRail.tsx",
-      "reason": "Scroll-position observation and aria-current updates on the zone rail. Must remain a real <nav> of anchor links, keyboard traversable (§4.3).",
+      "reason": "Scroll-position observation and aria-current updates on the zone rail. Must remain a real <nav> of anchor links, keyboard traversable (\u00a74.3).",
       "phase": "L",
       "status": "reserved"
     },
     {
       "file": "src/components/landing/ZoneD_RecordStrip.tsx",
-      "reason": "Drag/wheel scrubbing and arrow-key navigation on the 2005-2026 Record axis. Renders as a semantic <ol> and becomes a static list under prefers-reduced-motion (§4.5).",
+      "reason": "Drag/wheel scrubbing and arrow-key navigation on the 2005-2026 Record axis. Renders as a semantic <ol> and becomes a static list under prefers-reduced-motion (\u00a74.5).",
       "phase": "L",
       "status": "reserved"
+    },
+    {
+      "file": "src/components/motion/Intro.tsx",
+      "reason": "The B-R-S opening timeline. WITHOUT JS: never renders, so the page opens directly on the Opening section with nothing missing. Skips on click or any key, removes itself entirely under prefers-reduced-motion, and carries a 4s failsafe so a stalled timeline can never leave the page locked behind an overlay.",
+      "phase": "M",
+      "status": "built"
+    },
+    {
+      "file": "src/components/motion/SmoothScroll.tsx",
+      "reason": "Lenis scroll interpolation feeding ScrollTrigger. Renders null. WITHOUT JS: the browser scrolls natively, which is the correct fallback. Not installed at all under prefers-reduced-motion.",
+      "phase": "M",
+      "status": "built"
+    },
+    {
+      "file": "src/components/showcase/KeyFacts.tsx",
+      "reason": "Scrub-linked un-skew of three figure plates. WITHOUT JS: the three plates are already in their final positions in the DOM and simply render as a static row \u2014 the transforms are the entrance, not the layout.",
+      "phase": "M",
+      "status": "built"
+    },
+    {
+      "file": "src/components/showcase/HorizontalGallery.tsx",
+      "reason": "Pinned vertical-to-horizontal traverse. WITHOUT JS, and below 768px: the same track becomes a native snap-scrolling horizontal list, so the content is reachable by touch, keyboard and scrollbar with no pin at all.",
+      "phase": "M",
+      "status": "built"
+    },
+    {
+      "file": "src/components/showcase/GridAssembly.tsx",
+      "reason": "Nine plates converging into a 3x3 grid. WITHOUT JS: the grid renders complete and static, because the plates are translated from their final cells rather than positioned elsewhere.",
+      "phase": "M",
+      "status": "built"
+    },
+    {
+      "file": "src/components/showcase/RoverSequence.tsx",
+      "reason": "Scroll-scrubbed canvas of a 240-frame exploded-view assembly. Frames are decoded up front and the pin is not armed until they are ready. WITHOUT JS, under prefers-reduced-motion, and below 768px: renders a single static frame as a plain <img> with full alt text and fetches none of the 9 MB sequence.",
+      "phase": "M",
+      "status": "built"
     }
   ]
 }

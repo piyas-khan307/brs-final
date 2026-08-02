@@ -5,7 +5,14 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "out/**", "!.next/cache/**"],
-      "env": ["NEXT_PUBLIC_BRS_API", "BRS_API_URL"]
+      "env": [
+        "NEXT_PUBLIC_BRS_API",
+        "BRS_API_URL",
+        // Inlined into the client bundle at build time, so a change to it
+        // must invalidate the build cache — otherwise turbo replays an
+        // export that still points at the previous bucket.
+        "NEXT_PUBLIC_STORAGE_BASE_URL"
+      ]
     },
     "generate": {
       "outputs": ["src/generated/**", "openapi.json"]

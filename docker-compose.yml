@@ -15,7 +15,13 @@ services:
       POSTGRES_PASSWORD: brs
       POSTGRES_DB: brs
     ports:
-      - "5432:5432"
+      # 5433 on the host, NOT 5432. A system postgresql service is already
+      # listening on 5432 on this machine and may serve other projects —
+      # taking that port would either fail to bind or, worse, silently
+      # shadow it. The container still listens on 5432 internally, so
+      # DIRECTUS_* and any in-network client uses postgres:5432 unchanged;
+      # only host-side tools (psql, migrations, the API in dev) use 5433.
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       # Applied on first boot of an empty volume.
@@ -25,6 +31,58 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  # Object storage for local development. MinIO speaks the S3 API, so
+  # @brs/storage drives it with the same adapter that drives R2 or AWS —
+  # which is the point. Nothing about the code path differs between this
+  # container and production; only S3_ENDPOINT and the credentials do.
+  #
+  # This is what removes the cloud-account dependency from Phase B2: the
+  # storage layer can be built and proved before anyone decides between
+  # R2 and Azure (§16.13).
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: brs
+      MINIO_ROOT_PASSWORD: brs-dev-secret
+      # Browsers must be able to load assets from a different origin than
+      # the Next dev server. Production puts a CDN in front instead.
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:9001
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # web console — http://localhost:9001
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      # /minio/health/live needs no credentials, unlike the mc client.
+      test: ["CMD-SHELL", "mc ready local || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # One-shot. Creates the bucket and makes it publicly readable, then
+  # exits 0. Without this the first upload fails with NoSuchBucket, and
+  # "run these four mc commands by hand" is the kind of setup step that
+  # is wrong in the README within a month.
+  #
+  # Public read is correct here and in production: these are published
+  # photographs behind content-addressed keys. Unpublished assets are
+  # controlled by never uploading them, not by bucket ACLs — the
+  # `published` column in Postgres is the gate (§9.3).
+  minio-init:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 brs brs-dev-secret &&
+      mc mb --ignore-existing local/brs-assets &&
+      mc anonymous set download local/brs-assets &&
+      echo 'bucket brs-assets ready'
+      "
 
   # Plane 2. A UI over OUR schema — note it is pointed at the same database
   # the migrations own. Directus does not get to define structure.
@@ -44,7 +102,14 @@ services:
       DB_DATABASE: brs
       DB_USER: brs
       DB_PASSWORD: brs
-      ADMIN_EMAIL: "admin@example.invalid"
+      # example.com, not example.invalid. `.invalid` is the correct RFC 2606
+      # choice for an address that must never resolve, but Directus 11
+      # validates against a real-TLD list and REFUSES TO CREATE THE ADMIN
+      # USER — silently. The container starts, the role is created, and the
+      # users table stays empty, so nobody can log in and nothing says why.
+      # example.com is IANA-reserved too, so it still cannot reach a real
+      # mailbox. `.local` and `.test` are rejected the same way.
+      ADMIN_EMAIL: "admin@example.com"
       ADMIN_PASSWORD: "dev-only-change-me"
       # Assets live in object storage, never in the CMS container.
       STORAGE_LOCATIONS: local
@@ -54,4 +119,5 @@ services:
 
 volumes:
   pgdata:
+  miniodata:
   directus_uploads:

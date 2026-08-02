@@ -1,0 +1,29 @@
+{
+  "name": "@brs/storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Provider-agnostic object storage. One S3 adapter covers R2, AWS, MinIO, B2 and Spaces; the interface exists so Azure would be a new file, not a rewrite.",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./url": "./src/url.ts"
+  },
+  "scripts": {
+    "lint": "eslint src test scripts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "upload": "node --env-file-if-exists=../../.env --import tsx scripts/upload-assets.ts",
+    "reconcile": "node --env-file-if-exists=../../.env --import tsx scripts/upload-assets.ts --check"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.941.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.20.3",
+    "pg": "^8.22.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

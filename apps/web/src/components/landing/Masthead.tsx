@@ -33,7 +33,7 @@ export function Masthead() {
         >
           <span
             className="text-heading-s text-text-primary"
-            style={{ fontVariationSettings: "'wght' 600, 'wdth' 112" }}
+            style={{ fontVariationSettings: "'wght' 600" }}
           >
             BRS
           </span>

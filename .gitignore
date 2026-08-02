@@ -10,7 +10,9 @@
 # for the recommended move into assets-source/.
 /BRS/
 /BRS ExCom/
+/BRS 11th ExCom Post/
 /logo/
+/mars-rover-frame/
 /assets-source/
 
 # Never commit raw or non-web source files
@@ -46,7 +48,11 @@ build/
 # live in the secret store, never in the repo.
 .env
 .env.*
-!.env.example
+# Templates must survive the rule above. `!.env.example` alone matched
+# only that exact filename, so .env.production.example — the production
+# handover document — was silently ignored and would never have been
+# committed. The glob covers every future template too.
+!.env*.example
 
 # ── Test & audit artefacts ────────────────────────────────────
 coverage/

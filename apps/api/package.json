@@ -3,21 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Plane 3 — the contract facade. Stateless, disposable, the only CMS-aware service.",
+  "description": "Plane 3 — the contract facade. Stateless, disposable, reads Postgres directly.",
+  "main": "./src/server.ts",
   "scripts": {
-    "dev": "wrangler dev --port 8787",
+    "dev": "node --env-file-if-exists=../../.env --import tsx --watch src/server.ts",
+    "start": "node --env-file-if-exists=../../.env --import tsx src/server.ts",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "deploy": "wrangler deploy",
-    "lint": "eslint src"
+    "test": "node --env-file-if-exists=../../.env --import tsx --test test/*.test.ts",
+    "lint": "eslint src test"
   },
   "dependencies": {
     "@brs/contract": "workspace:*",
-    "hono": "^4.10.7"
+    "@brs/storage": "workspace:*",
+    "@hono/node-server": "^1.19.5",
+    "hono": "^4.10.7",
+    "pg": "^8.22.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20251004.0",
-    "typescript": "^5.9.3",
-    "wrangler": "^4.45.0"
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.20.3",
+    "esbuild": "^0.28.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }

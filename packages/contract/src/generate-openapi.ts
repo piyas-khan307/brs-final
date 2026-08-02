@@ -15,9 +15,12 @@ import { z } from "zod";
 
 import {
   AchievementDTO,
+  CollectionDTO,
+  CollectionItemDTO,
   CommitteeDTO,
   EventDTO,
   ImageDTO,
+  ImageSource,
   MemberDTO,
   PartnerDTO,
   PostDTO,
@@ -28,7 +31,10 @@ import {
 } from "./schemas.js";
 
 const SCHEMAS: Record<string, z.ZodTypeAny> = {
+  ImageSource,
   ImageDTO,
+  CollectionItemDTO,
+  CollectionDTO,
   EventDTO,
   MemberDTO,
   CommitteeDTO,
@@ -70,7 +76,147 @@ paths[`/${CONTRACT_VERSION}/posts`] = { get: { summary: "List posts", responses:
 paths[`/${CONTRACT_VERSION}/partners`] = { get: { summary: "List partners", responses: ok({ type: "array", items: { $ref: "#/components/schemas/PartnerDTO" } }) } };
 paths[`/${CONTRACT_VERSION}/press`] = { get: { summary: "List press coverage", responses: ok({ type: "array", items: { $ref: "#/components/schemas/PressDTO" } }) } };
 paths[`/${CONTRACT_VERSION}/gallery`] = { get: { summary: "List gallery images", responses: ok(listOf("ImageDTO")) } };
-paths[`/${CONTRACT_VERSION}/stats`] = { get: { summary: "Computed statistics — the only source of figures on the site", responses: ok({ $ref: "#/components/schemas/StatsDTO" }) } };
+paths[`/${CONTRACT_VERSION}/stats`] = {
+  get: {
+    summary: "Computed statistics — the only source of figures on the site",
+    responses: {
+      ...ok({ $ref: "#/components/schemas/StatsDTO" }),
+      // Documented, because a consumer that treats this as a transport
+      // error will retry forever. It is a content state, not an outage:
+      // earliestEvidenceYear cannot be computed with no events and no
+      // achievements loaded, and inventing one is the §2.3 failure this
+      // endpoint exists to prevent.
+      "503": {
+        description:
+          "Insufficient evidence to compute statistics truthfully. Not an outage — " +
+          "returns to 200 once events or achievements exist.",
+      },
+    },
+  },
+};
+
+/* ── Routes the earlier revision of this generator omitted ────────────
+ *
+ * The document claimed 11 paths against a façade that serves 15. An
+ * OpenAPI file is the artefact of record (§7.1 rule 4); one that
+ * under-describes the surface is a lie by omission, and the four missing
+ * entries were exactly the ones a consumer could not have guessed —
+ * including /assets/{id}, which is the storage seam.
+ */
+
+paths[`/${CONTRACT_VERSION}/collections`] = {
+  get: {
+    summary: "List curated collections — the editorial layer",
+    description:
+      "A collection is a chosen sequence of images with their placard text. It is NOT " +
+      "an event: an event happened on a date, a collection is an order somebody picked " +
+      "for a page. Items carry a stable `key` naming a ROLE (\"hero-rc19\"), so " +
+      "reordering a collection cannot silently change which photograph is the hero.",
+    responses: ok({ type: "array", items: { $ref: "#/components/schemas/CollectionDTO" } }),
+  },
+};
+
+paths[`/${CONTRACT_VERSION}/collections/{slug}`] = {
+  get: {
+    summary: "Collection by slug",
+    parameters: [{ name: "slug", in: "path", required: true, schema: { type: "string" } }],
+    responses: {
+      ...ok({ $ref: "#/components/schemas/CollectionDTO" }),
+      "404": { description: "No such collection" },
+    },
+  },
+};
+
+paths[`/${CONTRACT_VERSION}/health`] = {
+  get: {
+    summary: "Liveness, plus counts of records the façade deliberately excludes",
+    responses: {
+      "200": {
+        description: "OK",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                ok: { type: "boolean" },
+                version: { type: "string" },
+                database: { type: "string", enum: ["up", "down"] },
+                diagnostics: {
+                  type: "object",
+                  properties: {
+                    eventsWithoutCover: { type: "integer" },
+                    unpublishedAssets: { type: "integer" },
+                    assets: { type: "integer" },
+                  },
+                },
+              },
+              required: ["ok", "version", "database"],
+            },
+          },
+        },
+      },
+      "503": { description: "Database unreachable" },
+    },
+  },
+};
+
+paths[`/${CONTRACT_VERSION}/committees/{ordinal}`] = {
+  get: {
+    summary: "Committee by ordinal",
+    parameters: [
+      { name: "ordinal", in: "path", required: true, schema: { type: "integer" } },
+    ],
+    responses: {
+      ...ok({ $ref: "#/components/schemas/CommitteeDTO" }),
+      "400": { description: "Ordinal is not an integer" },
+      "404": { description: "No such committee" },
+    },
+  },
+};
+
+paths[`/${CONTRACT_VERSION}/posts/{slug}`] = {
+  get: {
+    summary: "Post by slug",
+    parameters: [{ name: "slug", in: "path", required: true, schema: { type: "string" } }],
+    responses: {
+      ...ok({ $ref: "#/components/schemas/PostDTO" }),
+      "404": { description: "No such post" },
+    },
+  },
+};
+
+paths[`/${CONTRACT_VERSION}/assets/{id}`] = {
+  get: {
+    summary:
+      "Redirect to the stored bytes. The stable, provider-agnostic entry point for an asset.",
+    description:
+      "Answers 302 to the object's public URL rather than proxying it, so the façade " +
+      "never sits in the path of image traffic. Storage stays swappable because the " +
+      "redirect target is built from STORAGE_PUBLIC_BASE_URL, not hardcoded. " +
+      "Add ?describe to receive the ImageDTO instead of a redirect.",
+    parameters: [
+      { name: "id", in: "path", required: true, schema: { type: "string", format: "uuid" } },
+      {
+        name: "describe",
+        in: "query",
+        required: false,
+        schema: { type: "string" },
+        description: "Present at any value: return the ImageDTO instead of redirecting.",
+      },
+    ],
+    responses: {
+      "200": {
+        description: "ImageDTO (only when ?describe is present)",
+        content: {
+          "application/json": { schema: { $ref: "#/components/schemas/ImageDTO" } },
+        },
+      },
+      "302": { description: "Redirect to object storage" },
+      "400": { description: "Id is not a uuid" },
+      "404": { description: "No such published asset" },
+    },
+  },
+};
 
 const doc = {
   openapi: "3.1.0",

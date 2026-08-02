@@ -1,0 +1,29 @@
+{
+  "name": "@brs/ingest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Turns an uploaded photograph into web derivatives and an assets row. The ONLY service that holds storage write credentials.",
+  "main": "./src/server.ts",
+  "scripts": {
+    "dev": "node --env-file-if-exists=../../.env --import tsx --watch src/server.ts",
+    "start": "node --env-file-if-exists=../../.env --import tsx src/server.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "node --env-file-if-exists=../../.env --import tsx --test test/*.test.ts",
+    "lint": "eslint src test"
+  },
+  "dependencies": {
+    "@brs/storage": "workspace:*",
+    "@hono/node-server": "^1.19.5",
+    "hono": "^4.10.7",
+    "pg": "^8.22.0",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.20.3",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

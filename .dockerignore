@@ -1,0 +1,28 @@
+# Build context hygiene. Without this the context is ~2 GB — the archive
+# folders alone dwarf the source — and every build ships them to the
+# daemon before the first instruction runs.
+
+**/node_modules
+**/.next
+**/out
+**/dist
+**/.turbo
+**/coverage
+
+# Secrets. Belt and braces: .env is gitignored too, but a build context is
+# built from the filesystem, not from git, so a local .env WOULD be copied
+# in without this line.
+.env
+.env.*
+!.env.example
+
+# Source archives — gitignored, large, and never needed to build.
+BRS/
+BRS ExCom/
+logo/
+mars-rover-frame/
+
+.git
+.github
+**/.DS_Store
+*.log

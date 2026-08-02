@@ -29,9 +29,18 @@ import { z } from "zod";
 
 export const IsoDate = z.string().describe("ISO-8601 date, e.g. 2024-02-01");
 
-/** Fixed crop ratios. Arbitrary ratios are a design-system violation
- *  (PROJECT_SPEC.md §5.6). */
-export const AspectRatio = z.enum(["1:1", "3:2", "16:9", "4:5"]);
+/**
+ * Fixed crop ratios. Arbitrary ratios are a design-system violation
+ * (PROJECT_SPEC.md §5.6) — the constraint is that the set is small and
+ * closed, not that it has exactly four members.
+ *
+ * 4:3 was added in Phase B2, when nine 640×480 archive photographs were
+ * refused by the matching Postgres CHECK. It is the native output of
+ * every camera that shot this archive before ~2015 and the motion sheet
+ * has been rendering it since it was built; the enum had simply never
+ * been told. Kept in sync with assets_ratio_check — see migration 0003.
+ */
+export const AspectRatio = z.enum(["1:1", "4:3", "3:2", "16:9", "4:5"]);
 
 /**
  * Alt text is required and must be substantive.
@@ -66,6 +75,32 @@ export const AltText = z
 
 /* ── Image ────────────────────────────────────────────────────────────── */
 
+/**
+ * One pre-generated derivative. Added in Phase B3 — additive and optional,
+ * so it is a legal /v1 change under rule 3.
+ *
+ * WHY THIS HAD TO EXIST. The original design gave ImageDTO a single `url`
+ * and left sizing to a query string: `…/assets/{id}?w=720&fmt=avif`, served
+ * by a transform endpoint. Two facts killed that:
+ *
+ *   · `output: "export"` means no server at request time, so a transform
+ *     endpoint would be a new always-on dependency in the hot path —
+ *     exactly what the static export exists to avoid (§6.2).
+ *   · Storage keys are content-addressed: the 720px AVIF lives at
+ *     `sha256/ab/cd/<64 hex>.avif`, a hash of the file's BYTES. No pure
+ *     function can derive it from an id and a width.
+ *
+ * So the derivative list has to travel WITH the image. That is what a
+ * <picture> element needs anyway, and it is what the components already
+ * build by hand from the generated manifests.
+ */
+export const ImageSource = z.object({
+  format: z.enum(["avif", "webp"]),
+  width: z.number().int().positive(),
+  url: z.string(),
+});
+export type ImageSource = z.infer<typeof ImageSource>;
+
 export const ImageDTO = z.object({
   id: z.string(),
   /** Façade-issued. Provider-agnostic by construction. */
@@ -79,10 +114,71 @@ export const ImageDTO = z.object({
   lqip: z.string(),
   /** Museum placard number. §5.9.1 */
   plate: z.number().int().positive().optional(),
-  ratio: AspectRatio,
+  /**
+   * The design frame this image is cropped to, or NULL for "intrinsic
+   * size, no frame".
+   *
+   * NULL is not "unknown" — it is a positive statement that the image is a
+   * reproduction of a physical artefact rather than a composed photograph.
+   * Press-clipping scans are the case that forced it: a newspaper cutting
+   * is whatever shape the cutting is (360×593, 360×303, 360×410), and the
+   * alternatives were to crop it to fit a grid — destroying evidence in a
+   * press archive — or to keep it out of the archive entirely.
+   *
+   * Consumers should treat NULL as "lay this out at its own aspect".
+   */
+  ratio: AspectRatio.nullable(),
   credit: z.string().optional(),
+  /** Everything needed to emit a real <picture> srcset. Empty is legal —
+   *  an asset with no derivatives yet still renders from `url`. */
+  sources: z.array(ImageSource).default([]),
 });
 export type ImageDTO = z.infer<typeof ImageDTO>;
+
+/* ── Collections ──────────────────────────────────────────────────────── */
+
+/**
+ * A curated sequence of images with their placard text.
+ *
+ * Added in Phase B4. It exists because the frontend swap found that the
+ * photographs had moved into Postgres but the CURATION had not — which
+ * order they appear in, what the placard under each one says, which plate
+ * number it carries. All of that lived hand-written inside files headed
+ * "GENERATED — do not edit by hand", meaning the landing page could only
+ * be rearranged by a developer editing a generated file.
+ *
+ * A collection is deliberately NOT an event. An event happened on a date;
+ * a collection is an order somebody chose for a page. Modelling the
+ * landing page's contact sheet as an event would have meant inventing an
+ * event that never occurred, purely to hang captions off (§8).
+ */
+export const CollectionItemDTO = z.object({
+  /**
+   * Stable editorial handle, unique within the collection — "hero-rc19".
+   *
+   * It names a ROLE, not a picture. Pages reach into a collection by key
+   * (`FEATURES["hero-rc19"]`), so without one an editor reordering items
+   * in the CMS would silently change which photograph is the hero of the
+   * site — a page that still builds, still validates, and is wrong.
+   */
+  key: z.string(),
+  image: ImageDTO,
+  /** Placard lines, kept separate rather than joined: the design sets
+   *  subject and provenance on their own lines. */
+  caption: z.array(z.string()).default([]),
+  title: z.string().optional(),
+  year: z.number().int().optional(),
+  note: z.string().optional(),
+});
+export type CollectionItemDTO = z.infer<typeof CollectionItemDTO>;
+
+export const CollectionDTO = z.object({
+  slug: z.string(),
+  label: z.string(),
+  note: z.string().optional(),
+  items: z.array(CollectionItemDTO).default([]),
+});
+export type CollectionDTO = z.infer<typeof CollectionDTO>;
 
 /* ── Events ───────────────────────────────────────────────────────────── */
 
@@ -147,33 +243,82 @@ export const MemberDTO = z.object({
   id: z.string(),
   name: z.string(),
   designation: z.string(),
-  department: z.string(),
+  /**
+   * NULL means not recorded — never "none", never a guess.
+   *
+   * The club's 11th ExCom announcement posters carry name, designation
+   * and team, and nothing else. Requiring these would have forced either
+   * a guessed department or a 'Unknown' placeholder indistinguishable
+   * from real data later. A null is honest and the frontend can simply
+   * not render the line. See migration 0007.
+   */
+  department: z.string().nullable(),
   /** Club convention with a typographic apostrophe: "EEE '20" (U+2019). */
-  batch: z.string(),
+  batch: z.string().nullable(),
   committeeOrdinal: z.number().int().positive(),
-  team: z.string().optional(),
+  /** The heading this person appears under — "President", "Design Team". */
+  section: z.string().optional(),
+  /** The group that section sits in — "Standing Committee". */
+  group: z.string().optional(),
   portrait: ImageDTO.optional(),
 });
 export type MemberDTO = z.infer<typeof MemberDTO>;
 
-export const CommitteeTeamDTO = z.object({
+/**
+ * ══════════════════════════════════════════════════════════════════════
+ * A committee is THREE levels deep, and both middle levels are content.
+ *
+ *   11th Executive Committee     CommitteeDTO
+ *   ├── Standing Committee       CommitteeGroupDTO
+ *   │   ├── President            CommitteeSectionDTO
+ *   │   │   └── one person       MemberDTO
+ *   │   └── Treasurer
+ *   └── Design Team
+ *       └── Deputy Secretary
+ *
+ * ── WHY NOT TWO LEVELS ──
+ * The previous shape was committee → team → members, with the role as a
+ * free-text field on each person. The club's own announcement posters
+ * carry three facts per person — name, designation, and sometimes a team
+ * — and two levels has to flatten one of them away.
+ *
+ * ── ON CHANGING A PUBLISHED SHAPE ──
+ * This replaces CommitteeTeamDTO, which rule 3 forbids inside v1. It is
+ * done anyway, and only because /v1/committees has never returned a
+ * non-empty array and no page reads it: there is no consumer to break.
+ * That stops being true the moment the committee page ships, so this is
+ * the last free moment. Recorded rather than done quietly.
+ * ══════════════════════════════════════════════════════════════════════
+ */
+export const CommitteeSectionDTO = z.object({
   name: z.string(),
-  members: z.array(MemberDTO),
+  members: z.array(MemberDTO).default([]),
 });
+export type CommitteeSectionDTO = z.infer<typeof CommitteeSectionDTO>;
+
+export const CommitteeGroupDTO = z.object({
+  name: z.string(),
+  note: z.string().optional(),
+  sections: z.array(CommitteeSectionDTO).default([]),
+});
+export type CommitteeGroupDTO = z.infer<typeof CommitteeGroupDTO>;
 
 export const CommitteeDTO = z.object({
-  /** 3..10 documented. 1st, 2nd and 6th are absent from the archive and
+  /** 3..11 documented. 1st, 2nd and 6th are absent from the archive and
    *  the gap is stated explicitly rather than concealed (§16.1). */
   ordinal: z.number().int().positive(),
   label: z.string(),
-  termStart: z.number().int(),
-  termEnd: z.number().int(),
+  /** Null when the term years are not recorded. The 11th ExCom posters
+   *  state no years at all; a rendered "0–0" would be worse than a
+   *  rendered nothing. See migration 0007. */
+  termStart: z.number().int().nullable(),
+  termEnd: z.number().int().nullable(),
   moderator: z.object({
     name: z.string(),
     title: z.string(),
     department: z.string(),
   }),
-  groups: z.array(CommitteeTeamDTO),
+  groups: z.array(CommitteeGroupDTO).default([]),
   isCurrent: z.boolean().default(false),
 });
 export type CommitteeDTO = z.infer<typeof CommitteeDTO>;

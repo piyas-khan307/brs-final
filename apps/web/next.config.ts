@@ -15,7 +15,8 @@ import type { NextConfig } from "next";
  *   · no ISR
  *     → Directus webhook triggers a rebuild; publish-to-live under 3 min
  *   · no built-in Image Optimization
- *     → custom loader pointing at our own façade (§10.2)
+ *     → derivatives are pre-generated into object storage and selected by
+ *       srcset; the custom loader only resolves the base URL (§10.2)
  */
 const nextConfig: NextConfig = {
   output: "export",
@@ -23,8 +24,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   images: {
-    // The façade already does transforms, and routing images through it is
-    // what keeps storage swappable (R2 <-> Azure Blob <-> S3).
+    // The loader resolves references against NEXT_PUBLIC_STORAGE_BASE_URL
+    // and does nothing else — content-addressed keys cannot be computed
+    // from an id and a width, so sizing lives in ImageDTO's srcset rather
+    // than in a URL rewrite. See the header of src/lib/image-loader.ts.
     loader: "custom",
     loaderFile: "./src/lib/image-loader.ts",
   },

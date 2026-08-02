@@ -21,93 +21,107 @@
    is the preferred reading mode for Blog long-form (§5.1 rule 5).
    ─────────────────────────────────────────────────────────────────────── */
 
+/* ───────────────────────────────────────────────────────────────────────
+   GROUND: DERIVED FROM THE MARK.
+
+   Client direction: "change background color matching with brs logo. dont
+   make full same color."
+
+   The badge has exactly four values. They are not invented here — they are
+   sampled from logo/BRS Logo transparent.png:
+
+     #0E516E  petrol     the badge field, under a blueprint grid
+     #7B1223  oxblood    the inner rule, and the gear
+     #3A3A3C  graphite   the outer border
+     #FFFFFF  white      the circuitry, the arm, the BRS lettering
+
+   "MATCHING" — the ground is petrol pulled almost all the way to white:
+   #e2e8ea. Same hue family as the badge field, about 6% of its saturation.
+   Photographs and the mark itself now sit on a surface that shares their
+   cast, instead of the warm grey that was fighting the badge's cool blue.
+
+   "DONT MAKE FULL SAME COLOR" — read two ways, both honoured:
+     · the ground is a tint of petrol, never petrol itself
+     · the page is not one flat field. The pinned gallery inverts onto the
+       actual #0E516E, so the badge's own blue appears full strength once,
+       as a section, rather than being smeared across everything.
+
+   ON THE EARLIER "no pure blue like ai slop" DIRECTION — this does not
+   contradict it. That was about the generic saturated cobalt every
+   generated page reaches for (#3b82f6 and its neighbours). Petrol is a
+   dark, desaturated teal-blue measured off your own mark. Using a club's
+   actual brand colour is the opposite of reaching for a default.
+
+   Contrast, computed against #e2e8ea rather than estimated:
+     text-primary   #24282b   12.0:1
+     accent oxblood #7b1223    8.7:1
+     petrol         #0e516e    7.0:1
+     text-secondary #4e585d    5.9:1
+     text-tertiary  #6c777e    3.7:1   large text and labels ONLY
+   And on the inverted petrol field: white on #0e516e is 8.7:1.
+   ─────────────────────────────────────────────────────────────────────── */
+
 :root {
-  /* ── Surfaces. Never pure #000 — §17.5 ── */
-  --brs-bg-base: #0b0d0e;
-  --brs-bg-raised: #131618;
-  --brs-bg-inset: #090b0c;
-  --brs-bg-overlay: rgb(11 13 14 / 0.88);
+  /* ── Surfaces. Never pure #000, never pure #fff — §17.5 ── */
+  --brs-bg-base: #e2e8ea;
+  --brs-bg-raised: #eef2f3;
+  --brs-bg-inset: #d1dade;
+  --brs-bg-overlay: rgb(226 232 234 / 0.92);
+
+  /* The mark's field at full strength. Used as a section ground exactly
+     once, so the page has a dark movement in it and the blue reads as
+     deliberate rather than ambient. */
+  --brs-bg-deep: #0e516e;
+  --brs-bg-deep-raised: #12617f;
 
   /* ── Hairlines. The primary structural device: prefer a 1px rule over
         a filled panel, a filled panel over a shadow. §5.1 rule 4 ── */
-  --brs-line-faint: rgb(244 243 241 / 0.07);
-  --brs-line-hairline: rgb(244 243 241 / 0.12);
-  --brs-line-strong: rgb(244 243 241 / 0.24);
-  --brs-line-accent: rgb(79 168 206 / 0.4);
+  --brs-line-faint: rgb(36 40 43 / 0.06);
+  --brs-line-hairline: rgb(36 40 43 / 0.13);
+  --brs-line-strong: rgb(36 40 43 / 0.26);
+  --brs-line-accent: rgb(123 18 35 / 0.35);
 
-  /* ── Text. Contrast on --brs-bg-base, computed not estimated ── */
-  --brs-text-primary: #f4f3f1; /* 15.8:1 */
-  --brs-text-secondary: #a8adb0; /*  7.2:1 */
-  --brs-text-tertiary: #6e7579; /*  3.6:1 — large text and labels ONLY */
+  /* ── Text. Graphite, cooled to sit with the ground. ── */
+  --brs-text-primary: #24282b; /* 12.0:1 */
+  --brs-text-secondary: #4e585d; /*  5.9:1 */
+  --brs-text-tertiary: #6c777e; /*  3.7:1 — large text and labels ONLY */
 
-  /* ── Accent: petrol, luminance-lifted for dark surfaces.
-        NEVER used as a glow. No accent-hue box-shadow. §5.1 rule 2 ── */
-  --brs-accent: #4fa8ce; /*  7.4:1 */
-  --brs-accent-muted: #2e6e8c;
-  --brs-accent-deep: #0e516e; /* large fills only, never text */
+  /* ── Accent: oxblood, the mark's exact value, used directly.
+        NEVER as a glow. No accent-hue box-shadow. ── */
+  --brs-accent: #7b1223; /*  8.7:1 */
+  --brs-accent-muted: #a3364a;
+  --brs-accent-deep: #5c0d1a;
 
-  /* ── Signal: oxblood. RARE. Awards, podium placement, live status,
-        destructive actions, form errors. Target <= 2 per viewport.
-        Three instances on one screen means the page is wrong. ── */
-  --brs-signal: #c2394b; /*  4.9:1 */
-  --brs-signal-deep: #7b1223;
+  /* ── Petrol as a structural second voice, not a third accent. ── */
+  --brs-petrol: #0e516e; /*  7.0:1 */
+
+  /* ── Signal shares the accent hue. One warm voice against the cool. ── */
+  --brs-signal: #7b1223;
+  --brs-signal-deep: #5c0d1a;
 
   /* ── Utility ── */
-  --brs-focus-ring: #4fa8ce;
-  --brs-success: #3f9a7a;
-  --brs-warning: #c08a2e;
+  --brs-focus-ring: #7b1223;
+  --brs-success: #2f6b52;
+  --brs-warning: #7d5310;
 }
 
-/* Light theme — bone paper, brand values used directly.
-   Applied by explicit toggle, and set on Blog routes. */
-:root[data-theme="light"] {
-  --brs-bg-base: #f4f3f1; /* bone, not white */
-  --brs-bg-raised: #ffffff;
-  --brs-bg-inset: #ebe9e6;
-  --brs-bg-overlay: rgb(244 243 241 / 0.9);
-
-  --brs-line-faint: rgb(22 25 26 / 0.07);
-  --brs-line-hairline: rgb(22 25 26 / 0.14);
-  --brs-line-strong: rgb(22 25 26 / 0.28);
-  --brs-line-accent: rgb(14 81 110 / 0.4);
-
-  --brs-text-primary: #16191a;
-  --brs-text-secondary: #4a5052;
-  --brs-text-tertiary: #767c7f;
-
-  --brs-accent: #0e516e; /* measured brand value, used directly */
-  --brs-accent-muted: #2e6e8c;
-  --brs-accent-deep: #0e516e;
-
-  --brs-signal: #7b1223;
-  --brs-signal-deep: #7b1223;
-
-  --brs-focus-ring: #0e516e;
-}
-
-/* Respect an explicit OS light preference when no toggle has been set.
-   Dark remains canonical; this is the considerate escape hatch. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --brs-bg-base: #f4f3f1;
-    --brs-bg-raised: #ffffff;
-    --brs-bg-inset: #ebe9e6;
-    --brs-bg-overlay: rgb(244 243 241 / 0.9);
-
-    --brs-line-faint: rgb(22 25 26 / 0.07);
-    --brs-line-hairline: rgb(22 25 26 / 0.14);
-    --brs-line-strong: rgb(22 25 26 / 0.28);
-    --brs-line-accent: rgb(14 81 110 / 0.4);
-
-    --brs-text-primary: #16191a;
-    --brs-text-secondary: #4a5052;
-    --brs-text-tertiary: #767c7f;
-
-    --brs-accent: #0e516e;
-    --brs-accent-deep: #0e516e;
-    --brs-signal: #7b1223;
-    --brs-focus-ring: #0e516e;
-  }
+/* ── The inverted field ────────────────────────────────────────────────
+   Applied to one section. Re-points the same token names at their
+   on-petrol equivalents, so every component inside inverts without
+   knowing it has — no `isDark` prop threaded through the tree, no second
+   set of classes to keep in sync. */
+[data-field="deep"] {
+  --brs-bg-base: #0e516e;
+  --brs-bg-raised: #12617f;
+  --brs-bg-inset: #0b4159;
+  --brs-line-faint: rgb(255 255 255 / 0.08);
+  --brs-line-hairline: rgb(255 255 255 / 0.16);
+  --brs-line-strong: rgb(255 255 255 / 0.32);
+  --brs-text-primary: #ffffff; /* 8.7:1 */
+  --brs-text-secondary: #c3d7e0; /* 5.9:1 */
+  --brs-text-tertiary: #90aebc; /* 3.3:1 — labels only */
+  --brs-accent: #e8a9b3; /* oxblood is unreadable here; its tint is not */
+  --brs-focus-ring: #ffffff;
 }
 
 /* ───────────────────────────────────────────────────────────────────────
@@ -121,6 +135,8 @@
   --color-bg-raised: var(--brs-bg-raised);
   --color-bg-inset: var(--brs-bg-inset);
   --color-bg-overlay: var(--brs-bg-overlay);
+  --color-bg-deep: var(--brs-bg-deep);
+  --color-petrol: var(--brs-petrol);
 
   --color-line-faint: var(--brs-line-faint);
   --color-line-hairline: var(--brs-line-hairline);
@@ -149,11 +165,11 @@
 
 @theme {
   /* ── Families. Two only. Self-hosted, no font CDN — §17.6.
-        The wdth axis on Archivo is load-bearing (§3.2, §4.4):
-        do NOT substitute a static-width build. ── */
+        Space Grotesk varies on WEIGHT ONLY (300-700). It has no wdth axis,
+        so no rule or component may set one — see fonts.ts. ── */
   --font-display:
-    var(--font-archivo), "Archivo", ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", sans-serif;
+    var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
   --font-mono:
     var(--font-plex-mono), "IBM Plex Mono", ui-monospace, "SF Mono", Menlo,
     monospace;
@@ -239,13 +255,24 @@
   --breakpoint-lg: 1280px;
   --breakpoint-xl: 1536px;
 
-  /* ── Radius. This system is square by intent. Large radii read as
-        consumer-app friendliness and fight the archive concept. §17.5 ── */
+  /* ── Radius. Structural surfaces stay square. `card` is the one
+        exception, added for the motion sheet: a plate that travels
+        through 3D space reads as a physical object, and a physical
+        object has a milled edge rather than a knife edge. 10px, once. ── */
   --radius-none: 0px; /* plates, structural surfaces */
   --radius-input: 2px; /* inputs only */
+  --radius-card: 10px; /* travelling plates ONLY */
 
-  /* ── Motion. Precision = fast, short, decisive. NO spring, NO bounce,
-        NO overshoot. Mechanisms settle. §5.5 ── */
+  /* ── Motion. Two registers now coexist.
+
+        STATIC UI keeps the original discipline: fast, short, decisive,
+        no spring, no bounce, no overshoot (§5.5).
+
+        SCROLL-DRIVEN motion is a different instrument. It has no
+        duration — its clock is the scroll position, so `--scrub-*`
+        values describe *distance travelled*, not time. A card that
+        un-skews over 60vh of scroll feels machined; the same move on a
+        400ms timer feels like a slideshow. ── */
   --duration-micro: 120ms;
   --duration-base: 180ms;
   --duration-enter: 240ms;
@@ -256,6 +283,11 @@
 
   /* Scroll reveal: 8px, not 40px. Fires once. §5.5 */
   --brs-reveal-distance: 8px;
+
+  /* Depth of the 3D field the travelling plates move through. Shallower
+     than the CSS default so rotation reads as rotation and not as a
+     fisheye smear. */
+  --brs-perspective: 1400px;
 }
 
 /* ───────────────────────────────────────────────────────────────────────
@@ -283,8 +315,10 @@
     font-size: var(--text-body-m);
     line-height: 1.65;
     /* The page body must never scroll horizontally. Wide content
-       (tables, the Record axis) scrolls inside its own container. */
-    overflow-x: hidden;
+       (the pinned gallery, plates staged off-screen) is clipped rather
+       than hidden: `overflow-x: hidden` promotes the body to a scroll
+       container, which breaks ScrollTrigger pinning. `clip` does not. */
+    overflow-x: clip;
   }
 
   /* Focus: 2px ring, 2px offset. `outline: none` without a visible
@@ -398,6 +432,39 @@
     }
   }
 
+  /* ── The 3D field ──────────────────────────────────────────────────
+     Applied to the *container* of travelling plates, never to the plates
+     themselves. One shared vanishing point is what makes three cards
+     read as three objects in one room rather than three unrelated
+     transforms. */
+  .field {
+    perspective: var(--brs-perspective);
+    perspective-origin: 50% 50%;
+  }
+
+  /* A plate that moves through the field. `will-change` is declared
+     here and nowhere else — scattering it across components is how a
+     page ends up with fifty compositor layers and a stuttering scroll. */
+  .travelling {
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+
+  /* The milled edge of a travelling plate. The single permitted shadow
+     on the site: it is doing depth work in a 3D scene, not decorating a
+     static card. Warm-tinted, never neutral grey — a neutral shadow on
+     a warm ground reads as dirt. */
+  .plate-surface {
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background-color: var(--color-bg-inset);
+    box-shadow:
+      0 1px 2px rgb(35 32 30 / 0.04),
+      0 8px 24px -8px rgb(35 32 30 / 0.10),
+      0 24px 64px -24px rgb(35 32 30 / 0.14);
+  }
+
   /* Placard: mono, uppercase, tracked. The museum wall label. §5.9.1 */
   .placard {
     font-family: var(--font-mono);
@@ -428,5 +495,19 @@
   /* The hairline draw resolves instantly rather than animating. */
   .hairline-draw {
     transform: scaleX(1);
+  }
+
+  /* Safety net for the scroll-driven plates. GSAP is gated on the same
+     query via gsap.matchMedia() and never builds those timelines, so
+     nothing should be mid-transform — but if a timeline ever escapes
+     that gate, the plate lands flat and legible instead of frozen at
+     40 degrees off-axis. */
+  .field {
+    perspective: none;
+  }
+  .travelling {
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto;
   }
 }

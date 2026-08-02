@@ -101,6 +101,13 @@ export default [
       ...nextPlugin.configs["core-web-vitals"].rules,
       // App Router only — there is no pages/ directory by design.
       "@next/next/no-html-link-for-pages": "off",
+      // The site builds with output: "export". next/image runs unoptimised
+      // under a static export, so it would contribute a wrapper element and
+      // nothing else. Every raster on this site is already generated at
+      // explicit widths in AVIF/WebP by the scripts/prepare-*.mjs family,
+      // with width and height always emitted, which is the entire job this
+      // rule exists to nag about.
+      "@next/next/no-img-element": "off",
     },
   },
 
@@ -108,12 +115,43 @@ export default [
   {
     // The rule implementations and the PII gate necessarily contain the
     // strings and numbers they exist to ban.
-    files: ["tools/eslint-plugin-brs/**", "**/scripts/**", "**/*.test.{mjs,ts}"],
+    // apps/cms is Directus configuration, not site copy: its numbers are
+    // HTTP status codes and slice lengths, and its prose is the admin
+    // panel's own field labels. The content rules exist to stop invented
+    // figures and prohibited claims reaching VISITORS, and nothing here
+    // does.
+    files: [
+      "tools/eslint-plugin-brs/**",
+      "**/scripts/**",
+      "apps/cms/**",
+      "**/*.test.{mjs,ts}",
+    ],
     rules: {
       "brs/no-prohibited-copy": "off",
       "brs/no-hardcoded-stats": "off",
       "brs/no-arbitrary-design-values": "off",
       "brs/no-direct-backend-import": "off",
+    },
+  },
+
+  /* ── The motion sheet ──────────────────────────────────────────────────
+     ONE rule is relaxed here, in ONE directory, for a stated reason.
+
+     brs/no-arbitrary-design-values bans Tailwind arbitrary values so that
+     design decisions live in globals.css instead of being scattered
+     through markup. That reasoning holds for layout. It does not hold for
+     the per-plate entry vectors in the assembly section: each plate has
+     its own start rotation, translation and scale, they are choreography
+     rather than design tokens, and promoting forty one-off values into
+     the token file would corrupt the token file to satisfy a lint rule.
+
+     Everything else still applies. In particular no-hardcoded-stats and
+     no-prohibited-copy remain ERRORS here — a demo built to impress is
+     exactly where an invented "500+ members" would get typed. ── */
+  {
+    files: ["apps/web/src/components/motion/**", "apps/web/src/components/showcase/**"],
+    rules: {
+      "brs/no-arbitrary-design-values": "off",
     },
   },
 ];

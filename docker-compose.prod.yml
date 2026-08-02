@@ -1,0 +1,175 @@
+# ══════════════════════════════════════════════════════════════════════
+# PRODUCTION STACK.
+#
+#   cp .env.production.example .env.production
+#   # fill it in — the file has no working defaults, on purpose
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+#
+# Differs from docker-compose.yml (development) in ways that matter:
+#
+#   · no default passwords anywhere. `${VAR:?message}` makes compose refuse
+#     to start with a named error rather than silently using "brs".
+#   · Postgres publishes NO host port. It is reachable only from the
+#     compose network. A database on 0.0.0.0 with a weak password is how
+#     student projects end up in a breach report.
+#   · every service has a healthcheck, and dependencies wait on health
+#     rather than on "container started".
+#   · MinIO and Directus are behind PROFILES, because production probably
+#     uses managed object storage and does not need the CMS reachable
+#     from the internet.
+#
+# TLS is deliberately NOT here. Put a reverse proxy (Caddy, Traefik,
+# nginx, or a CDN) in front — see docs/DEPLOY.md. Baking certificate
+# handling into the app stack couples it to one hosting shape.
+# ══════════════════════════════════════════════════════════════════════
+
+name: brs-prod
+
+services:
+  # ── Plane 1: data ──────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:?set POSTGRES_USER in .env.production}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD — do not reuse the dev value}"
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
+    # No `ports:`. Reachable on the compose network as postgres:5432 and
+    # nowhere else. To run a migration, `docker compose exec postgres psql`.
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Applied ONLY on the first boot of an empty volume. On an existing
+      # database this does nothing — see docs/DEPLOY.md for how migrations
+      # are applied to a live system.
+      - ./packages/db/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # ── Plane 3: the contract façade ───────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: brs-api:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Assembled here rather than passed whole, so the password appears in
+      # exactly one variable and cannot drift between services.
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      # The façade issues asset URLs and never reads a bucket, so it needs
+      # this and no credentials at all. @brs/storage/url has no SDK.
+      STORAGE_PUBLIC_BASE_URL: ${STORAGE_PUBLIC_BASE_URL:?set STORAGE_PUBLIC_BASE_URL}
+      PORT: "8787"
+    ports:
+      # Published because the BROWSER talks to it: NEXT_PUBLIC_BRS_API is
+      # baked into the static export. Bound to loopback so a reverse proxy
+      # terminating TLS is the only public path in.
+      - "127.0.0.1:${API_PORT:-8787}:8787"
+    healthcheck:
+      test:
+        ["CMD", "node", "-e",
+         "fetch('http://127.0.0.1:8787/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # ── Plane 4: the static site ───────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # BUILD-time, not runtime. These are compiled into the JavaScript;
+        # changing them requires a rebuild, not a restart. See the header
+        # of apps/web/Dockerfile for why no entrypoint substitution.
+        NEXT_PUBLIC_BRS_API: ${NEXT_PUBLIC_BRS_API:?set NEXT_PUBLIC_BRS_API}
+        NEXT_PUBLIC_STORAGE_BASE_URL: ${NEXT_PUBLIC_STORAGE_BASE_URL:?set NEXT_PUBLIC_STORAGE_BASE_URL}
+    image: brs-web:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    # Deliberately NOT depends_on api. The whole point of the static export
+    # is that the site serves fine while the backend is down (§6.2) —
+    # making it wait for the API would throw that away at the last step.
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ── Object storage, only if self-hosting it ────────────────────────
+  #
+  #   docker compose -f docker-compose.prod.yml --profile self-hosted-storage up -d
+  #
+  # Omit the profile when using R2, S3 or Spaces — which is the default
+  # assumption, because a managed bucket does not need backing up by us.
+  minio:
+    profiles: ["self-hosted-storage"]
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:?set S3_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:?set S3_SECRET_ACCESS_KEY}
+    volumes:
+      - miniodata:/data
+    ports:
+      - "127.0.0.1:${MINIO_PORT:-9000}:9000"
+      - "127.0.0.1:${MINIO_CONSOLE_PORT:-9001}:9001"
+    healthcheck:
+      test: ["CMD-SHELL", "mc ready local || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+
+  # ── Plane 2: authoring ─────────────────────────────────────────────
+  #
+  #   docker compose -f docker-compose.prod.yml --profile authoring up -d
+  #
+  # A profile because Directus is an INTERNAL tool. It is not in the read
+  # path — the façade reads Postgres directly (§B3) — so the public site
+  # is unaffected whether this is running or not. Leaving it down except
+  # when editing removes an entire attack surface.
+  directus:
+    profiles: ["authoring"]
+    image: directus/directus:11
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SECRET: "${DIRECTUS_SECRET:?set DIRECTUS_SECRET — generate one with openssl rand -base64 32}"
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL:?set DIRECTUS_ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD:?set DIRECTUS_ADMIN_PASSWORD}
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost:8055}
+      WEBSOCKETS_ENABLED: "false"
+    ports:
+      - "127.0.0.1:${DIRECTUS_PORT:-8055}:8055"
+    volumes:
+      - directus_uploads:/directus/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8055/server/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  pgdata:
+  miniodata:
+  directus_uploads:

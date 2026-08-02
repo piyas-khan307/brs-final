@@ -43,7 +43,7 @@ export function ZoneA_Opening() {
             // font-variation-settings cannot be expressed as a utility, and
             // arbitrary Tailwind values are banned by lint rule 3. The wdth
             // axis at 112 is the page's clearest craft marker (§3.2).
-            style={{ fontVariationSettings: "'wght' 600, 'wdth' 112" }}
+            style={{ fontVariationSettings: "'wght' 600" }}
           >
             <span className="block">BUET</span>
             <span className="block">Robotics</span>

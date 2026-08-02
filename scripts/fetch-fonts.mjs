@@ -61,10 +61,31 @@ const UA =
 
 const TARGETS = [
   {
-    // wdth 62-125 is the axis the design depends on.
-    css: "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap",
-    subsets: { latin: "Archivo-variable-latin.woff2" },
-    requireVariableWidth: true,
+    // ── DISPLAY: SPACE GROTESK ──────────────────────────────────────
+    // Replaces Archivo on client direction: "its look too ordinary".
+    // That was a fair call — Archivo is a well-made neo-grotesque, which
+    // is precisely the problem. At display size it is close enough to
+    // Helvetica that it reads as the absence of a decision.
+    //
+    // Space Grotesk is drawn from Space Mono, so it keeps a monospace's
+    // squared terminals and flat-sided bowls while spacing proportionally.
+    // Its letterforms are genuinely odd — the single-storey 'g', the
+    // squared 'S', the sheared 't' — which is what stops it reading as a
+    // default.
+    //
+    // It also answers to the mark. The "BRS" lettering in the logo is
+    // condensed, squared, and cut at angles; Space Grotesk is the closest
+    // free text face to that construction, so the wordmark and the badge
+    // now look like they were drawn by the same hand.
+    //
+    // NO wdth AXIS. Archivo's variable width was load-bearing in the old
+    // system and Space Grotesk does not have one — it varies on weight
+    // only, 300-700. Every fontVariationSettings on the site drops its
+    // 'wdth' term accordingly rather than setting an axis that silently
+    // does nothing.
+    css: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap",
+    subsets: { latin: "SpaceGrotesk-variable-latin.woff2" },
+    requireVariableWidth: false,
   },
   {
     css: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&display=swap",

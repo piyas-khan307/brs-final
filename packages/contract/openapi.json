@@ -295,6 +295,224 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "Insufficient evidence to compute statistics truthfully. Not an outage — returns to 200 once events or achievements exist."
+          }
+        }
+      }
+    },
+    "/v1/collections": {
+      "get": {
+        "summary": "List curated collections — the editorial layer",
+        "description": "A collection is a chosen sequence of images with their placard text. It is NOT an event: an event happened on a date, a collection is an order somebody picked for a page. Items carry a stable `key` naming a ROLE (\"hero-rc19\"), so reordering a collection cannot silently change which photograph is the hero.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CollectionDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/collections/{slug}": {
+      "get": {
+        "summary": "Collection by slug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such collection"
+          }
+        }
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "summary": "Liveness, plus counts of records the façade deliberately excludes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "database": {
+                      "type": "string",
+                      "enum": [
+                        "up",
+                        "down"
+                      ]
+                    },
+                    "diagnostics": {
+                      "type": "object",
+                      "properties": {
+                        "eventsWithoutCover": {
+                          "type": "integer"
+                        },
+                        "unpublishedAssets": {
+                          "type": "integer"
+                        },
+                        "assets": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "version",
+                    "database"
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database unreachable"
+          }
+        }
+      }
+    },
+    "/v1/committees/{ordinal}": {
+      "get": {
+        "summary": "Committee by ordinal",
+        "parameters": [
+          {
+            "name": "ordinal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitteeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ordinal is not an integer"
+          },
+          "404": {
+            "description": "No such committee"
+          }
+        }
+      }
+    },
+    "/v1/posts/{slug}": {
+      "get": {
+        "summary": "Post by slug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such post"
+          }
+        }
+      }
+    },
+    "/v1/assets/{id}": {
+      "get": {
+        "summary": "Redirect to the stored bytes. The stable, provider-agnostic entry point for an asset.",
+        "description": "Answers 302 to the object's public URL rather than proxying it, so the façade never sits in the path of image traffic. Storage stays swappable because the redirect target is built from STORAGE_PUBLIC_BASE_URL, not hardcoded. Add ?describe to receive the ImageDTO instead of a redirect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "describe",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Present at any value: return the ImageDTO instead of redirecting."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ImageDTO (only when ?describe is present)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageDTO"
+                }
+              }
+            }
+          },
+          "302": {
+            "description": "Redirect to object storage"
+          },
+          "400": {
+            "description": "Id is not a uuid"
+          },
+          "404": {
+            "description": "No such published asset"
           }
         }
       }
@@ -302,6 +520,33 @@
   },
   "components": {
     "schemas": {
+      "ImageSource": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "avif",
+              "webp"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "format",
+          "width",
+          "url"
+        ],
+        "additionalProperties": false
+      },
       "ImageDTO": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -336,16 +581,54 @@
             "maximum": 9007199254740991
           },
           "ratio": {
-            "type": "string",
-            "enum": [
-              "1:1",
-              "3:2",
-              "16:9",
-              "4:5"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:2",
+                  "16:9",
+                  "4:5"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "credit": {
             "type": "string"
+          },
+          "sources": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "avif",
+                    "webp"
+                  ]
+                },
+                "width": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format",
+                "width",
+                "url"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -355,7 +638,288 @@
           "width",
           "height",
           "lqip",
-          "ratio"
+          "ratio",
+          "sources"
+        ],
+        "additionalProperties": false
+      },
+      "CollectionItemDTO": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "alt": {
+                "type": "string",
+                "minLength": 12,
+                "maxLength": 280
+              },
+              "width": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "height": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "lqip": {
+                "type": "string"
+              },
+              "plate": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "ratio": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "4:3",
+                      "3:2",
+                      "16:9",
+                      "4:5"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "credit": {
+                "type": "string"
+              },
+              "sources": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "format": {
+                      "type": "string",
+                      "enum": [
+                        "avif",
+                        "webp"
+                      ]
+                    },
+                    "width": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "format",
+                    "width",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "url",
+              "alt",
+              "width",
+              "height",
+              "lqip",
+              "ratio",
+              "sources"
+            ],
+            "additionalProperties": false
+          },
+          "caption": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "image",
+          "caption"
+        ],
+        "additionalProperties": false
+      },
+      "CollectionDTO": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "items": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "alt": {
+                      "type": "string",
+                      "minLength": 12,
+                      "maxLength": 280
+                    },
+                    "width": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "height": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "lqip": {
+                      "type": "string"
+                    },
+                    "plate": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "ratio": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "1:1",
+                            "4:3",
+                            "3:2",
+                            "16:9",
+                            "4:5"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "credit": {
+                      "type": "string"
+                    },
+                    "sources": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "format": {
+                            "type": "string",
+                            "enum": [
+                              "avif",
+                              "webp"
+                            ]
+                          },
+                          "width": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "format",
+                          "width",
+                          "url"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "url",
+                    "alt",
+                    "width",
+                    "height",
+                    "lqip",
+                    "ratio",
+                    "sources"
+                  ],
+                  "additionalProperties": false
+                },
+                "caption": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "title": {
+                  "type": "string"
+                },
+                "year": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "image",
+                "caption"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "slug",
+          "label",
+          "items"
         ],
         "additionalProperties": false
       },
@@ -475,16 +1039,54 @@
                 "maximum": 9007199254740991
               },
               "ratio": {
-                "type": "string",
-                "enum": [
-                  "1:1",
-                  "3:2",
-                  "16:9",
-                  "4:5"
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "4:3",
+                      "3:2",
+                      "16:9",
+                      "4:5"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "credit": {
                 "type": "string"
+              },
+              "sources": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "format": {
+                      "type": "string",
+                      "enum": [
+                        "avif",
+                        "webp"
+                      ]
+                    },
+                    "width": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "format",
+                    "width",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                }
               }
             },
             "required": [
@@ -494,7 +1096,8 @@
               "width",
               "height",
               "lqip",
-              "ratio"
+              "ratio",
+              "sources"
             ],
             "additionalProperties": false
           },
@@ -534,16 +1137,54 @@
                   "maximum": 9007199254740991
                 },
                 "ratio": {
-                  "type": "string",
-                  "enum": [
-                    "1:1",
-                    "3:2",
-                    "16:9",
-                    "4:5"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "1:1",
+                        "4:3",
+                        "3:2",
+                        "16:9",
+                        "4:5"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
                   ]
                 },
                 "credit": {
                   "type": "string"
+                },
+                "sources": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "format": {
+                        "type": "string",
+                        "enum": [
+                          "avif",
+                          "webp"
+                        ]
+                      },
+                      "width": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "format",
+                      "width",
+                      "url"
+                    ],
+                    "additionalProperties": false
+                  }
                 }
               },
               "required": [
@@ -553,7 +1194,8 @@
                 "width",
                 "height",
                 "lqip",
-                "ratio"
+                "ratio",
+                "sources"
               ],
               "additionalProperties": false
             }
@@ -682,16 +1324,54 @@
                 "maximum": 9007199254740991
               },
               "ratio": {
-                "type": "string",
-                "enum": [
-                  "1:1",
-                  "3:2",
-                  "16:9",
-                  "4:5"
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "4:3",
+                      "3:2",
+                      "16:9",
+                      "4:5"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "credit": {
                 "type": "string"
+              },
+              "sources": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "format": {
+                      "type": "string",
+                      "enum": [
+                        "avif",
+                        "webp"
+                      ]
+                    },
+                    "width": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "format",
+                    "width",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                }
               }
             },
             "required": [
@@ -701,7 +1381,8 @@
               "width",
               "height",
               "lqip",
-              "ratio"
+              "ratio",
+              "sources"
             ],
             "additionalProperties": false
           }
@@ -827,16 +1508,54 @@
                             "maximum": 9007199254740991
                           },
                           "ratio": {
-                            "type": "string",
-                            "enum": [
-                              "1:1",
-                              "3:2",
-                              "16:9",
-                              "4:5"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "1:1",
+                                  "4:3",
+                                  "3:2",
+                                  "16:9",
+                                  "4:5"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
                             ]
                           },
                           "credit": {
                             "type": "string"
+                          },
+                          "sources": {
+                            "default": [],
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "format": {
+                                  "type": "string",
+                                  "enum": [
+                                    "avif",
+                                    "webp"
+                                  ]
+                                },
+                                "width": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "maximum": 9007199254740991
+                                },
+                                "url": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "format",
+                                "width",
+                                "url"
+                              ],
+                              "additionalProperties": false
+                            }
                           }
                         },
                         "required": [
@@ -846,7 +1565,8 @@
                           "width",
                           "height",
                           "lqip",
-                          "ratio"
+                          "ratio",
+                          "sources"
                         ],
                         "additionalProperties": false
                       }
@@ -964,16 +1684,54 @@
                   "maximum": 9007199254740991
                 },
                 "ratio": {
-                  "type": "string",
-                  "enum": [
-                    "1:1",
-                    "3:2",
-                    "16:9",
-                    "4:5"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "1:1",
+                        "4:3",
+                        "3:2",
+                        "16:9",
+                        "4:5"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
                   ]
                 },
                 "credit": {
                   "type": "string"
+                },
+                "sources": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "format": {
+                        "type": "string",
+                        "enum": [
+                          "avif",
+                          "webp"
+                        ]
+                      },
+                      "width": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "format",
+                      "width",
+                      "url"
+                    ],
+                    "additionalProperties": false
+                  }
                 }
               },
               "required": [
@@ -983,7 +1741,8 @@
                 "width",
                 "height",
                 "lqip",
-                "ratio"
+                "ratio",
+                "sources"
               ],
               "additionalProperties": false
             }
@@ -1102,16 +1861,54 @@
                       "maximum": 9007199254740991
                     },
                     "ratio": {
-                      "type": "string",
-                      "enum": [
-                        "1:1",
-                        "3:2",
-                        "16:9",
-                        "4:5"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "1:1",
+                            "4:3",
+                            "3:2",
+                            "16:9",
+                            "4:5"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     },
                     "credit": {
                       "type": "string"
+                    },
+                    "sources": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "format": {
+                            "type": "string",
+                            "enum": [
+                              "avif",
+                              "webp"
+                            ]
+                          },
+                          "width": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "format",
+                          "width",
+                          "url"
+                        ],
+                        "additionalProperties": false
+                      }
                     }
                   },
                   "required": [
@@ -1121,7 +1918,8 @@
                     "width",
                     "height",
                     "lqip",
-                    "ratio"
+                    "ratio",
+                    "sources"
                   ],
                   "additionalProperties": false
                 }
@@ -1173,16 +1971,54 @@
                   "maximum": 9007199254740991
                 },
                 "ratio": {
-                  "type": "string",
-                  "enum": [
-                    "1:1",
-                    "3:2",
-                    "16:9",
-                    "4:5"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "1:1",
+                        "4:3",
+                        "3:2",
+                        "16:9",
+                        "4:5"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
                   ]
                 },
                 "credit": {
                   "type": "string"
+                },
+                "sources": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "format": {
+                        "type": "string",
+                        "enum": [
+                          "avif",
+                          "webp"
+                        ]
+                      },
+                      "width": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "format",
+                      "width",
+                      "url"
+                    ],
+                    "additionalProperties": false
+                  }
                 }
               },
               "required": [
@@ -1192,7 +2028,8 @@
                 "width",
                 "height",
                 "lqip",
-                "ratio"
+                "ratio",
+                "sources"
               ],
               "additionalProperties": false
             }
@@ -1277,16 +2114,54 @@
                         "maximum": 9007199254740991
                       },
                       "ratio": {
-                        "type": "string",
-                        "enum": [
-                          "1:1",
-                          "3:2",
-                          "16:9",
-                          "4:5"
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "1:1",
+                              "4:3",
+                              "3:2",
+                              "16:9",
+                              "4:5"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
                         ]
                       },
                       "credit": {
                         "type": "string"
+                      },
+                      "sources": {
+                        "default": [],
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "format": {
+                              "type": "string",
+                              "enum": [
+                                "avif",
+                                "webp"
+                              ]
+                            },
+                            "width": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "format",
+                            "width",
+                            "url"
+                          ],
+                          "additionalProperties": false
+                        }
                       }
                     },
                     "required": [
@@ -1296,7 +2171,8 @@
                       "width",
                       "height",
                       "lqip",
-                      "ratio"
+                      "ratio",
+                      "sources"
                     ],
                     "additionalProperties": false
                   }
@@ -1422,16 +2298,54 @@
                 "maximum": 9007199254740991
               },
               "ratio": {
-                "type": "string",
-                "enum": [
-                  "1:1",
-                  "3:2",
-                  "16:9",
-                  "4:5"
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "4:3",
+                      "3:2",
+                      "16:9",
+                      "4:5"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "credit": {
                 "type": "string"
+              },
+              "sources": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "format": {
+                      "type": "string",
+                      "enum": [
+                        "avif",
+                        "webp"
+                      ]
+                    },
+                    "width": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "format",
+                    "width",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                }
               }
             },
             "required": [
@@ -1441,7 +2355,8 @@
               "width",
               "height",
               "lqip",
-              "ratio"
+              "ratio",
+              "sources"
             ],
             "additionalProperties": false
           },
@@ -1515,16 +2430,54 @@
                 "maximum": 9007199254740991
               },
               "ratio": {
-                "type": "string",
-                "enum": [
-                  "1:1",
-                  "3:2",
-                  "16:9",
-                  "4:5"
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "4:3",
+                      "3:2",
+                      "16:9",
+                      "4:5"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "credit": {
                 "type": "string"
+              },
+              "sources": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "format": {
+                      "type": "string",
+                      "enum": [
+                        "avif",
+                        "webp"
+                      ]
+                    },
+                    "width": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "format",
+                    "width",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                }
               }
             },
             "required": [
@@ -1534,7 +2487,8 @@
               "width",
               "height",
               "lqip",
-              "ratio"
+              "ratio",
+              "sources"
             ],
             "additionalProperties": false
           },
@@ -1610,16 +2564,54 @@
                 "maximum": 9007199254740991
               },
               "ratio": {
-                "type": "string",
-                "enum": [
-                  "1:1",
-                  "3:2",
-                  "16:9",
-                  "4:5"
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "4:3",
+                      "3:2",
+                      "16:9",
+                      "4:5"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "credit": {
                 "type": "string"
+              },
+              "sources": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "format": {
+                      "type": "string",
+                      "enum": [
+                        "avif",
+                        "webp"
+                      ]
+                    },
+                    "width": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "format",
+                    "width",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                }
               }
             },
             "required": [
@@ -1629,7 +2621,8 @@
               "width",
               "height",
               "lqip",
-              "ratio"
+              "ratio",
+              "sources"
             ],
             "additionalProperties": false
           },

@@ -16,6 +16,7 @@
 import { z } from "zod";
 import {
   AchievementDTO,
+  CollectionDTO,
   CommitteeDTO,
   EventDTO,
   ImageDTO,
@@ -153,6 +154,12 @@ export function createClient(opts: ClientOptions) {
     gallery: {
       list: (q?: { event?: string; year?: number; limit?: number; cursor?: string }) =>
         get("/gallery", Paginated(ImageDTO), q),
+    },
+
+    /** Curated sequences with placard text. §B4 — the editorial layer. */
+    collections: {
+      list: () => get("/collections", z.array(CollectionDTO)),
+      bySlug: (slug: string) => get(`/collections/${slug}`, CollectionDTO),
     },
 
     /** Every figure on the site comes from here. Never hand-typed (§2.3). */
