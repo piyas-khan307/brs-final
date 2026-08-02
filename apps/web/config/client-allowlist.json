@@ -1,11 +1,11 @@
 {
   "$comment": [
     "Every file declaring 'use client' MUST appear here. Enforced by lint rule",
-    "brs/client-component-allowlist (implementation_plan.md \u00a713.4 rule 5).",
+    "brs/client-component-allowlist (implementation_plan.md §13.4 rule 5).",
     "",
     "WHY: the Next.js 15 App Router ships a ~110 KB gzip React runtime floor",
     "before a line of our code. The only budget we control is first-party JS,",
-    "capped at 15 KB (\u00a74.7). That budget erodes one convenient 'use client' at",
+    "capped at 15 KB (§4.7). That budget erodes one convenient 'use client' at",
     "a time, so adding an island must be a deliberate, reviewable act.",
     "",
     "Phase L permitted exactly TWO islands, listed first below.",
@@ -21,18 +21,25 @@
     "disabled, and each one below has to say what happens when it does.",
     "",
     "Before adding an entry, ask: can this be a Server Component? On an",
-    "archive site the answer is almost always yes."
+    "archive site the answer is almost always yes.",
+    "",
+    "THE ADMIN AREA (/admin) is a client application by necessity and the",
+    "budget argument does not apply to it: it is authenticated, it is",
+    "noindex, no visitor ever loads it, and Next code-splits it away from",
+    "every public route. It cannot work without JavaScript, and that is",
+    "stated rather than pretended otherwise — signing in and writing to a",
+    "CMS is not a no-JS activity."
   ],
   "allow": [
     {
       "file": "src/components/landing/ZoneRail.tsx",
-      "reason": "Scroll-position observation and aria-current updates on the zone rail. Must remain a real <nav> of anchor links, keyboard traversable (\u00a74.3).",
+      "reason": "Scroll-position observation and aria-current updates on the zone rail. Must remain a real <nav> of anchor links, keyboard traversable (§4.3).",
       "phase": "L",
       "status": "reserved"
     },
     {
       "file": "src/components/landing/ZoneD_RecordStrip.tsx",
-      "reason": "Drag/wheel scrubbing and arrow-key navigation on the 2005-2026 Record axis. Renders as a semantic <ol> and becomes a static list under prefers-reduced-motion (\u00a74.5).",
+      "reason": "Drag/wheel scrubbing and arrow-key navigation on the 2005-2026 Record axis. Renders as a semantic <ol> and becomes a static list under prefers-reduced-motion (§4.5).",
       "phase": "L",
       "status": "reserved"
     },
@@ -50,7 +57,7 @@
     },
     {
       "file": "src/components/showcase/KeyFacts.tsx",
-      "reason": "Scrub-linked un-skew of three figure plates. WITHOUT JS: the three plates are already in their final positions in the DOM and simply render as a static row \u2014 the transforms are the entrance, not the layout.",
+      "reason": "Scrub-linked un-skew of three figure plates. WITHOUT JS: the three plates are already in their final positions in the DOM and simply render as a static row — the transforms are the entrance, not the layout.",
       "phase": "M",
       "status": "built"
     },
@@ -71,6 +78,102 @@
       "reason": "Scroll-scrubbed canvas of a 240-frame exploded-view assembly. Frames are decoded up front and the pin is not armed until they are ready. WITHOUT JS, under prefers-reduced-motion, and below 768px: renders a single static frame as a plain <img> with full alt text and fetches none of the 9 MB sequence.",
       "phase": "M",
       "status": "built"
+    },
+    {
+      "file": "src/components/admin/Session.tsx",
+      "reason": "Holds the signed-in user for the whole admin area. Without JS there is no session and no admin panel; the public site is unaffected.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/Shell.tsx",
+      "reason": "Admin frame: navigation, sign-out, and the redirect to /admin/login. Shows only what the signed-in role can do.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/ui.tsx",
+      "reason": "Form controls, notices and confirmations for the admin area.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/PhotoPicker.tsx",
+      "reason": "Uploads a photograph through the ingest service and picks an existing one.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/login/page.tsx",
+      "reason": "The sign-in form.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/page.tsx",
+      "reason": "Overview: the approval queue and your recent posts.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/posts/page.tsx",
+      "reason": "Blog post list.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/posts/edit/page.tsx",
+      "reason": "Write, submit and approve a blog post.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/photos/page.tsx",
+      "reason": "Upload and describe photographs.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/committee/page.tsx",
+      "reason": "Committee sections, positions and members in one screen.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/people/page.tsx",
+      "reason": "Everyone on record.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/events/page.tsx",
+      "reason": "Events.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/achievements/page.tsx",
+      "reason": "Competition results, with the verification rule enforced in the form.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/partners/page.tsx",
+      "reason": "Partners and press coverage.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/accounts/page.tsx",
+      "reason": "Create and remove accounts; assign Administrator or Member.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/RecordEditor.tsx",
+      "reason": "List/add/edit/delete for the collections with no workflow behind them (events, achievements, partners, press, people). One implementation instead of five near-identical screens.",
+      "phase": "Admin",
+      "status": "active"
     }
   ]
 }

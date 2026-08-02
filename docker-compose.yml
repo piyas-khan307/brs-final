@@ -114,6 +114,27 @@ services:
       # Assets live in object storage, never in the CMS container.
       STORAGE_LOCATIONS: local
       WEBSOCKETS_ENABLED: "false"
+      # The club's admin panel is a page on the website (/admin), not this
+      # container's own UI, so the browser calls Directus cross-origin.
+      # Off by default in Directus 11, and the failure is a silent CORS
+      # error in the console rather than anything server-side.
+      #
+      # An explicit origin, never "*": with credentials enabled a wildcard
+      # is both refused by browsers and wrong in principle. Production must
+      # set this to the site's real origin.
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "http://localhost:3000"
+      CORS_CREDENTIALS: "true"
+      # The session survives a page reload via an HttpOnly refresh cookie.
+      # SameSite=Lax (the default) sends it to a different PORT on the same
+      # site, which is why localhost:3000 → localhost:8055 works, and it
+      # will keep working for brs.org → cms.brs.org.
+      #
+      # It will NOT work if Directus ends up on an unrelated domain. That
+      # needs REFRESH_TOKEN_COOKIE_SAME_SITE=none plus
+      # REFRESH_TOKEN_COOKIE_SECURE=true and real HTTPS, and the symptom
+      # until then is being signed out on every refresh with no error.
+      REFRESH_TOKEN_COOKIE_SAME_SITE: "lax"
     volumes:
       - directus_uploads:/directus/uploads
 

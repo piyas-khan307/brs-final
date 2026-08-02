@@ -1,26 +1,41 @@
 # The admin panel
 
-Directus, at `http://localhost:8055` in development. It is a window onto the
-club's database — it presents the schema, it does not define it. Structure
-comes from the migrations in `packages/db/migrations`, always.
+**`/admin` on the website itself.** In development that is
+`http://localhost:3000/admin/login`. One address, one login, everything in
+one place.
+
+Behind it sits Directus, which does the authentication and enforces every
+permission — but nobody at the club ever needs to open it.
 
 ## Setting it up
 
 ```bash
-docker compose up -d          # postgres, minio, directus
-pnpm --filter @brs/db migrate # apply any pending schema changes
+docker compose up -d           # postgres, minio, directus
+pnpm --filter @brs/db migrate  # apply any pending schema changes
 pnpm --filter @brs/cms configure
+pnpm --filter @brs/ingest start   # the uploader (needed for photographs)
+pnpm --filter @brs/web dev        # the site, including /admin
 ```
 
-`configure` is idempotent — run it whenever `apps/cms/model.mjs` changes, or
-after a migration adds a table. Use `configure:dry` to see what it would do
-first.
+## Why there are two things called "the admin panel"
 
-Everything the admin panel looks like lives in **`apps/cms/model.mjs`**: the
-plain-English names, the notes under each field, which tables are hidden.
-Change it there and re-run, never by clicking in the UI — settings made in the
-UI live only in a database nobody backs up alongside the code, and vanish with
-`docker compose down -v`.
+**`/admin` on the website** is what the club uses. Custom screens built
+around jobs: *Write a post*, *Add a member to the committee*, *Upload a
+photograph*.
+
+**Directus's own UI** at `http://localhost:8055` still exists and still
+works. It is the developer's fallback — every table, no guard rails. Reach
+for it when something needs fixing that the club's screens do not cover.
+
+The reason both exist is that Directus presents **tables**, and adding one
+person to a committee is three rows in three tables in an order nobody
+guesses. `/admin` turns that into one form. Everything else — authentication,
+permissions, validation — is still Directus, so there is no second security
+model to keep in step.
+
+`apps/cms/configure` is still required: it sets up the two roles and the
+permissions that `/admin` relies on. It is idempotent; run it after any
+migration. Use `configure:dry` to see what it would do first.
 
 ## The two roles
 
@@ -70,17 +85,20 @@ Three levels, and both middle levels are things an Administrator creates. No
 migration is needed to add a team or invent a position.
 
 ```
-Committees            11th Executive Committee
-└── Committee Sections    Standing Committee · Design Team · Workshop Team
-    └── Positions             President · Treasurer · Head · Member
-        └── Committee Placements  puts a person in a position
+Committee               11th Executive Committee
+└── Section             Standing Committee · Design Team · Workshop Team
+    └── Position        President · Treasurer · Head · Member
+        └── Person      with a photograph
 ```
 
-**People** is one row per person, reused across every committee they serve on —
-that is what keeps the alumni record intact when someone serves twice.
+**To add someone**, open **Committee**, find the position, and press *Add a
+person*. Name, title, photograph, done — the three underlying rows are written
+for you.
 
-To add someone: create them under **People**, then add a **Committee
-Placement** naming the committee and position.
+If the name matches somebody already on record, the form offers them. Choose
+the existing person when it is the same person: that is what keeps their
+history intact across committees. Two students genuinely can share a name, so
+it never merges automatically.
 
 > ⚠ **Never put a phone number or personal address in the People table.**
 > The source rosters contain ~470 students' mobile numbers. The table has no

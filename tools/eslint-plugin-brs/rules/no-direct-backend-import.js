@@ -43,6 +43,18 @@ const ALLOWED_PATH_FRAGMENTS = [
   // rule protects the FRONTEND from is this service's entire job. It is
   // unroutable from outside; see apps/ingest/src/index.ts.
   "apps/ingest",
+  // The admin area. This rule exists to keep the PUBLIC site independent
+  // of any CMS, and it still does: /admin is authenticated, noindex, code
+  // split away from every public route, and no visitor ever loads it.
+  //
+  // It has to reach Directus because /v1 is deliberately read-only and
+  // unauthenticated — the property that keeps the site up when everything
+  // else is down. The alternative was a second authenticated write API
+  // duplicating Directus's permission engine, and two permission systems
+  // that must agree is a security bug waiting for its moment.
+  "apps/web/src/app/admin",
+  "apps/web/src/components/admin",
+  "apps/web/src/lib/admin",
 ];
 
 function isAllowed(filename) {
