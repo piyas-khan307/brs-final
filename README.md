@@ -18,12 +18,22 @@ Where the two specs conflict, `implementation_plan.md` wins.
 
 ## Current phase
 
-**Phase 0 — foundation.** Complete. See "Phase 0 status" below.
+**Phase 0 — foundation.** Complete.
 
-**Phase L — landing page — has NOT started.** Per `implementation_plan.md`
-§5.3, nothing else on the frontend track may be built until the landing page
-passes the Landing Gate. `apps/web/src/app/page.tsx` is currently a **token
-proof sheet**, not the landing page; delete it when Phase L begins.
+**Phase L — landing page.** Complete. `apps/web/src/app/page.tsx` is the
+motion sheet; the earlier static design is kept at `/sheet-01`.
+
+**Phase B — backend, uploader, admin panel.** Complete. Postgres, object
+storage, the `/v1` façade, the ingest pipeline, Docker images, and a custom
+admin panel at `/admin`.
+
+**Phase C — the remaining pages.** In progress. `/executive-committee` ships
+with the 11th Executive Committee, 84 people loaded through the real
+pipeline. Twelve pages remain.
+
+**Known gaps, all of them because the source does not say:** the 11th
+committee's term years, two members' portraits, and every committee before
+the 11th. See [`docs/ADMIN.md`](docs/ADMIN.md).
 
 ---
 
@@ -44,16 +54,64 @@ frontend untouched. See [ADR 0001](docs/adr/0001-decoupling-boundary.md).
 
 ---
 
-## Getting started
+## Running it
+
+**First time only:**
 
 ```sh
+cp .env.example .env              # the defaults work as-is for local dev
 pnpm install
-docker compose up -d postgres directus   # Plane 1 + 2 (requires a running Docker daemon)
-pnpm --filter @brs/web dev               # http://localhost:3000
+docker compose up -d              # postgres, minio, directus (needs Docker running)
+pnpm --filter @brs/db migrate     # create/update the schema
+pnpm --filter @brs/cms configure  # roles, permissions, admin-panel labels
 ```
 
-Copy `.env.example` to `.env` first. The frontend reads exactly one backend
-coordinate: `NEXT_PUBLIC_BRS_API`.
+**Every time after that:**
+
+```sh
+docker compose up -d              # the three containers
+pnpm dev                          # api, uploader and website together
+```
+
+That's it — two commands. `pnpm dev` runs all three Node services at once
+(`turbo run dev`); stop them with Ctrl-C.
+
+| What | Where |
+| --- | --- |
+| **The website** | http://localhost:3000 |
+| **The admin panel** | http://localhost:3000/admin/login |
+| The committee page | http://localhost:3000/executive-committee |
+| API (read-only, public) | http://localhost:8787/v1/health |
+| Uploader (internal only) | http://localhost:8790/health |
+| Directus — developer fallback | http://localhost:8055 |
+| MinIO console — object storage | http://localhost:9001 |
+
+Local accounts are created by the setup above and by
+`docs/ADMIN.md`; the dev Administrator is `admin@example.com` /
+`dev-only-change-me`. **Change both before this is on the internet.**
+
+### If the website shows stale content
+
+The site is a static export, so it reads content at BUILD time. After
+editing in the admin panel, regenerate and restart:
+
+```sh
+pnpm --filter @brs/web content    # re-fetch from the API into src/lib/*.generated.ts
+```
+
+Needs the API running. In production a Directus Flow calls a build hook
+instead — see `REBUILD_WEBHOOK_URL` in `.env.example`.
+
+### If nothing loads
+
+```sh
+docker compose ps                 # are the three containers up and healthy?
+curl localhost:8787/v1/health     # is the API talking to Postgres?
+```
+
+A blank admin panel with console errors about CORS means Directus is not
+running, or `CORS_ORIGIN` in `docker-compose.yml` does not match the address
+you are browsing from.
 
 ---
 
