@@ -45,6 +45,14 @@ export const COLLECTIONS = [
     note: "Workshops, competitions, Robo Carnival, seminars, AGMs — everything the club has run.",
   },
   {
+    name: "event_categories",
+    label: "Event Categories",
+    singular: "Event Category",
+    icon: "sell",
+    folder: "content",
+    note: "The kinds of event the club runs, and the subcategories under them. Add one here or from the category box while writing an event. Two levels only — a subcategory cannot have its own subcategories.",
+  },
+  {
     name: "event_segments",
     label: "Event Segments",
     singular: "Event Segment",
@@ -283,7 +291,14 @@ export const FIELDS = {
     created_by: { label: "Written by (account)", readonly: true, hidden: true },
     author_name: { label: "Byline", note: "The name shown on the post." },
     author_member_id: { label: "Author (person record)" },
-    body_format: { label: "Body format", note: "'md' for Markdown, 'html' for raw HTML." },
+    body_format: {
+      label: "Body format",
+      note:
+        "Set by the admin editor — leave it alone. 'doc' is the rich write-up " +
+        "(migration 0014), 'md' is an older markdown one. Editing the body here " +
+        "rather than in the panel will corrupt a 'doc' row.",
+      readonly: true,
+    },
     slug: { label: "URL slug", note: "The address of the post, e.g. 'robo-carnival-2024'." },
   },
 
@@ -330,6 +345,75 @@ export const FIELDS = {
       note: "Usually the same as the position. Differs for things like 'Vice President (Technical)'.",
     },
     sort_order: { label: "Order within the position" },
+  },
+
+  /* The club's own panel at /admin/events is the intended way in — this
+     wording is for the Directus fallback, and it has to agree with it. */
+  events: {
+    excerpt: {
+      label: "Summary",
+      note:
+        "One or two sentences for the card in the events feed. Between 20 and 320 " +
+        "characters, or empty for a photographs-only entry — the database enforces both ends.",
+    },
+    cover_asset_id: {
+      label: "Cover photograph",
+      note:
+        "An event with no cover is NOT shown on the site, however complete the rest of it is.",
+    },
+    author_name: { label: "Byline", note: "Who wrote the account. Blank for the old archive entries." },
+    published_at: {
+      label: "Went public",
+      note:
+        "When the write-up was published, which is not when the event happened. Required " +
+        "once 'Show on the website' is ticked.",
+    },
+    published: {
+      label: "Show on the website",
+      note: "Needs a cover photograph and a publication date. Prefer the Publish button in the club's own panel.",
+    },
+    body: {
+      label: "The write-up",
+      note:
+        "Markdown, past tense. Never paste registration links, deadlines or payment " +
+        "numbers from the original announcement — they are dead, and a page still asking " +
+        "people to sign up for a finished event is worse than no page.",
+    },
+    copy_source: {
+      label: "Where the words came from",
+      note:
+        "'derived' means lifted from the club's own announcement — the public page says " +
+        "so. 'authored' means somebody wrote it for the site.",
+    },
+    start_date: {
+      label: "Date",
+      note: "May be left empty. Much of the archive is a folder with a year and no date; a blank is true and a guess is not.",
+    },
+  },
+
+  event_categories: {
+    name: {
+      label: "Name",
+      required: true,
+      note: "As it should read on the site, e.g. 'AGM', not 'agm'. This is the text a visitor sees.",
+    },
+    slug: {
+      label: "Address",
+      required: true,
+      note:
+        "The category's part of a web address, e.g. /events?category=workshop. " +
+        "Lower case, words joined by hyphens. Changing it breaks any link already " +
+        "shared, so set it once and leave it.",
+    },
+    parent_id: {
+      label: "Belongs under",
+      note:
+        "Empty for a top-level kind. Set it to make this a subcategory, e.g. " +
+        "'Basic Workshop' under 'Workshop'. Two levels only — a subcategory " +
+        "cannot have subcategories of its own, and the database refuses.",
+    },
+    sort_order: { label: "Order", note: "Lower numbers appear first in the category box." },
+    created_at: { label: "Added", readonly: true },
   },
 
   achievements: {

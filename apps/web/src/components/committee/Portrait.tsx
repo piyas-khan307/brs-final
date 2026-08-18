@@ -4,8 +4,13 @@ import type { CommitteeMember } from "@/lib/committee.generated";
  * ══════════════════════════════════════════════════════════════════════
  * A COMMITTEE PORTRAIT.
  *
- * Server component, no hooks, no client JS — this page renders 84 of
- * these and none of them needs to react to anything.
+ * No hooks and no client JS of its own — this page renders 84 of these
+ * and none of them needs to react to anything. The whole reveal
+ * behaviour is CSS, in `@layer components` under "THE ROSTER".
+ *
+ * The photograph is shown WHOLE, on a dark mount, never cropped to fit.
+ * Both halves of that are explained where they are implemented:
+ * `.roster-frame` and `--brs-mount` in globals.css.
  *
  * ── ON THE MISSING TWO ──
  * Two of the 84 announcement posters for the 11th Executive Committee
@@ -59,19 +64,16 @@ export function Portrait({
 }) {
   if (!member.portrait) {
     return (
+      // The same mount as a photograph, at the same square, so a row with
+      // a missing print in it still reads as a row.
       <div
-        // aspect-square, not a fixed height: it has to match the framed
-        // photographs beside it at every breakpoint or the row breaks.
-        className="flex aspect-square w-full items-center justify-center border border-line-hairline bg-bg-inset"
+        className="roster-frame roster-frame--empty"
         // Not aria-hidden. A screen-reader user is told the same thing a
         // sighted one is: there is no photograph of this person.
         role="img"
         aria-label={`${member.name} — no photograph on file`}
       >
-        <span
-          aria-hidden="true"
-          className="font-mono text-heading-m uppercase tabular text-text-tertiary"
-        >
+        <span aria-hidden="true" className="roster-initials">
           {initials(member.name)}
         </span>
       </div>
@@ -82,10 +84,18 @@ export function Portrait({
   const fallback = portrait.webp[portrait.webp.length - 1];
 
   return (
-    // `block` matters: <picture> is inline and has no intrinsic size, so
-    // an <img> sizing itself against it resolves against a zero-height box
-    // and object-cover silently never engages.
-    <picture className="block aspect-square w-full overflow-hidden border border-line-hairline">
+    // `.roster-frame` sets display:block, and that matters: <picture> is
+    // inline and has no intrinsic size, so an <img> sizing itself against
+    // it resolves against a zero-height box and object-fit never engages.
+    <picture
+      className="roster-frame"
+      // THE SHAPE COMES FROM THE PHOTOGRAPH, not from the layout. Set
+      // here rather than in globals.css because it is per-asset data,
+      // and it is what makes "nothing is cropped" true for any ratio an
+      // administrator uploads — the box is already the right shape, so
+      // there is nothing for object-fit to trim or to letterbox.
+      style={{ aspectRatio: `${portrait.width} / ${portrait.height}` }}
+    >
       <source type="image/avif" srcSet={srcSet(portrait.avif)} sizes={sizes} />
       <source type="image/webp" srcSet={srcSet(portrait.webp)} sizes={sizes} />
       <img
@@ -96,14 +106,22 @@ export function Portrait({
         sizes={sizes}
         loading={eager ? "eager" : "lazy"}
         decoding="async"
-        // The portraits are 930×895 — very nearly square. object-cover
-        // into a square frame trims about 17px from each side and nothing
-        // at all from the top, so no head is ever cropped.
-        className="h-full w-full object-cover"
+        // WHOLE IMAGE, NEVER CROPPED — object-fit: contain, set in
+        // globals.css on `.roster-frame > img`. This used to be `cover`,
+        // which was harmless on the poster crops (930×895, so it trimmed
+        // 17px of background) and is not harmless at all on the first
+        // 9:16 phone photograph an administrator uploads: cover takes the
+        // top of the head off. Club instruction, and the right one.
+        //
+        // The cost is letterboxing, and the mount is what pays it.
         style={{
+          // `contain`, matching the image's own fit, so the placeholder
+          // lands exactly where the photograph will and the mount is not
+          // filled with a stretched blur that never goes away.
           backgroundImage: `url("${portrait.lqip}")`,
-          backgroundSize: "cover",
+          backgroundSize: "contain",
           backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
       />
     </picture>

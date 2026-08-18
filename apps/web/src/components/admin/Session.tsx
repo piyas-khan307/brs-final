@@ -22,7 +22,14 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-import { login as apiLogin, logout as apiLogout, me, refreshSession, type Me } from "@/lib/admin/client";
+import {
+  login as apiLogin,
+  logout as apiLogout,
+  me,
+  refreshSession,
+  setOnSignedOut,
+  type Me,
+} from "@/lib/admin/client";
 
 type SessionState = {
   user: Me | null;
@@ -64,6 +71,16 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  /* A session can die while a form is open — the refresh token has a
+     lifetime and it does not care what you are in the middle of. When the
+     next request proves it, drop the user here so the shell shows the
+     login page, instead of leaving the form up to collect clicks that
+     cannot save. */
+  useEffect(() => {
+    setOnSignedOut(() => setUser(null));
+    return () => setOnSignedOut(null);
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {

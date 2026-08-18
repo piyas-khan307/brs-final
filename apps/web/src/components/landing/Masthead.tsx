@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { COMMITTEES } from "@/lib/committees.generated";
+
 /**
  * MASTHEAD — §4.3.
  *
@@ -16,9 +18,15 @@ import Link from "next/link";
 const NAV = [
   { label: "Record", href: "/achievements" },
   { label: "Events", href: "/events" },
-  { label: "Committee", href: "/executive-committee" },
   { label: "Explore", href: "/explore" },
 ];
+
+/** Everything except the term currently in office. Newest first — the
+ *  index is already in that order, so this preserves it. */
+const PREVIOUS = COMMITTEES.filter((c) => !c.current);
+
+const years = (start: number | null, end: number | null) =>
+  start !== null && end !== null ? `${start}–${String(end).slice(-2)}` : null;
 
 export function Masthead() {
   return (
@@ -54,6 +62,64 @@ export function Masthead() {
                 </Link>
               </li>
             ))}
+
+            {/* ── COMMITTEE, WITH ITS ARCHIVE UNDER IT ──────────────────
+                Hover it for Current and Previous; hover Previous for
+                every term on record. CSS only — see `.nav-menu` in
+                globals.css for why, and for what happens on a keyboard
+                and on a touchscreen.
+
+                The trigger is still a LINK, not a button that only opens
+                a menu. Clicking "Committee" goes to the current committee,
+                which is what it did before this existed and what someone
+                who never hovers will expect. The menu is an accelerator,
+                never the only way through. */}
+            <li className="nav-menu flex h-16 items-center">
+              <Link
+                href="/executive-committee"
+                className="font-mono text-micro uppercase text-text-secondary no-underline transition-colors duration-micro ease-out hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus-ring"
+              >
+                Committee
+              </Link>
+
+              <div className="nav-panel">
+                <Link href="/executive-committee" className="nav-item">
+                  Current
+                  <span className="nav-item__meta">
+                    {COMMITTEES.find((c) => c.current)?.ordinal ?? "—"}
+                  </span>
+                </Link>
+
+                {PREVIOUS.length ? (
+                  <div className="nav-sub relative">
+                    <Link href="/executive-committee/archive" className="nav-item">
+                      Previous
+                      {/* The arrow points at the submenu, which opens to
+                          the left because this sits near the right edge
+                          of the shell. */}
+                      <span className="nav-item__meta" aria-hidden="true">
+                        ←
+                      </span>
+                    </Link>
+
+                    <div className="nav-panel">
+                      {PREVIOUS.map((c) => (
+                        <Link
+                          key={c.ordinal}
+                          href={`/executive-committee/${c.ordinal}`}
+                          className="nav-item"
+                        >
+                          {c.label}
+                          <span className="nav-item__meta">
+                            {years(c.termStart, c.termEnd) ?? "—"}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </li>
           </ul>
           <Link
             href="/explore/join"

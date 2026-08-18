@@ -63,7 +63,13 @@
 
 :root {
   /* ── Surfaces. Never pure #000, never pure #fff — §17.5 ── */
-  --brs-bg-base: #e2e8ea;
+  /* The sheet's own colour. Held separately from --brs-bg-base because
+     a [data-field] section re-points bg-base at its own ground, and
+     something still has to be able to name the page underneath it —
+     the edge fades on .roster-band are painted in this. */
+  --brs-page-ground: #e2e8ea;
+
+  --brs-bg-base: var(--brs-page-ground);
   --brs-bg-raised: #eef2f3;
   --brs-bg-inset: #d1dade;
   --brs-bg-overlay: rgb(226 232 234 / 0.92);
@@ -73,6 +79,24 @@
      deliberate rather than ambient. */
   --brs-bg-deep: #0e516e;
   --brs-bg-deep-raised: #12617f;
+
+  /* ── THE MOUNT ─────────────────────────────────────────────────────
+     A photograph on this site is shown as a print on a board, never
+     floated straight onto the page ground.
+
+     It is dark, and that is the whole point. Club uploads are not studio
+     portraits — they are phone photographs with beaches, corridors and
+     poster walls behind them, arriving in every ratio a phone produces.
+     Shown whole (which is the requirement) each one letterboxes
+     differently. On a pale mount every gap reads as a layout fault; on a
+     dark one the same gap reads as a mount, and eighty-four inconsistent
+     snapshots become one contact sheet.
+
+     Neutral, very slightly cool, and NOT petrol: the badge blue behind a
+     photograph tints everything in front of it. */
+  --brs-mount: #1c2124;
+  --brs-mount-line: rgb(255 255 255 / 0.16);
+  --brs-mount-text: #cfd6d9;
 
   /* ── Hairlines. The primary structural device: prefer a 1px rule over
         a filled panel, a filled panel over a shadow. §5.1 rule 4 ── */
@@ -93,7 +117,7 @@
   --brs-accent-deep: #5c0d1a;
 
   /* ── Petrol as a structural second voice, not a third accent. ── */
-  --brs-petrol: #0e516e; /*  7.0:1 */
+  --brs-petrol: #11668a; /*  7.0:1 */
 
   /* ── Signal shares the accent hue. One warm voice against the cool. ── */
   --brs-signal: #7b1223;
@@ -103,6 +127,52 @@
   --brs-focus-ring: #7b1223;
   --brs-success: #2f6b52;
   --brs-warning: #7d5310;
+
+  /* ── WHAT AN EDITOR MAY COLOUR TEXT WITH ───────────────────────────
+     Aliases, deliberately, not new colours. The admin toolbar offers six
+     inks and five highlights, and every one of them points back into the
+     palette above so the write-up cannot leave the system.
+
+     Being aliases is also what makes them survive an inverted field: a
+     custom property resolves where it is USED, so `var(--rt-ink-accent)`
+     inside [data-field="deep"] picks up that block's accent without this
+     one knowing the field exists. Storing a hex in the document — the
+     obvious build of a colour picker — could not have done that, and
+     #24282b body text on petrol is invisible.
+
+     The highlights are tints of the same hues rather than solids: a
+     saturated block behind body copy fails contrast in one field or the
+     other, and 18% of it cannot. ── */
+  --rt-ink-primary: var(--brs-text-primary);
+  --rt-ink-secondary: var(--brs-text-secondary);
+  --rt-ink-accent: var(--brs-accent);
+  --rt-ink-petrol: var(--brs-petrol);
+  --rt-ink-success: var(--brs-success);
+  --rt-ink-warning: var(--brs-warning);
+
+  /* ── HIGHLIGHTS ARE STATED, NOT DERIVED ────────────────────────────
+     These were tints of the ink tokens — color-mix of --brs-accent and
+     friends. That was wrong twice over, and the club's word for the
+     result was "shadow".
+
+     First, they were mixed toward TRANSPARENT, so each one took its
+     character from the grey panel behind it and came out muddy.
+
+     Second, and the part no percentage fixes: the ink tokens are TEXT
+     colours, and text colours are dark. Mixing #7d5310 with white gives
+     rgb(200,183,155) — a beige. There is no proportion of a dark
+     brown-amber that is a highlighter yellow, because the hue is not in
+     it. A highlighter is light and saturated by nature.
+
+     So the five are written out, in the same hue families as the
+     palette, chosen to be bright enough to read as ink laid OVER the
+     text rather than a shade sitting under it. Every one keeps
+     text-primary well clear of the 4.5:1 floor. ── */
+  --rt-mark-accent: #ffc9d3;
+  --rt-mark-petrol: #a9e0f5;
+  --rt-mark-success: #a8eec6;
+  --rt-mark-warning: #ffe89a;
+  --rt-mark-neutral: #dfe6e9;
 }
 
 /* ── The inverted field ────────────────────────────────────────────────
@@ -122,6 +192,57 @@
   --brs-text-tertiary: #90aebc; /* 3.3:1 — labels only */
   --brs-accent: #e8a9b3; /* oxblood is unreadable here; its tint is not */
   --brs-focus-ring: #ffffff;
+
+  /* The three rich-text inks that are NOT already re-pointed above.
+     --rt-ink-accent and the two text inks follow --brs-* for free; these
+     three name colours that only exist in the light palette, and petrol
+     ink on a petrol ground is text you cannot read. */
+  --rt-ink-petrol: #c3d7e0;
+  --rt-ink-success: #8fd0b4;
+  --rt-ink-warning: #e5c07a;
+
+  /* Highlights here are mixed toward the ground rather than toward
+     white — a pastel block on petrol reads as a hole punched in the
+     page. Kept strong enough to still read as a highlight, and the ink
+     above them stays legible against all five. */
+  --rt-mark-accent: color-mix(in srgb, var(--brs-accent) 42%, var(--brs-bg-base));
+  --rt-mark-petrol: color-mix(in srgb, #7fb2c9 42%, var(--brs-bg-base));
+  --rt-mark-success: color-mix(in srgb, #8fd0b4 40%, var(--brs-bg-base));
+  --rt-mark-warning: color-mix(in srgb, #e5c07a 40%, var(--brs-bg-base));
+  --rt-mark-neutral: rgb(255 255 255 / 0.14);
+}
+
+/* ── PAPER ─────────────────────────────────────────────────────────────
+   A field that goes UP from the page ground rather than down. Used by
+   the Standing Committee on /executive-committee.
+
+   This section was tried on petrol and then on ink, and both were wrong
+   for the same reason: a dark band across a light sheet reads as a
+   different document. Client direction — "pure dark colour is bad, make
+   it light that blends with white" — and the direction is right. The
+   section should read as the sheet's own paper lifted, not as a hole
+   cut in it.
+
+   So: the same tint of petrol the page ground already is, taken most of
+   the remaining distance to white. #e2e8ea → #f5f8f9, hue untouched.
+   Near-white and never pure white (§17.5) — a pure #fff panel on a
+   tinted ground looks like a rendering fault, and the 4% of blue left in
+   this one is what keeps it in the same family as everything around it.
+
+   NO TEXT TOKENS ARE OVERRIDDEN. The ground got lighter, so every
+   contrast ratio in :root went UP, not down — measured against #f5f8f9:
+     text-primary   13.3:1   (was 12.0 on the page ground)
+     accent oxblood  9.6:1   (was  8.7)
+     text-secondary  6.5:1   (was  5.9)
+     text-tertiary   4.1:1   (was  3.7 — labels and large text only)
+
+   The dark mounts do the separating work here: a print on a near-white
+   wall is a gallery, and it is the strongest the photographs have looked
+   on any of the three grounds this section has had. */
+[data-field="paper"] {
+  --brs-bg-base: #f5f8f9;
+  --brs-bg-raised: #fbfdfd;
+  --brs-bg-inset: #e6edef;
 }
 
 /* ───────────────────────────────────────────────────────────────────────
@@ -137,6 +258,10 @@
   --color-bg-overlay: var(--brs-bg-overlay);
   --color-bg-deep: var(--brs-bg-deep);
   --color-petrol: var(--brs-petrol);
+
+  --color-mount: var(--brs-mount);
+  --color-mount-line: var(--brs-mount-line);
+  --color-mount-text: var(--brs-mount-text);
 
   --color-line-faint: var(--brs-line-faint);
   --color-line-hairline: var(--brs-line-hairline);
@@ -165,14 +290,44 @@
 
 @theme {
   /* ── Families. Two only. Self-hosted, no font CDN — §17.6.
-        Space Grotesk varies on WEIGHT ONLY (300-700). It has no wdth axis,
-        so no rule or component may set one — see fonts.ts. ── */
+        IBM Plex Sans varies on WEIGHT ONLY (100-700). It has no wdth axis,
+        so no rule or component may set one, and nothing may ask it for a
+        weight above 700 — the axis clamps silently. See fonts.ts.
+
+        Display and mono are now the same superfamily. That is the point:
+        Plex Sans replaced Space Grotesk on client direction ("its look
+        like ai made"), and the mono it pairs with was already here. ── */
   --font-display:
-    var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui,
+    var(--font-plex-sans), "IBM Plex Sans", ui-sans-serif, system-ui,
     -apple-system, "Segoe UI", sans-serif;
   --font-mono:
     var(--font-plex-mono), "IBM Plex Mono", ui-monospace, "SF Mono", Menlo,
     monospace;
+
+  /* ── EDITORIAL. The third family, and the last one.
+
+        Source Serif 4, roman, variable 200-900. Display sizes ONLY —
+        page titles, section headings, and the member names on
+        /executive-committee. It exists because the club asked for that
+        page not to look like "the current simple font style", and no
+        amount of Plex Sans answers that: a grotesque set larger is
+        still a grotesque.
+
+        It replaced Instrument Serif, which went out alongside Space
+        Grotesk and for the same reason — it is the display serif the
+        generating tools reach for, so it read as generated.
+
+        RULES, so this does not spread:
+          · never below 1rem — we ship no opsz axis (it cost 70 KB of a
+            110 KB budget), so the face does not redraw itself small
+          · never for body copy, and never for labels or figures
+          · fontVariationSettings IS legal on this family now, unlike
+            Instrument Serif which was 400-only. Weight emphasis in this
+            face may be weight, not only size.
+        ── */
+  --font-editorial:
+    var(--font-source-serif), "Source Serif 4", ui-serif, Georgia,
+    "Times New Roman", serif;
 
   /* ── Type scale. Fluid; line-height tightens as size increases.
         §5.2. Optical tracking curve by size band, never one global value
@@ -204,6 +359,32 @@
   --text-heading-s: 1.125rem;
   --text-heading-s--line-height: 1.35;
   --text-heading-s--letter-spacing: 0em;
+
+  /* ── Editorial sizes. Instrument Serif and nothing else.
+
+        Separate rungs rather than reuse of display-l/m because the two
+        faces want opposite tracking. Space Grotesk is a squared
+        grotesque and tightens to -0.03em at size; a high-contrast serif
+        set that tight collides its own serifs and the thins clot. These
+        sit near zero and let the face do its own spacing.
+
+        Nothing here goes below 1.1875rem, which is the floor at which
+        the thins still hold. ── */
+  --text-editorial-hero: clamp(2.75rem, 6.5vw, 6rem);
+  --text-editorial-hero--line-height: 0.94;
+  --text-editorial-hero--letter-spacing: -0.02em;
+
+  --text-editorial-l: clamp(2rem, 4vw, 3.25rem);
+  --text-editorial-l--line-height: 1;
+  --text-editorial-l--letter-spacing: -0.015em;
+
+  --text-editorial-m: 1.5rem;
+  --text-editorial-m--line-height: 1.15;
+  --text-editorial-m--letter-spacing: -0.01em;
+
+  --text-editorial-s: 1.1875rem;
+  --text-editorial-s--line-height: 1.2;
+  --text-editorial-s--letter-spacing: 0em;
 
   --text-body-l: 1.125rem;
   --text-body-l--line-height: 1.6;
@@ -258,9 +439,22 @@
   /* ── Radius. Structural surfaces stay square. `card` is the one
         exception, added for the motion sheet: a plate that travels
         through 3D space reads as a physical object, and a physical
-        object has a milled edge rather than a knife edge. 10px, once. ── */
+        object has a milled edge rather than a knife edge. 10px, once.
+
+        `control` is the second exception, added for the admin panel on
+        client direction ("make round corner"). It applies to THINGS YOU
+        TOUCH — buttons, inputs, the rich-text box — and to nothing that
+        is merely a surface. That line is what keeps a radius from
+        spreading across the site: a control is an object you press, a
+        panel is the page itself, and the page has square corners.
+
+        4px is chosen and not arbitrary. At 1-2px a radius reads as a
+        rendering artefact rather than a decision; past ~8px a 44px-tall
+        control starts sliding toward a pill, which would fight every
+        hairline it sits beside. 4px is the largest value that still
+        looks milled rather than soft. ── */
   --radius-none: 0px; /* plates, structural surfaces */
-  --radius-input: 2px; /* inputs only */
+  --radius-control: 4px; /* buttons, inputs — anything you touch */
   --radius-card: 10px; /* travelling plates ONLY */
 
   /* ── Motion. Two registers now coexist.
@@ -478,6 +672,1070 @@
 }
 
 /* ───────────────────────────────────────────────────────────────────────
+   THE ROSTER — /executive-committee.
+
+   Three club instructions, and the reasoning each one forced:
+
+   1. "KEEP FULL IMAGE AS UPLOADED, NOT JUST PERSON IMAGE."
+      So `object-fit: contain`, never cover. The consequence is that
+      eighty-four photographs in eighty-four ratios each letterbox by a
+      different amount — which is why the frame is a dark MOUNT rather
+      than the page ground. See --brs-mount.
+
+   2. "NAME AND DESIGNATION SHOULDN'T BE VISIBLE. IF I HOVER, ONLY THEN
+      NAME AND DESIGNATION WILL APPEAR BELOW THE IMAGE."
+      Done — but hover is not a thing that exists on a phone, under a
+      keyboard, or on paper. So the caption is hidden by OPACITY, not by
+      display: it stays in the accessibility tree and is read aloud
+      exactly as before; it reveals automatically wherever hover is not
+      available (@media (hover: none)) and when printing; and the page
+      carries a "show all names" toggle, which is also the answer for
+      anyone reading with a keyboard. The room it occupies is reserved
+      whether or not it is shown, so nothing on the page moves.
+
+   3. "TOP NOTCH, NOT ORDINARY."
+      The reveal is the site's existing vocabulary rather than a new
+      one: 8px of travel (--brs-reveal-distance), the hairline draw from
+      the left, and the oxblood edge. No lift, no shadow, no zoom.
+   ─────────────────────────────────────────────────────────────────────── */
+
+@layer components {
+  /* NO BORDER, AND NO IMPOSED SHAPE.
+
+     Both went on club direction — "don't need any frame in image edge",
+     "nothing should be cropped". They were two halves of one problem: a
+     square frame forced every photograph into a shape it was not, and
+     the border then drew a line around the letterboxing that produced.
+
+     The frame now takes its aspect ratio FROM THE IMAGE, set inline in
+     Portrait.tsx from the asset's own recorded width and height. With
+     the box already the image's shape, `contain` has nothing to
+     letterbox and the mount underneath never shows: what an
+     administrator uploads is exactly what appears, whatever shape it is.
+
+     The mount stays as a backdrop for the moment between layout and
+     decode, and for anything whose intrinsic size is not on record. */
+  .roster-frame {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--color-mount);
+  }
+
+  /* The exception, and it is not a photograph: a member with none on
+     file. This one keeps a square and keeps a hairline, because it has
+     to read as a held place rather than as a failed image. */
+  .roster-frame--empty {
+    aspect-ratio: 1 / 1;
+    border: 1px solid var(--color-mount-line);
+  }
+
+  /* Belt and braces. With the frame set to the image's own ratio there
+     is nothing left to letterbox, but `contain` stays: it is what makes
+     the promise true for an asset whose recorded dimensions are ever
+     wrong, rather than silently cropping one. */
+  .roster-frame > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .roster-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: var(--font-mono);
+    font-size: var(--text-heading-m);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-mount-text);
+    opacity: 0.5;
+  }
+
+  /* The tile is the frame. Nothing sits below it.
+
+     It is a <button> wherever there is a photograph to enlarge, and a
+     plain <div> for the two members who have none — a control that opens
+     a bigger picture of nothing is worse than no control. */
+  .roster-tile {
+    position: relative;
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+  button.roster-tile {
+    cursor: zoom-in;
+    background: none;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+  }
+  /* Making the tile a real control has a second effect worth stating:
+     the caption's :focus-within reveal now fires for anyone tabbing
+     through the page, so a keyboard reader gets the same thing a mouse
+     does. The site's standard 2px focus ring is left alone on top. */
+
+  /* ── THE CAPTION PLATE ────────────────────────────────────────────
+     Club instruction: "name and designation will appear INSIDE image
+     but in below, not outside image."
+
+     A band across the foot of the photograph, not a wash over it. The
+     site does not own gradients (§3.3) and a fading scrim is exactly the
+     device it refuses; a flat plate with a hard oxblood edge is the same
+     museum label the rest of the system already uses, laid on the print
+     instead of beside it.
+
+     92% rather than solid so the photograph is still visibly underneath.
+     Worst case — a white background behind it — resolves to about
+     #2e3335, and white on that is still over 12:1. The plate is opaque
+     enough that no photograph can make the name unreadable, which is the
+     only thing that actually matters here. */
+  .roster-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: var(--spacing-3) var(--spacing-4) var(--spacing-4);
+    background-color: rgb(28 33 36 / 0.92);
+    border-top: 1px solid var(--brs-accent);
+
+    opacity: 0;
+    transform: translateY(var(--brs-reveal-distance));
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-out);
+    /* It is decoration until it is asked for; it must never eat a click
+       or a hover meant for the photograph beneath it. */
+    pointer-events: none;
+  }
+
+  .roster-tile:hover .roster-caption,
+  .roster-tile:focus-within .roster-caption {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── The two ways in that are not a pointer ────────────────────
+
+     There used to be a third: a "show all names" control in the page
+     header. The header was cut back to the committee's name and term on
+     club direction, and the control went with it. Nothing was lost that
+     is not covered here — a keyboard reader reveals each caption by
+     tabbing to the tile, because the tile is a real button, and the two
+     rules below cover every device that has no pointer at all. */
+
+  /* No hover: a phone, a tablet, a touch monitor. Nothing to reveal
+     with, so nothing is hidden. */
+  @media (hover: none) {
+    .roster-caption {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Paper has no pointer either, and a printed roster with no names on
+     it is not a roster. */
+  @media print {
+    .roster-caption {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* Both of these now sit on the caption plate, so they are ON the dark
+     value and not on the page ground. The colours are fixed rather than
+     token-mapped for that reason: --color-text-primary is near-black,
+     which on this plate would be invisible. */
+  .roster-name {
+    font-family: var(--font-editorial);
+    /* Set per grid: the office-bearers are shown larger than the teams.
+       A custom property rather than two classes, so the size stays a
+       property of the grid and not of the person. */
+    font-size: var(--roster-name-size, var(--text-editorial-s));
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+    text-wrap: balance;
+  }
+
+  /* ── THE COMMITTEE MENU ───────────────────────────────────────────
+     "Hover Committee and it shows Current and Previous; hover Previous
+     and it shows all previous terms."
+
+     NO JAVASCRIPT. It is :hover and :focus-within, which means it also
+     opens on Tab — a menu that only answers to a mouse locks out anyone
+     using a keyboard, and this one has to list every term the club has
+     ever had. The masthead stays a Server Component and the page ships
+     no more script than it did before.
+
+     THE PANEL TOUCHES THE TRIGGER. `top: 100%` with no gap, and the
+     trigger's own padding extended to the header's full height: a 4px
+     gap between a menu and the thing that opened it is the single most
+     common way these break, because the pointer crosses dead ground and
+     the menu closes underneath it.
+
+     Motion is the site's own: 8px and 180ms, opacity and translate, no
+     scale and no shadow (§5.5). `visibility` rather than `display` so
+     the transition has something to run on, and so a closed menu is out
+     of the tab order rather than merely transparent and still focusable. */
+  .nav-menu {
+    position: relative;
+  }
+
+  .nav-panel {
+    position: absolute;
+    z-index: 60;
+    min-width: 13rem;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(var(--brs-reveal-distance));
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-out),
+      visibility var(--duration-base);
+
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-line-strong);
+    padding: var(--spacing-2) 0;
+  }
+
+  /* First level: hangs off the masthead, flush under the trigger. */
+  .nav-menu > .nav-panel {
+    top: 100%;
+    right: 0;
+  }
+
+  /* Second level: opens to the LEFT of its parent. The Committee item is
+     near the right edge of a 1440px shell, so a submenu opening rightward
+     would run off the page. */
+  .nav-sub > .nav-panel {
+    top: calc(var(--spacing-2) * -1);
+    right: 100%;
+    transform: translateX(var(--brs-reveal-distance));
+  }
+
+  .nav-menu:hover > .nav-panel,
+  .nav-menu:focus-within > .nav-panel,
+  .nav-sub:hover > .nav-panel,
+  .nav-sub:focus-within > .nav-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+
+    padding: var(--spacing-2) var(--spacing-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+
+    /* The oxblood edge is the whole hover treatment. No fill sweep, no
+       lift — the same restraint the roster tiles use. */
+    border-left: 2px solid transparent;
+    transition:
+      color var(--duration-micro) var(--ease-out),
+      border-color var(--duration-micro) var(--ease-out);
+  }
+  .nav-item:hover,
+  .nav-item:focus-visible {
+    color: var(--color-text-primary);
+    border-left-color: var(--color-accent);
+  }
+
+  /* The current term, marked in the list rather than reordered out of
+     it — a reader looking for "this year" and a reader looking for
+     "2023-24" should find them in the same place. */
+  .nav-item[aria-current="page"] {
+    color: var(--color-text-primary);
+    border-left-color: var(--color-accent);
+  }
+
+  .nav-item__meta {
+    color: var(--color-text-tertiary);
+  }
+
+  /* Touch has no hover, and a tap on the trigger navigates rather than
+     opening anything. The menu is hidden there and the archive is reached
+     from the committee page itself, which carries the same link. */
+  @media (hover: none) {
+    .nav-panel {
+      display: none;
+    }
+  }
+
+  /* ── THE EVENTS FEED ──────────────────────────────────────────────
+     A blog index in this design system's own vocabulary: no card
+     surface, no shadow, no rounded box. What separates one entry from
+     the next is the photograph and the space around it.
+
+     THE HOVER IS ON THE TITLE, NOT THE PICTURE. A photograph that moves
+     under the pointer is the thing every template does; a rule drawn
+     under the title, left to right, is this site's own signature and it
+     is already used by the roster. The image only warms very slightly,
+     which reads as "this is live" without reading as "this is an
+     advertisement". */
+  .event-card__frame {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--color-mount);
+  }
+  .event-card__frame > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  .event-card:hover .event-card__frame > img,
+  .event-card:focus-visible .event-card__frame > img {
+    opacity: 0.88;
+  }
+
+  .event-card__title {
+    display: inline;
+    background-image: linear-gradient(var(--color-accent), var(--color-accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size var(--duration-large) var(--ease-out);
+  }
+  .event-card:hover .event-card__title,
+  .event-card:focus-visible .event-card__title {
+    background-size: 100% 1px;
+  }
+
+  /* The one gradient exception noted at .roster-band applies here too,
+     and for the same reason: this is not a gradient as decoration, it is
+     a one-pixel rule whose WIDTH is animated. A border cannot be
+     animated from 0 to 100% of a wrapped inline element; a background
+     can. Two stops, both the same colour. */
+
+  /* A gallery frame is a control. Reset the button so it does not
+     inherit a background or a border from the browser. */
+  .gallery-tile {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+  .gallery-tile:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* ── Filter chips ─────────────────────────────────────────────────
+     Hairline box, mono label. Selected state is the oxblood fill rather
+     than a tick or a bolder weight — at this size weight is invisible
+     and a tick is furniture. */
+  .chip {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+    background-color: transparent;
+    border: 1px solid var(--color-line-hairline);
+    cursor: pointer;
+    transition:
+      color var(--duration-micro) var(--ease-out),
+      border-color var(--duration-micro) var(--ease-out),
+      background-color var(--duration-micro) var(--ease-out);
+  }
+  .chip:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-line-strong);
+  }
+  .chip[aria-checked="true"] {
+    color: #ffffff;
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .chip:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* ── THE ARTICLE BODY ─────────────────────────────────────────────
+     Styled here rather than with utility classes because the HTML is
+     generated from markdown at build time and carries no classes of its
+     own. One place to change how every write-up reads. */
+  /* ── FLOATS HAVE TO BE CONTAINED ───────────────────────────────────
+     A left- or right-aligned picture is a float, and a float does not
+     add to its parent's height. Without a block formatting context here,
+     a picture taller than the paragraph beside it hangs straight out of
+     the bottom of the article — and inside the admin editor, out of the
+     bottom of the box you are typing in, which is what "the picture goes
+     outside the description box" was.
+
+     `flow-root` rather than `overflow: hidden`, which is the old trick
+     and would clip the resize handles that sit 6px outside the picture,
+     and rather than a clearfix ::after, which `.prose > * + *` would
+     then put a margin above. ── */
+  .prose {
+    display: flow-root;
+    /* ── NOTHING RUNS OFF THE EDGE OF THE PAGE ─────────────────────
+       A pasted URL, a filename, a chemical name, or two hundred f's
+       typed into a test event are all ONE word to the line breaker, and
+       a word that does not fit does not wrap — it overhangs the column
+       and takes the whole page's horizontal scrollbar with it. The
+       editor never showed this because ProseMirror's own stylesheet
+       sets word-wrap on the editable element; the published article and
+       the preview had nothing, so the same document was correct in one
+       surface and broken in the other two.
+
+       This rule is on `.prose` rather than on any one of them because
+       `.prose` IS the shared surface — the article, the preview and the
+       writing sheet all carry it, so they now break identically.
+
+       NOT `hyphens: auto`, which was asked for alongside these: it
+       inserts hyphens into ordinary words in every published article,
+       which is a visible change to the whole site, and it does nothing
+       for the case that caused this — an unbroken run of one letter has
+       no syllable boundary to hyphenate at. break-word covers it. ── */
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .prose > * + * {
+    margin-top: var(--spacing-6);
+  }
+  /* ══ A WRITE-UP IS A DOCUMENT ══════════════════════════════════════
+     `.rt-doc` is on the three surfaces that show what somebody typed
+     into the editor — the editor itself, the Preview tab, and the
+     write-up on the published page — and nowhere else. Every other run
+     of copy on this site keeps the editorial setting above.
+
+     WHY IT HAS TO EXIST. `.prose` sets 1.7 leading and 24px between
+     blocks. That is right for a designed page and wrong for a document:
+     four short lines typed into the editor are four PARAGRAPHS, so the
+     distance between them was leading PLUS 24px — and "Single" on the
+     spacing menu therefore looked like double spacing, because it was
+     the loosest setting available. No value on that menu could fix it
+     while the 24px stayed.
+
+     A DOCUMENT EDITOR STACKS LINES AND LETS YOU MAKE THE GAPS. Enter
+     puts the next line directly underneath; Enter twice leaves a blank
+     line. So the automatic gap goes to zero and the leading drops to
+     1.15, which is what Google Docs means by single spacing.
+
+     HEADINGS KEEP THEIR AIR — `.prose h2/h3` set their own margin-top
+     and are not touched here. A heading is a break in the text whether
+     or not the paragraphs around it are stacked, and Docs agrees. ── */
+  .prose.rt-doc > * + * {
+    margin-top: 0;
+  }
+  .prose.rt-doc p,
+  .prose.rt-doc li {
+    line-height: var(--rt-lh, 1.15);
+  }
+  /* ── BODY COPY IS BLACK, NOT GREY ─────────────────────────────────
+     This was `text-secondary` (#4e585d), the softer grey that reads as
+     "supporting text" — right for a caption under a plate, wrong for
+     the thing somebody came to the page to read. Client direction, and
+     it takes the write-up from 5.9:1 against the page ground to 12.0:1.
+
+     The TOKEN, not a hex: on the inverted petrol section the same name
+     resolves to white, so this stays readable there instead of being
+     near-black text on a dark blue field. That is the whole reason the
+     palette is named rather than written out. */
+  .prose p,
+  .prose li {
+    font-size: var(--text-body-l);
+    /* 1.7 is the measured leading for this face at this measure, and it
+       is the FALLBACK rather than the value: a writer who chooses 1.5
+       or Double for one paragraph sets `--rt-lh` on that paragraph and
+       nothing else moves. Set as a custom property rather than as an
+       inline `line-height` for the same reason a picture's width is —
+       an inline declaration would beat every rule below, including the
+       ones that have to win on a phone. */
+    line-height: var(--rt-lh, 1.7);
+    color: var(--color-text-primary);
+  }
+  .prose h2,
+  .prose h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.01em;
+    margin-top: var(--spacing-12);
+  }
+  /* Headings take the writer's spacing too — the control sets whatever
+     blocks are selected — but their own tight leading is the fallback,
+     not body copy's. */
+  .prose h2 {
+    font-size: var(--text-heading-l);
+    line-height: var(--rt-lh, var(--text-heading-l--line-height));
+  }
+  .prose h3 {
+    font-size: var(--text-heading-m);
+    line-height: var(--rt-lh, var(--text-heading-m--line-height));
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: var(--spacing-6);
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose li + li {
+    margin-top: var(--spacing-2);
+  }
+  .prose blockquote {
+    border-left: 2px solid var(--color-accent);
+    padding-left: var(--spacing-6);
+  }
+  .prose blockquote p {
+    color: var(--color-text-primary);
+  }
+  .prose a {
+    color: var(--color-accent);
+    text-underline-offset: 3px;
+  }
+  .prose strong {
+    color: var(--color-text-primary);
+    font-variation-settings: "wght" 600;
+  }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--color-line-hairline);
+  }
+
+  /* ── THE RICH WRITE-UP ─────────────────────────────────────────────
+     Everything an editor can apply from the admin toolbar, and the one
+     place each of those choices is given a value.
+
+     The class names are generated in src/lib/richtext/palette.ts, which
+     holds the matching list of legal ids — a document can only ever ask
+     for a class this block defines, because the renderer builds the
+     attribute from a set-membership test rather than from author input.
+     ADDING A FONT OR A COLOUR MEANS EDITING BOTH FILES.
+
+     These live under `.prose`-adjacent selectors rather than inside it
+     so that the admin editor, which is not `.prose`'s child in the same
+     way, styles identically. What is typed is what publishes. ── */
+
+  /* Families. Six, and none of them a new download: three the site
+     already self-hosts, three already on the reader's machine. Eight
+     real webfonts would be ~200 KB on every event page so that one
+     paragraph could be different (§4.7). */
+  .rt-font-editorial {
+    /* Source Serif has no opsz axis and its thins clot below 1rem — see
+       the --font-editorial note above. Combining this with rt-size-12
+       is legal and looks poor; that is the editor's call to make. */
+    font-family: var(--font-editorial);
+  }
+  .rt-font-mono {
+    font-family: var(--font-mono);
+  }
+  .rt-font-system {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .rt-font-classic {
+    font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  .rt-font-typewriter {
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  /* Sizes. Named by the number the toolbar shows, because that is what
+     an editor matching two paragraphs written a month apart can reason
+     about. 18 is the body default and therefore has no class. */
+  .rt-size-12 { font-size: 0.75rem; }
+  .rt-size-14 { font-size: 0.875rem; }
+  .rt-size-16 { font-size: 1rem; }
+  .rt-size-20 { font-size: 1.25rem; }
+  .rt-size-24 { font-size: 1.5rem; }
+  .rt-size-30 { font-size: 1.875rem; }
+  .rt-size-36 { font-size: 2.25rem; }
+  .rt-size-48 { font-size: 3rem; }
+
+  /* Ink and highlight, as ALIASES of the palette rather than as hexes.
+     A custom property resolves where it is used, so a write-up placed in
+     an inverted field re-points with everything else around it — which
+     is the whole reason the editor stores "accent" and not "#7b1223".
+     A stored hex would have been invisible on petrol. */
+  .rt-ink-primary { color: var(--rt-ink-primary); }
+  .rt-ink-secondary { color: var(--rt-ink-secondary); }
+  .rt-ink-accent { color: var(--rt-ink-accent); }
+  .rt-ink-petrol { color: var(--rt-ink-petrol); }
+  .rt-ink-success { color: var(--rt-ink-success); }
+  .rt-ink-warning { color: var(--rt-ink-warning); }
+
+  .rt-mark-accent { background-color: var(--rt-mark-accent); }
+  .rt-mark-petrol { background-color: var(--rt-mark-petrol); }
+  .rt-mark-success { background-color: var(--rt-mark-success); }
+  .rt-mark-warning { background-color: var(--rt-mark-warning); }
+  .rt-mark-neutral { background-color: var(--rt-mark-neutral); }
+
+  /* A highlight needs to breathe without becoming a block. */
+  [class*="rt-mark-"] {
+    padding: 0.1em 0.2em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  /* ── COLOURED TEXT THAT IS ALSO BOLD ───────────────────────────────
+     `.prose strong` sets a colour, and at (0,1,1) it outranks a
+     `.rt-ink-*` span at (0,1,0). A mark is serialised OUTSIDE the
+     emphasis it shares a range with, so bold text with a colour on it
+     rendered as <span class="rt-ink-accent"><strong>…</strong></span>
+     and the strong rule repainted it text-primary — the colour applied,
+     stored and published correctly, and was invisible on screen.
+
+     Anything inside a coloured span inherits that colour instead. The
+     same is written for the other direction, because ProseMirror is
+     free to nest the two either way depending on the order they were
+     applied in. */
+  .prose [class*="rt-ink-"] strong,
+  .prose [class*="rt-ink-"] em,
+  .prose [class*="rt-ink-"] a,
+  .prose [class*="rt-ink-"] code,
+  .prose [style*="color"] strong,
+  .prose [style*="color"] em,
+  .prose [style*="color"] code {
+    color: inherit;
+  }
+
+  /* Alignment. */
+  .rt-align-center { text-align: center; }
+  .rt-align-right { text-align: right; }
+  .rt-align-justify { text-align: justify; }
+
+  /* ── A PICTURE INSIDE THE WRITING ──────────────────────────────────
+     Four positions, which is what the brief asked for and what Blogger
+     offers. Left and right FLOAT, so the prose wraps them — anything
+     else is just a centred picture with wasted space beside it. ── */
+  /* Set on EVERY figure, including the first. `.prose > * + *` skips the
+     first child, so a leading picture had no top margin and every one
+     after it had 24px — a row of them stepped downward a gap at a time.
+     An explicit margin here wins on source order and levels the row. */
+  .rt-figure {
+    margin-block: var(--spacing-6);
+  }
+  .rt-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* A CROPPED frame. `--rt-ar` is only set when the writer dragged the
+     top or bottom edge; with it unset the declaration is invalid at
+     computed-value time and aspect-ratio falls back to auto, which is
+     the picture's own shape.
+
+     object-fit: cover is what makes this a crop rather than a squash —
+     the photograph keeps its proportions and the frame takes the middle
+     of it. Nothing in the picture ever changes shape. */
+  .rt-figure img {
+    aspect-ratio: var(--rt-ar);
+    object-fit: cover;
+    object-position: center;
+  }
+  /* `--rt-w` is the width the writer set, handed over by the renderer.
+     The fallback after the comma is what a picture is when they never
+     touched it: the full column when centred, half when floated. */
+  /* ── A CENTRED PICTURE STARTS A NEW ROW ────────────────────────────
+     `clear: both` is not decoration, it is the fix for pictures drawn
+     on top of each other.
+
+     Only INLINE content flows around a float; a block box does not — it
+     sits in the float's place and its background and borders slide
+     straight underneath it. So a centred picture following a
+     left-aligned one was laid out overlapping it, which is what "putting
+     them side by side behaves inconsistently" looked like.
+
+     Left and right figures deliberately do NOT clear, because two of
+     them next to each other IS the side-by-side arrangement. ── */
+  .rt-figure-center {
+    clear: both;
+    display: block;
+    width: var(--rt-w, 100%);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+  /* THE VERTICAL MARGIN IS THE SAME FOR ALL THREE ALIGNMENTS, and that
+     is load-bearing rather than tidiness. Centred pictures took
+     spacing-8 and floated ones spacing-2, so pressing LEFT jumped the
+     picture 32px up the page — the alignment buttons appeared to move it
+     vertically as well as horizontally. Only the SIDE margin, the gutter
+     the text wraps against, differs between them. */
+  .rt-figure-left {
+    float: left;
+    width: var(--rt-w, 40%);
+    max-width: 100%;
+    margin-right: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+  }
+  .rt-figure-right {
+    float: right;
+    width: var(--rt-w, 40%);
+    max-width: 100%;
+    margin-left: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+  }
+  /* ── WHY THERE IS NO SPECIAL RULE FOR SIDE-BY-SIDE ─────────────────
+     There were two, and both were treating a symptom. The staircase came
+     from `.prose > * + *`: the FIRST figure matched no `+` and so got no
+     top margin, while every later one got 24px — so a row of pictures
+     stepped downward one gap at a time.
+
+     `.rt-figure` above now sets an explicit margin on every figure
+     regardless of position, which beats that rule on source order and
+     makes the whole row start level. Nothing needs to zero a margin, and
+     nothing depends on two figures being adjacent siblings — an empty
+     paragraph between them no longer changes the outcome. ── */
+
+  /* A float has no height, so the next heading would ride up beside the
+     picture instead of starting below it. */
+  .prose h2,
+  .prose h3,
+  .prose hr {
+    clear: both;
+  }
+  /* Half a column is 20 characters on a phone. Below the measure a
+     floated picture stops floating and takes the width — and because the
+     writer's number arrives as a custom property rather than as an
+     inline `width`, this rule can actually win. */
+  @media (max-width: 640px) {
+    .rt-figure-left,
+    .rt-figure-right {
+      float: none;
+      width: 100%;
+      margin-inline: 0;
+    }
+  }
+
+  /* ── A VIDEO, BEFORE ANYBODY ASKS FOR IT ───────────────────────────
+     What is rendered is a link and a play triangle. The iframe is
+     written in by the eight lines of script on the article page, and
+     only once a reader presses it.
+
+     A YouTube iframe is ~1 MB of third-party JavaScript that loads on
+     page open whether or not it is watched. On a page that otherwise
+     ships no third-party script at all, on an archive that is mostly
+     read rather than watched, that is the single heaviest thing on the
+     site. WITHOUT JAVASCRIPT the anchor is a working link to the
+     video, which is why the facade is an <a> and not a <button>. ── */
+  .rt-embed {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    margin-block: var(--spacing-8);
+    background-color: var(--color-mount);
+    border: 1px solid var(--color-line-hairline);
+    /* A PLAYER, NOT A BILLBOARD. The write-up runs the full 1200px
+       content column (ADR 0004); a 16:9 video across all of it is 675px
+       tall, which is most of a laptop screen for one embedded clip and
+       pushes the paragraph after it off the bottom.
+
+       The width is now the writer's, in the same percent-of-the-column
+       units a photograph uses — drag a corner or press S/M/L/XL. 55% is
+       what an embed made before that existed, or one dropped in and left
+       alone, comes out at: ~660px on the desktop column, which is the
+       size a video is on most pages that have one.
+
+       PERCENT, NOT PIXELS, IS WHAT MAKES IT RESPONSIVE. A percentage of
+       a fluid column needs no breakpoint to stay sane, and `max-width`
+       means the number can never push the page wider than the screen.
+       Centred rather than left-aligned because it is an object in the
+       article, like a plate, not a block of text. */
+    width: var(--rt-w, 55%);
+    max-width: 100%;
+    margin-inline: auto;
+    /* So the controls inside can respond to THE VIDEO's width rather
+       than the window's. A 25% video is 300px on a desktop and 390px on
+       a phone; a media query cannot tell those apart, and it is the
+       first one that has no room for a title. */
+    container-type: inline-size;
+  }
+  /* BELOW 640px EVERY VIDEO IS FULL WIDTH, whatever it was set to. A
+     video at 25% of a phone is 90px wide — the play triangle alone is
+     40px of that — and no writer choosing 25% at a desk meant "a
+     thumbnail nobody can press". The same override the pictures get. */
+  @media (max-width: 640px) {
+    .rt-embed {
+      width: 100%;
+    }
+  }
+  .rt-embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  /* The video's own frame, cropped to 16:9 from YouTube's 4:3 file. It
+     sits UNDER the triangle and the title, both of which need something
+     to sit on — hence the scrim on the anchor below. */
+  .rt-embed-poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Explicit, because everything in this stack is positioned with
+       `z-index: auto` and would otherwise paint in DOM order — the
+       poster is written after the scrim, so it covered it. */
+    z-index: 0;
+  }
+  .rt-embed-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-4);
+    text-decoration: none;
+    text-align: center;
+    padding: var(--spacing-6);
+    transition: background-color var(--duration-micro) var(--ease-out);
+  }
+  /* TWO CLASSES, and they are load-bearing. `.prose a` paints every
+     link in an article oxblood and out-specifies a single class, so the
+     play triangle — which is drawn in currentColor — and the title came
+     out dark red on top of a photograph. This is a control on an image,
+     not a link in a sentence. */
+  .rt-embed .rt-embed-play {
+    color: #ffffff;
+  }
+  /* Dark enough that white type and a white-ish triangle hold against
+     any frame a video might open on, including a white one. It lifts on
+     hover rather than the colour changing, which is the one thing that
+     reads as "this is a button" over a photograph. */
+  .rt-embed-play::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-color: rgb(28 33 36 / 0.55);
+    transition: background-color var(--duration-micro) var(--ease-out);
+  }
+  .rt-embed-play:hover::before,
+  .rt-embed-play:focus-visible::before {
+    background-color: rgb(28 33 36 / 0.3);
+  }
+  /* Both children sit above the scrim. */
+  .rt-embed-icon,
+  .rt-embed-label {
+    position: relative;
+    z-index: 2;
+  }
+  /* Bigger on the page than in the admin card the same class serves:
+     28px is right over a 160px-wide thumbnail and disappears over a
+     640px one. */
+  .rt-embed .rt-embed-icon {
+    border-left-width: 2.5rem;
+    border-top-width: 1.55rem;
+    border-bottom-width: 1.55rem;
+  }
+  /* Drawn with borders rather than set as a glyph, for the reason every
+     other icon on this site is drawn: ▶ resolves to a different font,
+     weight and baseline on every machine, and sometimes to a colour
+     emoji. Square-cornered, like everything else here. */
+  .rt-embed-icon {
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 1.75rem solid currentColor;
+    border-top: 1.1rem solid transparent;
+    border-bottom: 1.1rem solid transparent;
+  }
+  /* The title, not a "Watch:" instruction. The triangle already says
+     what pressing it does; the words are there to say WHICH video, so
+     they get the weight a caption gets rather than the size of a hint.
+     Two lines maximum before it clips — a title long enough to need a
+     third is a title that has stopped being read at this size. */
+  .rt-embed-label {
+    font-size: var(--text-body-m);
+    font-variation-settings: "wght" 600;
+    line-height: 1.4;
+    max-width: 40ch;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  /* ── A SMALL VIDEO IS A DIFFERENT CONTROL FROM A LARGE ONE ─────────
+     Dragged down to 25% the box is ~300px, and the title lands on the
+     play triangle. Below 20rem the picture and the triangle are the
+     whole message — the title is in the writing above and below it, and
+     it stays in the accessible name either way.
+
+     A CONTAINER QUERY, NOT A MEDIA QUERY: 300px of a desktop column and
+     390px of a phone are the same problem, and only the container can
+     tell them apart. `.rt-embed` declares itself the container.
+
+     AND IT SITS HERE, AFTER `.rt-embed-label`, DELIBERATELY. A
+     container query adds no specificity, so written above that rule
+     this lost to it on source order alone and did nothing at all —
+     which is exactly how it was first written. ── */
+  @container (max-width: 20rem) {
+    .rt-embed-label {
+      display: none;
+    }
+    .rt-embed .rt-embed-icon {
+      border-left-width: 1.5rem;
+      border-top-width: 0.95rem;
+      border-bottom-width: 0.95rem;
+    }
+  }
+
+  /* Rendered only by the admin preview, and only when a document holds
+     a node this build of the renderer does not know. The content build
+     throws on the same condition rather than showing this. */
+  .rt-unknown {
+    font-family: var(--font-mono);
+    font-size: var(--text-body-s);
+    color: var(--color-warning);
+  }
+
+  /* ── THE BAND ─────────────────────────────────────────────────────
+     A full-bleed field whose edges dissolve into the page.
+
+     WIDTH: 100vw with a centring translate, not negative margins.
+     Negative margins only reach the shell's own edge, so on any screen
+     wider than 1440px the panel stopped and the page resumed along two
+     hard vertical seams. There is nothing to blend if the band simply
+     never ends sideways — which is why this is the fix for "make the
+     edge and corner blend" rather than a softer border.
+
+     EDGES: the page ground painted across the top and bottom of the
+     panel and faded out. This is the only gradient on the site and it is
+     not decoration — §3.3 bans gradients as an aesthetic, and no colour
+     here is invented: it is the two values that already meet at that
+     seam, meeting over 3rem instead of over 0px. Sized to the section's
+     own vertical padding so it never reaches the type.
+
+     `overflow-x: clip` on body (see @layer base) is what keeps 100vw
+     from producing a horizontal scrollbar. */
+  .roster-band {
+    position: relative;
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+  .roster-band::before,
+  .roster-band::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: var(--spacing-12);
+    pointer-events: none;
+  }
+  .roster-band::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--brs-page-ground), transparent);
+  }
+  .roster-band::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--brs-page-ground), transparent);
+  }
+
+  /* ── THE OFFICE-BEARERS' ROW ──────────────────────────────────────
+     Centred, and a fixed print width rather than a grid.
+
+     A grid could not do this. `auto-fill` tracks with one holder in them
+     leave the print sitting at the left edge of a row it is supposed to
+     be the centre of, and `1fr` tracks stretch a single portrait across
+     the whole width. A flex row of fixed-width prints centres one, two
+     or five of them identically, which is the only behaviour that holds
+     as the club's structure changes year to year.
+
+     20rem against the teams' 15rem — the office-bearers are larger, and
+     visibly so. */
+  .roster-lead {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-6);
+  }
+  .roster-lead > li {
+    width: 100%;
+    max-width: 20rem;
+  }
+  @media (min-width: 480px) {
+    .roster-lead > li {
+      width: 20rem;
+    }
+  }
+
+  /* ── THE LIGHTBOX ─────────────────────────────────────────────────
+     Club instruction: "when I click an image, this image should pop up
+     with a bit big picture."
+
+     Sized in viewport units, which is the one job Tailwind's scale
+     cannot do here — a portrait and a landscape photograph have to end
+     up the same HEIGHT on screen or the plate jumps around as you arrow
+     through the committee.
+
+     The `min()` is the part that matters: 78vh alone is fine on a normal
+     window and pushes the caption off the bottom of a short one — a
+     laptop with the dock and a browser toolbar has well under 700px of
+     viewport. The second term reserves the caption's own height no
+     matter how little room there is. */
+  .lightbox-image {
+    display: block;
+    max-height: min(78vh, calc(100vh - 11rem));
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    background-color: var(--color-mount);
+    border: 1px solid var(--color-mount-line);
+  }
+
+  .lightbox-name {
+    font-family: var(--font-editorial);
+    font-size: var(--text-editorial-m);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+  }
+
+  .roster-role {
+    margin-top: var(--spacing-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    line-height: 1.45;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    /* 7.2:1 on the plate. Tracked uppercase mono at 11px needs the
+       headroom — the tertiary grey used elsewhere on the page would be
+       under 4:1 here. */
+    color: var(--brs-mount-text);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────
    THE ADMIN PANEL — /admin only.
 
    A tool, not a catalogue page, and it may look like one: bigger type,
@@ -524,7 +1782,12 @@
     color: var(--adm-btn-fg);
     background-color: var(--adm-btn-bg);
     border: 1px solid var(--adm-btn-border);
-    border-radius: var(--radius-none);
+    border-radius: var(--radius-control);
+
+    /* The bevel, declared once here and set per variant below. Kept in a
+       custom property so :active can collapse it in one line rather than
+       each variant restating its own pressed state. */
+    box-shadow: var(--adm-btn-bevel, none);
 
     cursor: pointer;
     user-select: none;
@@ -532,13 +1795,18 @@
       background-color var(--duration-micro) var(--ease-out),
       border-color var(--duration-micro) var(--ease-out),
       color var(--duration-micro) var(--ease-out),
+      box-shadow var(--duration-micro) var(--ease-out),
       transform var(--duration-micro) var(--ease-out);
   }
 
   /* The depress. 1px is enough to be felt and not enough to reflow
-     anything next to it. */
+     anything next to it — and the bevel COLLAPSES on the way down, so
+     the key stops catching light at the moment it is struck. That
+     pairing is most of why the press feels physical; the 1px move on
+     its own just looks like a jitter. */
   .adm-btn:not(:disabled):active {
     transform: translateY(1px);
+    --adm-btn-bevel: none;
   }
 
   .adm-btn:disabled {
@@ -551,40 +1819,142 @@
     outline-offset: 2px;
   }
 
-  /* ── Primary: the one action this screen is for ──────────────────── */
+  /* ══════════════════════════════════════════════════════════════════
+     WHAT WAS HERE BEFORE, AND WHY IT IS NOT ANY MORE.
+
+     A block headed "Enhanced Admin Fancy Styling" sat here: a rose
+     gradient on the primary button, a coloured glow under it, a
+     backdrop-blur "glass" panel, and inputs painted #12171c with white
+     text. Client verdict on the result: "looks like ai".
+
+     Two separate faults, and the second is the load-bearing one.
+
+     1. It broke three house rules in twenty lines — no gradients, no
+        accent-hue glow, no soft shadow on a static surface (§5.1
+        rule 4) — all three stated in the comment DIRECTLY ABOVE it.
+        The colour was not even ours: #e11d48 is Tailwind's stock
+        rose-600. The mark is oxblood #7b1223 and always was.
+
+     2. IT WAS WRITTEN FOR A DARK UI THAT DOES NOT EXIST. Every value
+        assumed a dark ground — white-alpha borders, near-black input
+        fills, #fca5a5 danger text. The admin panel inherits :root,
+        which is the light bone ground; the dark theme was withdrawn on
+        client direction long before this landed. So a secondary button
+        was a 5%-white fill on a light panel (invisible), danger was
+        pale pink text on near-white (unreadable, ~1.5:1), and the
+        search field rendered as a black slab in the middle of a light
+        page. That is most of what read as "generated": not one ugly
+        button but a whole layer arguing with the ground under it.
+
+     Rewritten against the tokens, on the ground that is actually there.
+     The interaction language is unchanged and was never the problem —
+     rest → hover → depress → focus-visible → disabled.
+     ══════════════════════════════════════════════════════════════════ */
+
+  .adm-card {
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-line-hairline);
+    transition: border-color var(--duration-micro) var(--ease-out);
+  }
+  /* A card is a surface, not a control. It does not glow, lift, or
+     invite a click — it just firms up its edge so a hovered region is
+     legible when several sit in a column. */
+  .adm-card:hover {
+    border-color: var(--color-line-strong);
+  }
+
+  /* ── Primary ──────────────────────────────────────────────────────
+     The one committed action on a screen, and it looks committed:
+     solid oxblood, white on it at 10.8:1.
+
+     FIRST PASS WAS TOO PLAIN — client verdict, "still looks ordinary",
+     and that was right. Removing the gradient removed the fault but did
+     not put anything in its place: what was left was a correct
+     rectangle. Correct is not the same as made.
+
+     What it has now is an EDGE, which is the one thing a flat fill
+     cannot have. Two 1px inset rules — light along the top, dark along
+     the bottom — describe a key cap catching light from above. Both
+     collapse on :active while the button drops 1px, so the press reads
+     as the key going down rather than as a colour swap.
+
+     This is emphatically NOT the glow that was here before, and the
+     distinction is the one §5.1 rule 4 actually draws. A drop shadow
+     puts blur OUTSIDE an element to fake depth on the page. These are
+     hard-edged, 1px, and entirely INSIDE the border — the same hairline
+     device the whole design system is built on (§5.1: "prefer a 1px
+     rule over a filled panel, a filled panel over a shadow"), drawn
+     with box-shadow only because CSS gives no other way to put a rule
+     on one interior edge. Nothing is tinted with the accent hue and
+     nothing bleeds outside the shape.
+
+     The bevel is white/black at low alpha rather than two oxblood
+     tints, so it stays a lighting effect and does not become a second
+     colour in the palette. */
   .adm-btn-primary {
     --adm-btn-bg: var(--color-accent);
-    --adm-btn-fg: #fff;
-    --adm-btn-border: var(--color-accent);
+    --adm-btn-fg: #ffffff;
+    --adm-btn-border: var(--color-accent-deep);
+    --adm-btn-bevel:
+      inset 0 1px 0 rgb(255 255 255 / 0.17),
+      inset 0 -1px 0 rgb(0 0 0 / 0.20);
+    /* Optical, not decorative. Set in oxblood at 560, the counters of
+       'a' and 'e' close up slightly against a light page; a touch of
+       positive tracking reopens them. */
+    letter-spacing: 0.005em;
   }
   .adm-btn-primary:not(:disabled):hover {
     --adm-btn-bg: var(--color-accent-deep);
     --adm-btn-border: var(--color-accent-deep);
+    /* The top rule brightens a little as the fill darkens: the cap is
+       being lit, not repainted. */
+    --adm-btn-bevel:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 -1px 0 rgb(0 0 0 / 0.24);
   }
 
-  /* ── Secondary: everything else that writes ──────────────────────── */
+  /* ── Secondary: the default. A hairline box, which is this design
+     system's primary structural device (§5.1 rule 4).
+
+     It gets the bottom rule of the bevel but NOT the top one: on a
+     near-white fill a white inset highlight is invisible, so drawing it
+     would be a line of CSS that renders nothing. The lower edge alone
+     is enough to seat the control on the page. ── */
   .adm-btn-secondary {
     --adm-btn-bg: var(--color-bg-raised);
+    --adm-btn-border: var(--color-line-strong);
+    --adm-btn-bevel: inset 0 -1px 0 rgb(36 40 43 / 0.09);
   }
   .adm-btn-secondary:not(:disabled):hover {
-    --adm-btn-bg: var(--color-bg-base);
+    --adm-btn-bg: var(--color-bg-inset);
     --adm-btn-border: var(--color-text-primary);
   }
 
-  /* ── Danger: reads as ordinary until pointed at, then commits ────── */
+  /* ── Danger ───────────────────────────────────────────────────────
+     Oxblood is the accent AND the only red this palette has, so danger
+     cannot be distinguished from primary by hue. It is distinguished
+     by STATE: outlined at rest, filling solid only under the pointer.
+
+     An armed destructive control therefore does not sit in the layout
+     as a solid red block waiting to be hit by a mis-click, and the
+     fill arriving on hover is the last warning before the press. */
   .adm-btn-danger {
-    --adm-btn-bg: transparent;
+    --adm-btn-bg: var(--color-bg-raised);
     --adm-btn-fg: var(--color-accent);
-    --adm-btn-border: var(--color-line-accent);
-  }
-  .adm-btn-danger:not(:disabled):hover {
-    --adm-btn-bg: var(--color-accent);
-    --adm-btn-fg: #fff;
     --adm-btn-border: var(--color-accent);
   }
+  .adm-btn-danger:not(:disabled):hover {
+    --adm-btn-bg: var(--color-accent-deep);
+    --adm-btn-fg: #ffffff;
+    --adm-btn-border: var(--color-accent-deep);
+    /* Only once it fills does it become a cap with an edge. Outlined,
+       there is no surface for the light to fall on. */
+    --adm-btn-bevel:
+      inset 0 1px 0 rgb(255 255 255 / 0.17),
+      inset 0 -1px 0 rgb(0 0 0 / 0.20);
+  }
 
-  /* ── Quiet: a text action. Earns a hairline on approach rather than
-     shouting with a border it does not need. ───────────────────────── */
+  /* ── Quiet: a control that only draws its box once you are on it. ── */
   .adm-btn-quiet {
     --adm-btn-border: transparent;
     --adm-btn-fg: var(--color-text-secondary);
@@ -593,14 +1963,25 @@
   }
   .adm-btn-quiet:not(:disabled):hover {
     --adm-btn-fg: var(--color-text-primary);
+    --adm-btn-bg: var(--color-bg-inset);
     --adm-btn-border: var(--color-line-hairline);
   }
 
-  /* ── Fields ──────────────────────────────────────────────────────────
-     A 2px accent rule on the left of the focused control, drawn from
-     zero. It replaces the ring-and-glow convention with the site's own
-     structural device — a rule — and it tells you where you are in a
-     long form at a glance. */
+  /* ── Inputs ───────────────────────────────────────────────────────
+     Near-white on the bone ground, a hairline box, and the SAME
+     --radius-control the buttons use. That is not tidiness: on the
+     events screen the search field and the All/Live/Drafts buttons sit
+     in one flex row, and two radii three pixels apart in a single row
+     is the kind of mismatch that reads as sloppiness without ever being
+     consciously noticed.
+
+     No bevel here. A bevel says "this is raised, press it"; an input is
+     a recess you type into, and the hairline box already says so.
+
+     Focus is the accent border PLUS the standard focus ring. The old
+     rule dropped `outline: none` and substituted a colour change,
+     which is a keyboard-accessibility regression dressed as a style:
+     colour alone is not a focus indicator. ── */
   .adm-input {
     width: 100%;
     font-family: var(--font-display);
@@ -609,45 +1990,351 @@
     color: var(--color-text-primary);
     background-color: var(--color-bg-raised);
     border: 1px solid var(--color-line-strong);
-    border-left-width: 2px;
-    border-left-color: transparent;
     padding: 0.625rem var(--spacing-3);
+    border-radius: var(--radius-control);
     transition:
       border-color var(--duration-micro) var(--ease-out),
       background-color var(--duration-micro) var(--ease-out);
   }
   .adm-input:hover:not(:disabled) {
     border-color: var(--color-text-tertiary);
-    border-left-color: transparent;
   }
-  .adm-input:focus {
-    outline: none;
-    border-color: var(--color-text-primary);
-    border-left-color: var(--color-accent);
-    background-color: var(--color-bg-base);
+  .adm-input:focus-visible {
+    border-color: var(--color-accent);
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
   }
   .adm-input:disabled {
-    opacity: 0.6;
+    background-color: var(--color-bg-inset);
+    color: var(--color-text-secondary);
+    border-color: var(--color-line-hairline);
     cursor: not-allowed;
   }
   .adm-input::placeholder {
     color: var(--color-text-tertiary);
   }
 
-  /* ── Rows that behave like buttons ───────────────────────────────── */
+  /* ── The rich text surface ────────────────────────────────────────
+     `.prose` gives the write-up the SHAPE it will have on the site —
+     the heading scale, the list indents, the quote rule — so what is
+     being typed reads as what will be published.
+
+     It now inherits `.prose`'s COLOUR as well. The old rule restated
+     the whole palette light-on-dark, on the stated grounds that "every
+     admin input on this panel is light-on-dark" — which was the same
+     mistaken premise as the rest of that block. Inheriting means the
+     draft is typed in the exact colours it will publish in, which is
+     the entire argument for using `.prose` here at all.
+
+     The margins are tightened. On the article page a heading gets
+     spacing-12 of air above it, which is right for reading and absurd
+     in a box you are typing into. */
+  /* ── THE WRITING BOX IS A FIELD LIKE EVERY OTHER FIELD ────────────
+     It is as wide as the form. Not because that is the ideal width for
+     writing — it is not, the article publishes at 72ch — but because
+     this box sits in a column of other boxes, and a box that stops
+     400px short of the ones above and below it reads as broken long
+     before anyone works out that the short one is the one telling the
+     truth about line breaks.
+
+     FOUR SHAPES HAVE BEEN TRIED HERE. Recorded because the next person
+     to look at this will have one of the discarded three in mind:
+
+       1. FULL-WIDTH PANEL, 72ch COLUMN INSIDE IT. Writing down the left
+          half and dead space on the right — and the dead space was
+          genuinely dead, because pressing it hit the wrapper Tiptap
+          renders around the editable element and the caret never moved.
+          That is the bug this whole sequence started from, and it is
+          fixed in RichText.tsx rather than by any of the widths below.
+       2. TRAY WITH A SHEET ON IT, page-in-a-window. The empty area
+          became a legible margin, but it was still a slab of grey
+          framing the document, in a panel where nothing else is framed.
+       3. THE BOX SHRUNK TO 72ch. Perfect fidelity — editor, preview and
+          article identical to the pixel — and it looked like a mistake
+          next to a full-width photograph picker directly above it.
+       4. THIS. Full width, no surround, writing to the gutters.
+
+     WHAT IT COSTS, PLAINLY: a line wraps later here than it will on the
+     site, and a picture at 40% is 40% of a wider column. Preview is
+     unaffected — it renders at the same width as this box, so the two
+     tabs still agree with each other — but neither is the published
+     measure. To close that gap for real, widen --container-prose on the
+     site rather than narrowing this box again; that is the one change
+     that makes all three agree without making the form look broken. ── */
+  /* Toolbar and paper share one border and one focus ring, because they
+     are one control. */
+  .adm-editor {
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-control);
+    background-color: var(--color-bg-raised);
+    transition: border-color var(--duration-micro) var(--ease-out);
+  }
+  .adm-editor:focus-within {
+    border-color: var(--color-accent);
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  .adm-richtext {
+    background-color: var(--color-bg-raised);
+    color: var(--color-text-primary);
+    padding: var(--spacing-6);
+    /* Room to write before the box starts growing. A description that
+       opens as a four-line slot invites four lines. */
+    min-height: 28rem;
+  }
+  @media (max-width: 640px) {
+    .adm-richtext {
+      padding: var(--spacing-4);
+      min-height: 20rem;
+    }
+  }
+  /* The typography sits on the editable element itself, which is a
+     child of .adm-richtext rather than being it — Tiptap owns that
+     node. It carries NO width of its own: the measure belongs to the
+     page, and a second max-width here is how the two drift apart. */
+  .adm-richtext-body {
+    display: flow-root;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  /* ── NOTHING HERE OVERRIDES `.prose` ANY MORE ─────────────────────
+     Two rules used to sit at this point: block spacing tightened from
+     24px to 16px, and the air above a heading cut from 48px to 24px,
+     both on the grounds that article spacing is "absurd in a box you
+     are typing into". A third, shrinking body copy to body-m, had
+     already been removed for measuring differently from the page.
+
+     All three were the same mistake. The editor is now the same width
+     as the article and shows the same type at the same size; leaving
+     the spacing different means the draft still breaks pages at
+     different places than the published article, and the only thing
+     that buys is a slightly shorter box.
+
+     So the write-up is typed in exactly what publishes: same measure,
+     same size, same leading, same gaps. Rules below this line are
+     editor CHROME — placeholders, selection outlines, resize handles —
+     none of which exist on the published page. ── */
+  /* An empty box that says nothing looks broken rather than empty. The
+     class comes from Tiptap's Placeholder extension; the old rule used
+     :empty, which a contenteditable never actually is — it holds a <p>
+     with a <br> in it. */
+  .adm-richtext-body p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    color: var(--color-text-tertiary);
+  }
+  /* A video is one object: clicking it selects the whole thing, and the
+     outline says so.
+
+     A PICTURE IS DELIBERATELY NOT IN THIS RULE. It draws its outline on
+     .rt-frame instead, below — the frame hugs the photograph, while the
+     figure is a block that can be far taller and wider than what is in
+     it. Outlining the figure drew an enormous rectangle around empty
+     space, and because .ProseMirror-selectednode matched the same
+     element there were up to three nested outlines at once. */
+  .adm-richtext-body .rt-node-selected:not(.rt-figure) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  /* ── RESIZING A PICTURE BY DRAGGING IT ─────────────────────────────
+     The handles sit on the two BOTTOM corners. Top corners were tried
+     and are wrong here: the toolbar for the selected picture sits below
+     it, so the bottom edge is already where the eye and the cursor are.
+
+     `touch-action: none` is what makes this work on a touchscreen —
+     without it the browser claims the gesture for scrolling and the
+     handle never receives a pointermove. ── */
+  /* ══ THE WRAPPER TIPTAP PUTS AROUND EVERY REACT NODE VIEW ══════════
+     ReactNodeView.mount() generates its own element around the component
+     — `<div class="node-brsImage">` — and NodeViewWrapper renders inside
+     it. So the real DOM was:
+
+         <div class="node-brsImage">          <- full-width block
+           <div class="rt-figure rt-figure-left" style="--rt-w:40%">
+
+     Every layout rule in this file targets the INNER div. The outer one
+     was an unstyled full-width block, and it caused all of the following
+     at once:
+
+       · THE PHANTOM RECTANGLE. ProseMirror puts .ProseMirror-selectednode
+         on the OUTER element, so the `:not(.rt-figure)` guard below never
+         excluded it — it outlined a full-width box that had nothing to do
+         with the picture. Centred, it was as tall as the picture; floated,
+         the picture left the flow and it collapsed to a thin bar, which is
+         exactly the two shapes reported.
+       · SIDE BY SIDE WORKING ONLY SOMETIMES. Two pictures are two of these
+         blocks, one per line. Floating the inner div let it spill out of
+         its wrapper, so whether two pictures shared a row depended on
+         overflow rather than on layout.
+       · THE STAIRCASE. `.prose > * + *` and every adjacent-sibling rule
+         match these wrappers, never the figures — the figures are not
+         siblings of each other at all.
+
+     `display: contents` removes the wrapper from the box tree while
+     leaving it in the DOM, so the figure becomes the real layout child.
+     Nothing about selection, dragging or contenteditable depends on it
+     having a box: those inherit through the DOM tree. ══ */
+  .adm-richtext-body [class*="node-brs"] {
+    display: contents;
+  }
+
+  .adm-richtext-body .rt-frame {
+    position: relative;
+    display: block;
+  }
+  /* The controls for a selected picture hang BELOW it and are allowed to
+     be wider than it is. A picture set to Small is a quarter of the
+     column; the toolbar inside it would be one button per line. */
+  .adm-richtext-body .rt-figure {
+    position: relative;
+  }
+  .adm-richtext-body .rt-toolbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: var(--spacing-2);
+    width: max-content;
+    /* Not a percentage — a percentage resolves against the figure, which
+       is the width this is trying to escape. */
+    max-width: min(40rem, 90vw);
+    z-index: 4;
+  }
+  /* A right-aligned picture near the right edge would push its toolbar
+     off the side, so that one hangs from the right instead. */
+  .adm-richtext-body .rt-figure-right .rt-toolbar {
+    left: auto;
+    right: 0;
+  }
+  /* A VIDEO'S CONTROLS SIT UNDER THE VIDEO, which is centred — so they
+     are centred too, rather than starting at the far left of a column
+     the video does not fill. A picture's toolbar stays pinned to the
+     edge it is floated to, above: same principle, different geometry.
+
+     BELOW `.rt-toolbar`, not above it. Both selectors are two classes,
+     so `left: 0` up there would win on source order alone and this
+     would silently do nothing. */
+  .adm-richtext-body .rt-toolbar-center {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  /* A selected picture gets an outline so the eight grips read as one
+     bounding box rather than as eight loose dots. */
+  /* The one outline a selected picture gets, and it hugs the photograph
+     because .rt-frame is exactly as big as the picture is. */
+  .adm-richtext-body .rt-node-selected .rt-frame {
+    outline: 2px solid var(--color-accent);
+  }
+  .adm-richtext-body .rt-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-bg-raised);
+    border: 2px solid var(--color-accent);
+    touch-action: none;
+    z-index: 2;
+  }
+  /* Corners: the whole box, proportionally. */
+  .adm-richtext-body .rt-h-nw { top: -6px; left: -6px; cursor: nw-resize; }
+  .adm-richtext-body .rt-h-ne { top: -6px; right: -6px; cursor: ne-resize; }
+  .adm-richtext-body .rt-h-se { bottom: -6px; right: -6px; cursor: se-resize; }
+  .adm-richtext-body .rt-h-sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+  /* ── CORNERS SCALE, EDGES CROP ─────────────────────────────────────
+     Two behaviours, so two shapes: the four corners are square and make
+     the whole picture bigger or smaller, the four edge grips are round
+     and trim the frame — sides crop left and right, top and bottom crop
+     above and below. Nothing ever stretches the photograph; see
+     RICH_IMAGE_ASPECT_MIN in lib/richtext/palette.ts. ── */
+  .adm-richtext-body .rt-h-w,
+  .adm-richtext-body .rt-h-e,
+  .adm-richtext-body .rt-h-n,
+  .adm-richtext-body .rt-h-s {
+    border-radius: 50%;
+  }
+  .adm-richtext-body .rt-h-w {
+    top: 50%;
+    left: -6px;
+    margin-top: -6px;
+    cursor: ew-resize;
+  }
+  .adm-richtext-body .rt-h-e {
+    top: 50%;
+    right: -6px;
+    margin-top: -6px;
+    cursor: ew-resize;
+  }
+  .adm-richtext-body .rt-h-n,
+  .adm-richtext-body .rt-h-s {
+    left: 50%;
+    margin-left: -6px;
+    cursor: ns-resize;
+  }
+  .adm-richtext-body .rt-h-n { top: -6px; }
+  .adm-richtext-body .rt-h-s { bottom: -6px; }
+  /* The live percentage while dragging. Resizing by eye is fine until
+     the next picture has to match this one. */
+  .adm-richtext-body .rt-size-badge {
+    position: absolute;
+    right: var(--spacing-2);
+    top: var(--spacing-2);
+    padding: 0.15rem 0.4rem;
+    background-color: var(--color-mount);
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    z-index: 2;
+  }
+  /* Tiptap draws the drop target for a dragged picture. */
+  .adm-richtext-body .ProseMirror-gapcursor::after {
+    border-top-color: var(--color-accent);
+  }
+
+  /* ── A HORIZONTAL RULE HAS TO BE CATCHABLE ─────────────────────────
+     On the published page a rule is a 1px hairline, which is right. In
+     the EDITOR that made it nearly impossible to get rid of: typing
+     `---` at the start of a line turns into one (Tiptap's input rule,
+     and `—-` does it too, which is what an autocorrected double hyphen
+     becomes) and the result was a line the writer did not ask for and
+     could not click.
+
+     So here it is 2px, darker, given room, and it shows a selection
+     outline like every other object in the box — click it, press
+     Backspace, gone. */
+  .adm-richtext-body hr {
+    border-top-width: 2px;
+    border-top-color: var(--color-line-strong);
+    margin-block: var(--spacing-4);
+    cursor: pointer;
+  }
+  /* ProseMirror's own class for "this whole node is selected", used by
+     the horizontal rule, which has no node view of its own.
+     `:not(.rt-figure)` because a picture already outlines its frame and
+     matching here as well stacked a second rectangle around it. */
+  .adm-richtext-body .ProseMirror-selectednode:not(.rt-figure) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  /* ── Rows ─────────────────────────────────────────────────────────
+     The left rule is a catalogue device — an entry marks itself in the
+     margin, the way a shelf label does — and it is the one flourish in
+     the panel worth keeping. Only the colour was wrong. ── */
   .adm-row {
     display: block;
     width: 100%;
     text-align: left;
     background-color: var(--color-bg-raised);
     border: 1px solid var(--color-line-hairline);
-    border-left-width: 2px;
+    border-left-width: 3px;
     border-left-color: transparent;
     transition:
       border-color var(--duration-micro) var(--ease-out),
       background-color var(--duration-micro) var(--ease-out);
   }
   .adm-row:hover {
+    background-color: var(--color-bg-inset);
     border-color: var(--color-line-strong);
     border-left-color: var(--color-accent);
   }
@@ -656,15 +2343,6 @@
     outline-offset: 2px;
   }
 
-  /* The busy spinner. Two exceptions, both deliberate and both confined
-     to this class:
-       · a rotation, permitted because it reports that something is
-         genuinely still happening rather than decorating a static thing
-       · a circle, in a system that is square by intent (§17.5). The
-         radius ban is about SURFACES — plates, panels, inputs. This is a
-         mechanism, and a square spinner reads as a glitch.
-     Declared here rather than as `rounded-full` in a component, so it is
-     one considered exception instead of a precedent. */
   .adm-spin {
     border-radius: 50%;
     animation: adm-spin var(--duration-large) linear infinite;

@@ -35,6 +35,7 @@ import {
   Field,
   Input,
   Loading,
+  Modal,
   Notice,
   PageHeader,
   Select,
@@ -75,6 +76,12 @@ export default function CommitteePage() {
   const [loading, setLoading] = useState(true);
   const [addingTo, setAddingTo] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [editingMember, setEditingMember] = useState<{
+    person: Member;
+    membership: Membership;
+    sectionName: string;
+    asset?: Asset;
+  } | null>(null);
 
   const reload = useCallback(
     async (committeeId: string) => {
@@ -339,18 +346,35 @@ export default function CommitteePage() {
                                   {ms.designation !== section.name ? (
                                     <p className="text-body-s text-text-tertiary">{ms.designation}</p>
                                   ) : null}
-                                  <ConfirmButton
-                                    what={person?.name ?? "this person"}
-                                    className="mt-1"
-                                    onConfirm={() =>
-                                      act(
-                                        () => items.remove("memberships", ms.id),
-                                        `Removed ${person?.name ?? "member"} from ${section.name}.`,
-                                      )
-                                    }
-                                  >
-                                    Remove
-                                  </ConfirmButton>
+                                  <div className="mt-2 flex items-center justify-between gap-2 border-t border-line-hairline/50 pt-2">
+                                    {person ? (
+                                      <Button
+                                        variant="quiet"
+                                        className="text-body-s hover:text-accent"
+                                        onClick={() =>
+                                          setEditingMember({
+                                            person,
+                                            membership: ms,
+                                            sectionName: section.name,
+                                            asset,
+                                          })
+                                        }
+                                      >
+                                        Edit
+                                      </Button>
+                                    ) : null}
+                                    <ConfirmButton
+                                      what={person?.name ?? "this person"}
+                                      onConfirm={() =>
+                                        act(
+                                          () => items.remove("memberships", ms.id),
+                                          `Removed ${person?.name ?? "member"} from ${section.name}.`,
+                                        )
+                                      }
+                                    >
+                                      Remove
+                                    </ConfirmButton>
+                                  </div>
                                 </li>
                               );
                             })}
@@ -415,11 +439,104 @@ export default function CommitteePage() {
           </Card>
         </>
       )}
+
+      {editingMember ? (
+        <EditPersonModal
+          person={editingMember.person}
+          membership={editingMember.membership}
+          sectionName={editingMember.sectionName}
+          isOpen={Boolean(editingMember)}
+          onClose={() => setEditingMember(null)}
+          onSaved={async (msg) => {
+            setEditingMember(null);
+            if (current) await reload(current);
+            setFlash({ tone: "success", text: msg });
+          }}
+          onError={(msg) => setFlash({ tone: "error", text: msg })}
+        />
+      ) : null}
     </div>
   );
 }
 
 /* ── Pieces ───────────────────────────────────────────────────────────── */
+
+function EditPersonModal({
+  person,
+  membership,
+  sectionName,
+  isOpen,
+  onClose,
+  onSaved,
+  onError,
+}: {
+  person: Member;
+  membership: Membership;
+  sectionName: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onSaved: (msg: string) => void;
+  onError: (msg: string) => void;
+}) {
+  const [name, setName] = useState(person.name);
+  const [designation, setDesignation] = useState(membership.designation);
+  const [assetId, setAssetId] = useState<string | null>(person.portrait_asset_id);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    setName(person.name);
+    setDesignation(membership.designation);
+    setAssetId(person.portrait_asset_id);
+  }, [person, membership]);
+
+  async function submit() {
+    if (!name.trim()) return;
+    setBusy(true);
+    try {
+      await items.update("members", person.id, {
+        name: name.trim(),
+        portrait_asset_id: assetId,
+      });
+
+      await items.update("memberships", membership.id, {
+        designation: designation.trim() || sectionName,
+      });
+
+      onSaved(`Updated details for ${name.trim()}.`);
+      onClose();
+    } catch (e) {
+      onError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Modal title={`Edit ${person.name}`} isOpen={isOpen} onClose={onClose}>
+      <div className="space-y-4">
+        <Field label="Full name" required hint="Exactly as it should appear on the website.">
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
+        </Field>
+
+        <Field label="Title as printed" hint={`Designation in this position (e.g. “${sectionName}”).`}>
+          <Input value={designation} onChange={(e) => setDesignation(e.target.value)} />
+        </Field>
+
+        <PhotoPicker label="Portrait photograph" value={assetId} onChange={setAssetId} />
+
+        <div className="mt-6 flex justify-end gap-3 border-t border-line-hairline pt-4">
+          <Button variant="quiet" onClick={onClose} disabled={busy}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={submit} busy={busy} disabled={!name.trim()}>
+            Save Changes
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
 
 function AddNamed({
   label,

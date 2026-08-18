@@ -183,6 +183,33 @@ Robocon 2005) is currently the only placement evidenced in the entire archive.
 analysis of 1,878,553 opaque pixels. Never "modernised" toward cyan. Accent is
 never a glow.
 
+**A write-up is never stored as HTML.** The admin editor (Tiptap) saves the
+document *tree* as JSON — `body_format = 'doc'`, migration 0014 — and
+`apps/web/src/lib/richtext/render.ts` walks that tree at build time, emitting
+only tags it wrote itself around text it escaped itself. The archive's ~400
+markdown entries keep rendering through `lib/markdown.ts`; both formats are
+supported indefinitely, and a row converts only when a human opens and saves
+it. The `'html'` value the CHECK still permits is written by nothing and
+renders as empty. **If you find yourself adding an HTML sanitiser, something
+has gone wrong** — the whole point is that no author-supplied markup ever
+reaches a reader.
+
+Consequences, which are load-bearing rather than incidental:
+
+- **Fonts, sizes and colours are token *names*, not CSS.** Six fonts, nine
+  sizes, six inks, five highlights — the closed lists live in
+  `lib/richtext/palette.ts` and their values in `globals.css`. Adding one means
+  editing both. A stored hex could not follow `[data-field="deep"]` and would
+  be invisible on petrol.
+- **An inline picture is an asset id, not a URL.** That is what keeps it inside
+  the ingest pipeline — derivatives, EXIF strip, content-addressed key — and
+  the build joins it back up into a `<picture>`. Anything the editor inserts is
+  attached to the event on save; the build then removes it from the contact
+  sheet so it does not appear twice.
+- **A video is a provider and an id, never an embed code.** The renderer builds
+  the iframe URL from a hardcoded origin, and the page ships a facade so
+  YouTube's ~1 MB of script loads only if a reader presses play.
+
 ---
 
 ## Phase 0 status
@@ -198,7 +225,7 @@ never a glow.
 | API façade skeleton | done — `/v1/health` only; routes are Phase B1 |
 | Next.js app + token proof sheet | done — builds, budgets pass |
 | CI workflow | written; **not yet executed on a runner** |
-| Fonts | **outstanding** — see `apps/web/src/app/fonts/README.md` |
+| Fonts | done — IBM Plex Sans + Plex Mono + Source Serif 4, 108.6 KB of a 110 KB budget. `apps/web/src/app/fonts/README.md` |
 
 ---
 

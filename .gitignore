@@ -69,3 +69,10 @@ Thumbs.db
 !.vscode/extensions.json
 !.vscode/settings.json
 *.swp
+
+# ── Database dumps ────────────────────────────────────────────
+# pg_dump output taken before migrations. These carry live table
+# contents — admin rows, hashes, tokens. Keep them local.
+backup-before-*.sql.gz
+*.sql.gz
+*.dump

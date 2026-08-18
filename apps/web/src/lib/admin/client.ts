@@ -40,6 +40,14 @@ let accessToken: string | null = null;
  *  a stale token queue behind ONE refresh rather than racing to mint ten. */
 let refreshing: Promise<string | null> | null = null;
 
+/** Called the moment a request proves the session is over, so the panel
+ *  can put the login page up rather than leave someone clicking a form
+ *  that will never save. Set by SessionProvider. */
+let onSignedOut: (() => void) | null = null;
+export function setOnSignedOut(fn: (() => void) | null) {
+  onSignedOut = fn;
+}
+
 export function setAccessToken(token: string | null) {
   accessToken = token;
 }
@@ -68,6 +76,11 @@ export class AdminError extends Error {
  * that an Administrator has to do this bit.
  */
 function humanise(status: number, code: string | undefined, raw: string): string {
+  // Only reachable from /auth/login, which is exempt from the signed-out
+  // handling below — so a 401 here is a typed password, not a dead session.
+  if (code === "INVALID_CREDENTIALS") {
+    return "That email address and password do not match an account.";
+  }
   if (status === 401) return "Your session has expired. Please sign in again.";
   if (code === "FORBIDDEN" || status === 403) {
     if (/published/i.test(raw)) {
@@ -87,6 +100,15 @@ function humanise(status: number, code: string | undefined, raw: string): string
   }
   if (/posts_approval_needs_attribution/.test(raw)) {
     return "An approval has to record who approved it and when.";
+  }
+  if (/events_published_needs_a_date/.test(raw)) {
+    return "A published event has to record when it went public. Use the Publish button rather than ticking the box by hand.";
+  }
+  if (/events_excerpt_length/.test(raw)) {
+    return "The summary must be between 20 and 320 characters, or empty. A longer one breaks the cards in the events feed.";
+  }
+  if (/event_asset_unique/.test(raw)) {
+    return "That photograph is already attached to this event.";
   }
   if (/assets_alt_check/.test(raw)) {
     return "The description is not usable. Write at least three words saying what the photograph shows — not a filename, and not “photo”.";
@@ -133,11 +155,43 @@ export async function directus<T = unknown>(path: string, opts: Options = {}): P
     const raw: string = first?.message ?? `Request failed (${res.status})`;
     const code: string | undefined = first?.extensions?.code;
 
+    /* ── A DEAD SESSION DOES NOT ANNOUNCE ITSELF AS 401 ──
+       Directus answers an UNAUTHENTICATED request with 403 FORBIDDEN, not
+       401: as far as it is concerned the collection does not exist for
+       you, which is not the same statement as "log in". So once the
+       refresh token has expired and `accessToken` is null, every call
+       comes back 403 and the panel says "You do not have permission to do
+       that. If you think you should, ask an Administrator." — advice that
+       sends someone to bother an administrator about a session that
+       simply ran out.
+
+       Observed exactly that: a refresh returned 401 and the next nine
+       clicks on "Add a category" each returned 403, silently.
+
+       `/auth/*` is exempt: a 401 from /auth/login is a wrong password,
+       not an ended session, and a 401 from /auth/refresh is the session
+       provider's own probe on page load. */
+    const isAuthCall = path.startsWith("/auth/");
+    const signedOut =
+      !isAuthCall && (res.status === 401 || (res.status === 403 && !accessToken));
+
     // One silent retry when the access token has simply aged out. Without
     // it, leaving a form open over a cup of tea logs you out mid-save.
-    if (res.status === 401 && !opts.noRetry) {
+    if (signedOut && !opts.noRetry) {
       const fresh = await refreshSession();
       if (fresh) return directus<T>(path, { ...opts, noRetry: true });
+    }
+
+    // Refresh did not help, so the session is genuinely over. Say that,
+    // and say it for the 403 case too — the status code is Directus's
+    // opinion about a request, not about the person making it.
+    if (signedOut) {
+      onSignedOut?.();
+      throw new AdminError(
+        "Your session has ended. Sign in again to carry on.",
+        401,
+        "SESSION_EXPIRED",
+      );
     }
 
     throw new AdminError(humanise(res.status, code, raw), res.status, code);

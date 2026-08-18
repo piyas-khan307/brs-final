@@ -62,7 +62,7 @@ export default {
       bannedGradient:
         "'{{value}}' is banned: no gradients except a <=12% legibility scrim, which is hand-written CSS (§3.3, rubric check 8).",
       bannedRadius:
-        "'{{value}}' is banned. This system is square by intent: radius-none for plates and structural surfaces, radius-input (2px) for inputs only (§17.5).",
+        "'{{value}}' is banned. This system is square by intent: radius-none for plates and structural surfaces, radius-control (4px) for things you touch — buttons, inputs — and radius-card (10px) for travelling plates only (§17.5).",
     },
   },
 

@@ -63,6 +63,7 @@ export type IngestInput = {
   sourceRef?: string;
   source?: "upload" | "sharepoint" | "drive" | "archive";
   published?: boolean;
+  category?: string;
 };
 
 export type IngestResult = {
@@ -233,12 +234,13 @@ export async function ingest(
     const { rows } = await client.query<{ id: string; existed: boolean }>(
       `INSERT INTO assets
          (storage_key, provider, mime, width, height, alt, lqip, ratio,
-          source, source_ref, checksum, published, credit)
-       VALUES ($1,$2,'image/avif',$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+          source, source_ref, checksum, published, credit, category)
+       VALUES ($1,$2,'image/avif',$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
        ON CONFLICT (checksum) DO UPDATE SET
          alt = EXCLUDED.alt,
          credit = EXCLUDED.credit,
-         published = EXCLUDED.published
+         published = EXCLUDED.published,
+         category = EXCLUDED.category
        RETURNING id, (xmax <> 0) AS existed`,
       [
         stored.get(canonical),
@@ -253,6 +255,7 @@ export async function ingest(
         digest,
         input.published ?? false,
         input.credit ?? null,
+        input.category ?? "archive",
       ],
     );
 

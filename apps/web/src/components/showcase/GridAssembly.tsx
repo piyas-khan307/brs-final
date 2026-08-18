@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ASSEMBLY } from "@/lib/showcase.generated";
@@ -48,8 +48,31 @@ const VECTORS = [
   { x: "116vw", y: "28vh", rotate: 30, rotateY: -30 }, // far right, low
 ];
 
+const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL ?? "http://localhost:8055";
+
+type AssemblyAsset = (typeof ASSEMBLY)[number];
+
 export function GridAssembly() {
   const root = useRef<HTMLDivElement>(null);
+  const [featuredAssets, setFeaturedAssets] = useState<AssemblyAsset[] | null>(null);
+
+  useEffect(() => {
+    fetch(`${DIRECTUS_URL}/items/assets?filter[is_featured][_eq]=true&limit=9`)
+      .then((r) => r.json())
+      .then((d: { data?: Array<{ id: string; alt: string; storage_key: string; width: number; height: number }> }) => {
+        if (Array.isArray(d.data) && d.data.length > 0) {
+          const mapped = d.data.map((a) => ({
+            id: a.id,
+            caption: a.alt,
+            storage_key: a.storage_key,
+            width: a.width,
+            height: a.height,
+          }));
+          setFeaturedAssets(mapped as unknown as AssemblyAsset[]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -89,9 +112,6 @@ export function GridAssembly() {
             ease: "power2.out",
             duration: 1,
           },
-          // Row-major: three plates per row share a start, rows step by
-          // 0.22 of the timeline. Overlapping rather than sequential, so
-          // the grid is always in motion somewhere.
           Math.floor(i / 3) * 0.22 + (i % 3) * 0.07,
         );
       });
@@ -103,7 +123,9 @@ export function GridAssembly() {
     });
 
     return () => mm.revert();
-  }, []);
+  }, [featuredAssets]);
+
+  const displayList = featuredAssets && featuredAssets.length > 0 ? featuredAssets : ASSEMBLY;
 
   return (
     <section
@@ -132,14 +154,8 @@ export function GridAssembly() {
       {/* The field. Cards are laid out in their final positions and
           translated in from the vectors above. */}
       <div className="field flex flex-1 items-center justify-center py-10">
-        {/* Columns size to the plates rather than splitting the container
-            into three equal fractions. With `grid-cols-3` the cells are
-            far wider than the 4:3 plates inside them, so each plate floats
-            somewhere inside its own cell and the 3x3 stops reading as a
-            grid. `auto` columns plus justify-center makes the block tight
-            and centred. */}
         <ul className="grid grid-cols-2 justify-center gap-3 sm:grid-cols-[repeat(3,auto)] md:gap-4">
-          {ASSEMBLY.map((asset) => (
+          {displayList.map((asset) => (
             <li
               key={asset.id}
               data-cell
@@ -148,10 +164,6 @@ export function GridAssembly() {
               <div className="plate-surface h-full w-full">
                 <ShowcaseImage asset={asset} sizes="(min-width: 768px) 26vh, 45vw" />
               </div>
-              {/* Placard on hover. Every plate on this site is labelled;
-                  nine simultaneous visible captions would be noise, so the
-                  label is revealed rather than omitted — and it is still
-                  in the DOM for a screen reader either way. */}
               <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-[rgb(30_27_25/0.72)] px-3 py-2 font-mono text-micro uppercase text-bg-base opacity-0 transition-opacity duration-base ease-out group-hover:opacity-100">
                 {asset.caption}
               </span>

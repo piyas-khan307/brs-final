@@ -191,6 +191,14 @@ export const EventCategory = z.enum([
   "reception",
   "agm",
   "co-organised",
+  /* Added with migration 0011, after reading the archive rather than the
+     plan. Eight member-recruitment drives and five orientation programmes
+     are real events and are none of the categories above; filing them
+     under "seminar" would have been a page quietly saying something
+     untrue. Mirrors event_category in Postgres — the two must stay in
+     step, and this endpoint's response validation is what enforces it. */
+  "recruitment",
+  "orientation",
 ]);
 
 export const EventSegment = z.object({
@@ -202,12 +210,39 @@ export const EventSegment = z.object({
 export const EventDTO = z.object({
   slug: z.string(),
   title: z.string(),
-  category: EventCategory,
+  /**
+   * THE CATEGORY'S SLUG, AND NO LONGER A CLOSED SET.
+   *
+   * This was `EventCategory`, mirroring a Postgres enum. Migration 0015
+   * moved categories into a table the club can add rows to, because
+   * widening an enum needs a migration and a developer — and 0011 had
+   * already had to do exactly that once, after the archive turned out to
+   * contain thirteen events that were none of the eight values then
+   * available.
+   *
+   * Still a slug, so every existing consumer that filters or compares on
+   * this keeps working unchanged. `EventCategory` below is kept as the
+   * list of values the archive was BUILT with; it is no longer a limit
+   * on what may be stored.
+   */
+  category: z.string(),
+  /** What a reader sees — "Member recruitment", not "recruitment". */
+  categoryName: z.string(),
+  /** Set only when the category is a subcategory: its parent's slug and
+   *  name. Two levels is the whole depth; see migration 0015. */
+  categoryParent: z.object({ slug: z.string(), name: z.string() }).optional(),
   /** "Basic Workshop", "Robo Carnival" — the series this belongs to. */
   series: z.string().optional(),
   /** "v8.0", "2024" */
   edition: z.string().optional(),
-  dates: z.object({ start: IsoDate, end: IsoDate.optional() }),
+  /**
+   * BOTH ENDS OPTIONAL. Most of the club's archive is a folder with a
+   * year in its name and a description that never states a date, so
+   * `start` was required against data that does not have it (migration
+   * 0010). An event with no start date is shown by its `edition` —
+   * "2022", "v8.0" — and never by an invented day.
+   */
+  dates: z.object({ start: IsoDate.optional(), end: IsoDate.optional() }),
   venue: z.string().optional(),
   platform: z.string().optional(),
   theme: z.string().optional(),
@@ -219,7 +254,20 @@ export const EventDTO = z.object({
   /** Drive album, retained as a clearly-labelled secondary link. Drive is
    *  an ingestion source, never a gallery backend (§9.6). */
   externalAlbum: z.string().url().optional(),
-  body: z.object({ format: z.enum(["html", "md"]), content: z.string() }),
+  /**
+   * `md` is the archive: ~400 write-ups authored as markdown, rendered by
+   * apps/web/src/lib/markdown.ts, and not going anywhere.
+   *
+   * `doc` is what the admin editor writes (migration 0014) — the
+   * ProseMirror document tree as JSON. It exists because fonts, sizes,
+   * colour, alignment, inline pictures and video have no markdown
+   * spelling, and because storing them as HTML would put author-supplied
+   * markup on the article page. A tree of typed nodes lets the build emit
+   * only tags it wrote itself. See lib/richtext/render.ts.
+   *
+   * `html` predates both, is written by nothing, and is rendered as empty.
+   */
+  body: z.object({ format: z.enum(["html", "md", "doc"]), content: z.string() }),
   /** Provenance, so it is always visible which pages still carry copy
    *  derived from Facebook promos rather than authored prose (§10.1). */
   copySource: z.enum(["web-ready", "derived", "authored"]),
@@ -373,7 +421,8 @@ export const PostDTO = z.object({
   slug: z.string(),
   title: z.string(),
   excerpt: z.string(),
-  body: z.object({ format: z.enum(["html", "md"]), content: z.string() }),
+  /** Same three formats as EventDTO — one editor writes both. */
+  body: z.object({ format: z.enum(["html", "md", "doc"]), content: z.string() }),
   author: z.object({ name: z.string(), batch: z.string().optional() }),
   publishedAt: IsoDate,
   tags: z.array(z.string()).default([]),

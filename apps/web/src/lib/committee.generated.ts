@@ -63,35 +63,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Ahmed Reza Junaid, President of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAABwBACdASoUABMAPzmSv1mvKaYjqAgB4CcJZwDMWAw7codA5C9VdayRl0MfAAD5M8lEw/sc+s5yTryrpSuzMowsvU6Q7mEEzgPI7rmBrIdyUCBh1pmbJIZPnV7AVTHzrr+HqRLthUxKhe1jwX9+3aG9ucAf9xM41VBsxJ1E/4AAAAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAQBACdASoUABgAPzmOvlevKaYzqAqqcCcJZQDDrAxYo0TMvF7yzsVHAAD+2Vh5NiLlhujj4tDaCl8Fr7Gq0Q9WrhGOYPIblub6HqmT4nX3X7hfuLffMElQTYGG4pqWQRiMqBBopp5XgtzUeG6sQAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/10/f8/10f8b0b38cf63ee4790e9e2b731cdfcf23352cee7817dc258827ad20f8c01ba9.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/ff/c5/ffc5374fda6411dd4627b7d34a84d8a2f2b14eb2be5feedd8917a99a5bb18121.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/7e/47/7e4786e32e0fbf90ff89c840456c139cae5b4f0d4b2fdddbbd824596f2f5b8e4.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/02/4f/024f1fa5397a0419803e4bae2cb52e98272c9e2f3e470284284bc403e75a694c.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/c5/a0/c5a0beb85024ed74c33de2237dc8cf4e1a9b7f5d29197d6722f086950c16f4a2.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b4/e5/b4e5093def9c8df47325e21ca2253e037eedabf4ebcf03e4e2a88195b924a0b5.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/58/16/5816e0948aa1dd27c95ad0deb3fae4ab6cd98fa598f8595e1126fbbe93f8a6ad.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/dc/fc/dcfc01230625f72c3040fa92a60a93dad487145f6669ed84eb8596292ab1aa1c.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/bc/de/bcde09542580c9e51c2229b7f0274dad01ba01252d5367f4266edcbce261d050.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/d4/28/d42850d7780e1286f5ab58fd56f3c28dea4adc7e3403a6a3d3ae87fce7186b73.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b3/08/b30802011c5f999a1c7ab9875b2fbf948ca5e885460193caf9b4d22a72a12039.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/03/59/035959f0950042bd4167a122c421bf03187286e1473e0364e11e071ba4201f5d.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/ad/c3/adc3b8e8754b4746a1308ed8f70f6aa8a1d199fbbf9c7001abcc5e7683d472e4.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/46/42/46425f4ae44b14f09b98b1fd9b2afd9cc3c13ae6dc562576a1cdf044c16a3ce5.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/b3/12/b312628fda5a6a4848ab0269415a627d1add6e0dd5fdd0f54f385bdfdbf05d8a.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/ab/aa/abaab9c7ef7bb8f3497b779d61ab01e4be100e9cb42e9f84e69d4d247df187e2.webp"
                     }
                   ]
                 }
@@ -109,35 +125,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Redowanul Hoque, Vice President (Technical) of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACQBACdASoUABMAPzmQvFgvKaWjqAqp4CcJYwDDcBEJjvjejVvNJZL2AhnK8wAA+TPKkRglQOE00ivrYHbHeAeu0sX5VTDP0R4GmEi36bga+bGJqWczDPgQhSNiUKaJuN9/doc5I/Cdqui48T/9mPoLAEBPPawM8HRAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAACQBACdASoUABgAPzmOv1evKaazqAqqcCcJZQDE2AyZG2VGg+GFniterN5DeeAA/tlYeTYi5Ybo4+LQ1s6XXxb8t7WFbYCd7oWu43bHmbSKSbEUyyoEUOIRrTT3GL59uGxMwgQIXdSLJVhIgJw+O81VwfOMAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/d2/2c/d22c179d5418544c7181b60491e3b53e9969ac5caf3ab09aa0f87cca0a29db0c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/1b/85/1b85591ef7171634e5730a23edfffc055953897ab47ae8b428b1b13ac283ba79.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/cf/74/cf742dfe1076e95dcfb36ab24d17daadb1ff0620c300a6f60f56ecb13a6aba87.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/34/a6/34a6a13216ee6ec49ec5de4920e9b9ceb092e26436050271c45d7b59c804b867.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/98/fc/98fc07ff93424c99ba2e3d22a430690383e92dd380522962012775a403b9c5cd.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/6d/38/6d38123cbb673dd231c7c59baafed1c8bb06184e2253f07a7ca2df6cbf71cad6.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/45/c2/45c240b76b8d97441c5b97ee54fd95bdacbdb4aee61be19bd0f9798c800d6c9b.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/af/97/af97c57d8bbd4aab86136cfab74b62aba46da8d40cfbafc17dd4c4a48edea7a6.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/40/39/4039308974559b473b227ca72a1ebfa74de603cf65e67457d6b70ffc2fec0ea3.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/4b/73/4b73920e075b6751d5aafbb66fdff5e5e76fadba6aad353eecd36d0b4e23fbd1.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/62/27/62272720db53f114d70000626b6bea6e4e1a601e7fc925b86122db58d0b2b71f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/6b/fa/6bfae97e166a6200ca71b91c365000d9ae0ba2ef555b14e6663bf7da6c3eb66a.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/db/35/db3501d3f723d0e89c78ff4cf4cce6b9e100e5ff58e81294f6d3277f962c91e5.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e0/fa/e0fa6f514d1fc332f0dfdf84804141ed4258db5e983271d7ab73d68d022e40b5.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/69/c1/69c10db7dd020595480313a6672ff19b2dc5f82e4a233c5a2450cfc3a9c3949d.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/62/f7/62f77a4aaddb04a0e6ce28e1314eb73d7389b376ac72fdee88995c93a97dfd9e.webp"
                     }
                   ]
                 }
@@ -150,35 +182,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sadat Tanzim, Vice President (Activities) of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADwBACdASoUABMAPzmUwFmvKiajqAgB4CcJZwDH5d0YehSrQ58CZ5wn2uMFvzrANQAAzhoybBDQmINWeNhgyAn6+UehjFR/hqZfTLTN1yY2dBup9zgNMkL9vm24SFAVMlcYvHhLAcqk8nZnuVyDP6LncIjdhkFT1y4BrTXiaELsfgAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUABgAPzmOv1cvKaazKAqqYCcJZwDGQAyZGxAnR8x5UOYFxDAA/tlYeV1ih0Q1MbZDAqddK94nENdxO+ZPKZ7lMPlBkfirqZxBhwkbdX/+OSd1+4BvZwmyaRDC0vLaeUZ4K2nL1h2jqKvyPS8QITzuIAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/71/87/7187c032bd33666d15520767f41449b1d60f38882e6cdc2223a047d61a22b9eb.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/94/37/94378d3777c6d2a07472d3121f2d0b7021028cf4393d3b7214cc14932af61071.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/03/61/03619210ea5b87450bc7ffffa9e7131608e20d44446c5456ec9986302f673614.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b0/be/b0be5e0279fc1912afb836e2d5b5cf0447f6adc469e820e78428a3c99a227030.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/1b/80/1b804a0e53afc72a5284950a16b05afba47790caca9e8a9bb15a0fc2a3ba6c97.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/41/83/4183014c55733d382beac7f0846404fc2dd782a3c68e69577b6309e81c57bf00.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/b4/60/b4606c4aade98bb838a6aca02cd613d581fc5c15e1c0bfd04775996461549615.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/99/99/9999e075a9c6256ac4097e02a75c7b448f2b11f984f56ca258212d6e6013f091.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/9c/5a/9c5ad68829165638e4daf2c3550c708bb1efe9836f9a0b138660079031b4c912.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/10/f2/10f226f638b91939e5b91c657efa58971c0622d5b2b6ff79dfb3f97a580a5ddc.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a5/f5/a5f5c468beb4574881beaa34de9eeb7238c2008f2d6773a962c0f11d51eed2b7.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/0f/d0/0fd0389b7ba9272dac9d88a34fa8c73e9655673b804bc0f2f2ce36fb72ac7341.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/52/dc/52dc721bec1d11cde55c6f41564eb6b3d957c5981487a31a5f1907e469f880b3.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/57/c4/57c4d35664d9d8203144009cc5b499f7c9880ba0f7cbff116d0532cc9358f84e.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/70/dd/70ddeb47aae5eb05e26d343226116926bf826663aa299fa4e004f926abad3317.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/a6/3d/a63da0f5d39384abf281ddba2f61f03ce6e6da410c907385c72a84b4e312dcb2.webp"
                     }
                   ]
                 }
@@ -196,35 +244,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Abiswker Ankon, General Secretary of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAwBQCdASoUABMAPzmSwFmvKaajqAgB4CcJQBYj20g1Pt9HLa02cAFMZG0wpwmK+gTYAAD5M8qRG+Zl/IjOKVS4StNSU9Vca9SiNnnGAmFEB5Dxt8NzYjAPQnQFcHzGcjVrLF/+uwVBeAYn/m23+j1LWGeM06DsMGFU6lXxkgqHfa5tU6vVT4lJT/JWU0AcS4AAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUABgAPzmGu1avKCWysBgIAlAnCWQAwNwMd3kYtJGyoTH+k2gA/tlYeTYi5Ybo4+LQw8f7zBRcXFL+/SBlZxX74H0Byuj0oPIFynn5104XaxmeV7KuEmdZB5h+K/nOzx0xeRZMu96N68CKuQAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/02/6f/026f9142294de2543ef1c9fbf9e571379da6d3677ce9c9faa1b79479180a6ee8.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0d/1d/0d1dae166fcde197a0ce9f7a701c664e79eddd83c6e19160df5a3b86f5061be0.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/27/63/27638f9620e83a80ba572cacaa8d7b4b2a82f492f8db65f89a243062529a352d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b9/1e/b91ed25f08ee6e63a84fcfafddb38750ede6f7cc9ab90c8bac74447937b18361.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/6b/33/6b337cb09b11225835c1e41673805ee1313868beb89040d564f3878fa8750f6b.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/7e/e9/7ee9039a472b9a75cba2ce965b972e94e165d3b1dedfdcb2fc6c5195243c34b0.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/81/5c/815c093f9c1a0a70a782f0d7cd3004e74a9643f7aabee35d2622c97603be3df4.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/49/33/49331ddf66f2174d1297267575aaca711f28d08dab3f4b6943ffce805f798b31.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1e/53/1e531eb9d7eec85e87862a6272d109c851dc5cb3d27eb904568be49828d5147b.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/44/f9/44f940ea3d7dc2136ca19b5a581e1f7342e1081787c0b31a39a14f436ebe5515.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ff/09/ff098b31a89cadda5f33fa43bf3f3f030746aa5abc1d1fdc62307e78cac47362.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ca/99/ca9920ac5d85213940a0c01201b472deb9c9d7d2691d4d0d023c7d78cc878ed4.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/68/10/6810496f79dfd06a22e2352d8a07edb4879db3582151bf0d3815921eb1f679b6.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/3c/be/3cbee57669f3530bcb729dff7d8fd576b0d3913e5916ea8eb7f01fda4f610f59.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/64/80/64802893b5c618105fcb662748cf4900460f0c21c30aff22d253b58ed35d8563.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/4c/e8/4ce838a008a28059579da6a8e2c8f9376ab4902f21872c532af007c8e0f9c0ce.webp"
                     }
                   ]
                 }
@@ -242,35 +306,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Mushfiqur Rahman, Assistant General Secretary of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADQAwCdASoUABMAPzmUwFmvKialKAgB4CcJZACdABEcbjmw8qEneYAA4do4iUOcSHORlj+PC85HEXRjMurzJPU5KflyAzoTQteea6g9DzEQRaa4li7YRECUQjo43q5YtXEau0TSi/F54hvYZk2TWpkm2hWd9tewuXjKzpN36aqFIAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABQBACdASoUABgAPzmQvVgvKaY0KAqqgCcJQBhmgZMiJij9dQT/DkGzuXMAAP7ZWHldYodENTG2QwKbCubevVmMJeT7RhNv7UHLv/JJe75acyZ/usnfye+bhJ1fre8olU4M0iOG5B7+4WjAXphLIvqjUOvMyAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/24/c8/24c8ae5e52b1a8ad28f35f5d4b93f260b4c9d68b0b6d55227e1b2b3c40063e59.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/62/82/6282f58fc755c43834f4a04f2bf1f15d23882ce78b50acf34435cc4e76f9f76d.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/68/d1/68d12a090531ba8298c9bbbaa61dc9a07428325513d8f85e894d6a27f366cca0.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/3d/79/3d796de56c191fdf5b3ab55ca79742f34aadae86abe7def23befb2771ad3d65e.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a2/49/a24966014befc7da826468a10e656f67bca77f53d7f5c374b9c36bee76b45cf5.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ad/17/ad175a865a3b8a08afa3bd12b9bd0b76b90333e8da01afbab79a25c0497aa27f.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/31/14/3114f1a4fad3882633ff4259f8e2024c704f0af691f2fedd65abe4cc60b6f0a6.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/51/b6/51b6e3d096789b04bc5418d6dfed09f05d6bba4547f8225b77803d0a258a3e98.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/7a/4c/7a4c355e60f52bc6779b5c5705a650ac900b88185247768f3ca45e4b8b84bf39.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/32/c7/32c7b7491a351b5e27a2bddb2686ae109275691f87e9eca0368dca9335bb8eef.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a7/60/a760c13aee24d38c07096f03a788b0bd7de1e0d187b0b5389346e81335880c38.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/e1/e4/e1e4df25e35cc5a6fcfa1a01c5d5c3ed6f6054df67d8bc6eba0c717c9f15658e.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/28/56/285656e8847ffafef176ff92a62911d296b1a0a0d7363ab857e0d4aac65f5551.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/37/15/3715e7bbe035853d42176c89ad705d3a0d1961e1c5bfe05673f1c750d45606db.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/d3/65/d365305744c48befc207c0d91b75cca6257875f502f4dbaba1df35c23baa45e3.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/d5/47/d547a7613a05746cf88332832ce3f844543f6c6742a27ebf02f93f041a176333.webp"
                     }
                   ]
                 }
@@ -288,35 +368,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Shamim Al Razi, Treasurer of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAQBQCdASoUABMAPzmMuVavKSUjqA1R4CcJZgCzgA/SsYKf8gRtj8tD8D0IiVbSU2HAAPvzyTu9JkD3mbclM6tFICpnnYCWDxv0BdyZTTmzTD48gOsg0q5eHiKwGnPER/Pb8bVfMb+mSjUEJ6XUOOecRT/D1RQ3rUOSBLSKoADFx8WTH4VxrMUN4FjBaFLlKmAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAQBACdASoUABgAPzmQvFgvKaW0KAqqgCcJZADGBAyWCmQb199ATZ5wwAD+2Vh5XWKHRDUxtkMCp1QlzkD9jOxmJ14dXacBORzc3PDvkoEQt/dtnpGeFJIYhwku8B4BFtptVU4OZ6gBqNNn3CgQsIAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/74/0b/740be0ed957c6064e253ac66559f51aed97ab9fd6eb9aa664ae234415d36c699.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/9c/96/9c96bf63891ee486e4cebf9262607b195b3b2e74096e46b2c33f3772e1e0c90f.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ef/d0/efd05d447feb4f308728d1010f9afb86b8f47a0a85268ba9ed8c0ca0b62d2406.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/5b/03/5b03b4f1047abd6adc8933c148b19b3d1f13c8b57c3619976e31bae2e80c526a.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/64/09/6409ee967fc629ccdbcaf4831a896a61f4290e5ba271e363f8875e18db8f5db5.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/8e/88/8e88bffd65edbd815529fc4466ecce5dc22d3f0717cb0227879f155da87fcf3c.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/d8/45/d845e4bab7ca22411886e1c297c6f3efe5cab3c3dee40a28fe8b361975599e75.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/fb/a3/fba35ac4af70a45b7561ebc11d66ef516aa36640bdff2c0bd84e1f08b617c885.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/34/d8/34d8d7b9d2a667e111da099306f5f7eb05dced0b18842f8e2f8a7cbb3cd589a8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/51/ca/51ca59a06e76ee59515754a81eb414afa3beddf1669cb48102a7cae98be222c6.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e8/4d/e84d36a971867956d091bf04eb4070f723510c638ffb42be8e940375001afe01.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/5f/b0/5fb06818194308ee99b4071226004ababb6c49c889a5b288fe27e022832311a8.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e7/ee/e7ee40feaaf715eaeab137747f5024cba888c897b6768754a7b6223f0617f311.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ab/a6/aba6abc7803e81a5930d96b7090152a81c91ac2d0a5683998fa7e8e6abd3a9dc.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4a/f8/4af82019a3193c8edc16abba56669547ae0fc50df5ae34ae928ed94daf97ad2c.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/25/36/2536fa8d9fd88464d2bc2971ea819a21b0b8fc4acc3ac800dde97dd39293c658.webp"
                     }
                   ]
                 }
@@ -334,35 +430,89 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Sani Alam Khan Piyes, Webmaster of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACwBACdASoUABMAPzmUwVmvKicjqAgB4CcJZQDNhA44hP/UPRdub1kG5TbNlxVQAPv699Dk0kukCTyISgFFSxrtRQW2uJGhRfMayvT7o8AA8lAsVc1K7FiH6U22ANxGV/AqQVgppatIKOAQMJWUV70syT792015VpD6x4zRRjKoZxR3hfs/NYAnz4AAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADQAwCdASoUABgAPzmMwVcvKSezKAqqYCcJZQDLaAxA4U4wF1xXDsAA/tlYeTYi5Ybo4+LQ13n3luW3owPZvoCa/Aq3ccmklx93rt6ET2Yf0YCAva0FHeKmmgF67rga63X7nc8KII88wSfQ3wAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/9c/bc/9cbc316dc67403fdb5e606e6eadb057cef63a9bca6fe54e93d3558ca09bfdee4.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/ec/c9/ecc92b181abdc243d1c41bf7d482a7d660561334cbf3830c53d7cde84506d0c7.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/88/13/88131267608c5a5ff491368dcb209f91d8efe53b3c9fe5e6e9ddb6a534f789e6.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/dd/ff/ddff8bceb2eee0c252733d45f8e3d9bdf566dc11ee23df735abf6c25ffa2c2ce.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/6a/67/6a67523859a38416a920fb1e08fe8b74ab4cd1def47a9718eb25b68818a5438c.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/40/e7/40e76f58d4efc43fe2fd61b94eb8b796edb90aba8daa7e83d3fd72dbc07bba7e.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/52/61/5261dcc40f71316f9835ce6803909c429382e253ddd97af6631660a5d8369787.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b9/b5/b9b542936720a8500c36d92582ae5ebd24afa42a370c02e79b3d3087431eac55.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/9d/16/9d1632462815f3ededfde5cc753ff658e524c55049d013fbdcd0b676e8ac71b5.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/37/17/3717720451edbd6f5d807fea1b5a627e30bb6e580df545aedafd0c211b39c1cf.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b5/c3/b5c3ce57b1c301db4c1bcb9818cb4557dabb45c6fcfd0fa418fc5b78ed819a16.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/c9/14/c9149a50861df2aeddae010c98b79b968a4f05fb957342dc10fb64a62f8a1411.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/15/39/153957fe623735417d2191a972340bc4d117013d9f6d17ff9180ac6f75a64acc.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/97/3d/973d2fd4fc75aeb6afd88092b0454f11f3f14c7ee9e1934c8c904267a44dc7f7.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/a8/16/a81681489015ee126fd70450df168e4a481550c5cdafc58a2a82551f5e784e4d.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/52/0b/520b64b0b915bb88946d41f29aa3db0ffbfae2766f4c02f35d1bcc8714773020.webp"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "name": "head",
+            "members": [
+              {
+                "id": "19186515-5a9f-4f3c-8ff2-c61ebd9b47b3",
+                "name": "asdfasdfsfasdfasdfasdfas",
+                "designation": "head",
+                "department": null,
+                "batch": null,
+                "portrait": {
+                  "alt": "BUET Robotics Society uploaded photograph",
+                  "width": 369,
+                  "height": 240,
+                  "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAABwAwCdASoUAA0APzmEuVOvKKWisAgB4CcJbAC7ACG8mMLmdYAA/m8tr8p+Unw+ovk/Xd+HyBawJdii6i++3WgAAAA=",
+                  "avif": [
+                    {
+                      "w": 320,
+                      "url": "http://localhost:9000/brs-assets/sha256/fd/c3/fdc3003ae902661654d0c8d220118630e41c5ce54c01526e153e5e2f95ac54d1.avif"
+                    },
+                    {
+                      "w": 369,
+                      "url": "http://localhost:9000/brs-assets/sha256/91/36/9136e78188e8bb1ac203c86b9e4364e41575fc19667d473d9cae3f6ffb6d46b6.avif"
+                    }
+                  ],
+                  "webp": [
+                    {
+                      "w": 320,
+                      "url": "http://localhost:9000/brs-assets/sha256/d7/b2/d7b20d3c5d70d98923b4acd93ab14682f2ceb090492ddaea4a6df54fc0bdecb1.webp"
+                    },
+                    {
+                      "w": 369,
+                      "url": "http://localhost:9000/brs-assets/sha256/d5/5a/d55aa5b6e1f67699aa8fc18fbde0cc7ff1150ea22b83e7e449b27aeaf49e50c9.webp"
                     }
                   ]
                 }
@@ -385,35 +535,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Mushfiqul Amin, Head, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAAAwBQCdASoUABMAPzmUwFmvKiajqAgB4CcJbACsL3em1hbALKepCzvoZbcmi+48xuEcwADyRDT3zGtl11yykocFNsSQa2DsOVh5qs4752BziwhdPnOFVpB5fUQnPebJSqwJZB+zmdpFy/YmpqwWLqY8BpmQcOZnSiJhzwqAGbVAHrtzSlsTNZCr5eaZquPNs5mQM3qIbqRZAAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACQBACdASoUABgAPzmQvlevKaYzqAqqcCcJbADA3Aw6W77L3tH3WNW5SnHqVLgA/tlYeTYi5Ybo4+LQ1soszCQCotC86vjjjsHOTXMZbG8EkNX17iFA7kIXVG9tgZDMlofV1yABeA3/MDNcMCVO3QuapA4RSizaQwwAAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/54/21/5421697def9bff7994326465655778b624ae090835ee3d065849e9ee7c58c660.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0b/3a/0b3a099b32399c719b1ba8e6252244ad707bd7e5340460a6d6fc98bde0e2d990.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ff/c3/ffc305673309421181861ec34c63d435a903e869c470299ae83630fdfdaf99e8.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/11/c4/11c48cf43fbf20e5fbe0fb32cb37fcda6808a5bb59e28c10137985bd9410e627.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/bd/67/bd67a4e3389db9d856682bf60d5d2f620bb77be90ad9fcd7fec528be129533ef.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/a4/81/a481e229542cdd0a738d7c65b3707d3fce440231c1de318e7dfec0dbdef8cc5a.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/fa/b2/fab2208dd993cbba591b6a88ffbea8feb7925b71333a39496849abb506af2573.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/23/ea/23ea6f5d031c66f7b93a105390f2ccddeb5e3fcd5cff3416f84c4c203ade2a2d.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/0b/cf/0bcf98fb52a8c34be0d6d383d41da43ad0cd61af230ed613e2c9610ae45d9986.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/dc/6f/dc6f3f0162109c3ac9acc109fbce77d8061b9d66f33ed22fbc072e1666cde0d2.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/16/7d/167db19fbbb9cec16d50d2de197d38a21f7c06071dd023db109021c8392275ac.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/5a/b2/5ab2ff89a02c7733a88261adc4fa1c8d993c6631fa783266316c2756c817f7f1.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/cb/a7/cba715f9647caf16ab750d52195285b6ec580dab1d5cad514e5b241924c9fcba.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/0a/f0/0af00f5a3cece0f3bc596dd515cddafdc6070b4d55c7c1ceddacce3637ad3472.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/9c/3b/9c3b8111f8af844d634cb75afe23158bf96fa11183e3bc84255aaefe34cc9249.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/3a/d6/3ad6be2aaff44cabb51c87e83cbcadc8e175755c033f7e6762df43866072701d.webp"
                     }
                   ]
                 }
@@ -431,35 +597,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Shozib Rahman, Deputy Head, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABwBACdASoUABMAPzmUwFmvKiajqAgB4CcJQBgbgX+W1vvqUG1nx35sKQvdAADiWSS3Asbmi4sitHmE5Pix1lG9CsRafeHnJJc51Ov+CX9igYo1UBqZrgAlLXBwfyctNDD2e8QS9JxBagGVBXqQV+EisaEwAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUABgAPzmSulgvKiU0KAqqgCcJQBmDgYfpc8JPUsKXrM2vj4AA/tlYeTYi5Ybo4+LQ2gklXTnnaMKpUqDqtII0EZ7bFwuwVZNhdN+W9PltTkgsG5tIumXjg/WlSwC0k5cv5h2FPbw9PxFiGDqXfYAAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f6/72/f672d992c68e25a16c79fac7807ec38b0ce0001dd1cfdbb7230731b47f3378c9.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/06/1c/061cc72ce6bf55eb6e17522f3ad84156c6257ff2cdc647874e7aded0e01377bf.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/fe/61/fe613b70fe14fb2769f0e8185de1f581fcf21d9d6240a3f01137761a7fbe1718.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/be/9f/be9fc37cf5d33062cd0b7ebc22a2e40f295d4c75d8d555f4f014d5effb02c310.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/95/73/9573d5a18600147d7bea39aa6e4bad67879b7bf690aa4117f7875eed7d8f0788.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/92/4f/924f200d64ec5d0b876f35ef7a6a5cc67ad49e1b536f7272dcafbeaacbbbb201.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ce/86/ce8605f40dcc235599ab50899d2637e26665195994714cc07e7924fc200e0b3c.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/5a/6e/5a6e692c4c38ea2052657b713581a78ae09793cfb0df1dfc34582842ba49f0c0.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/66/21/66211cfaa3251bab37637eb8a2d1b5f4443d6cf29a09f0b14d6f591c42d48550.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/6f/36/6f364fff30e1165cb6ed5eb440e31ab48686098f49aff4cdd8700dee623d89af.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/2e/81/2e816c10c48c3bc7458610378a7238b5bb9607682c778b153ff929c9bb97a27b.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/4c/ae/4caeb5ab6926a9ad988afeeae4dbde8d127291a653729204f4dd99d1889df2e7.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/3d/fc/3dfc2a19bcc8fb685c5f9edc7fb57912ca373faec2a0103bba52bf6f05d37432.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/de/df/dedf62d6e80648fcf5c3b79affc7ea688a03bfc322f4543e0fde08ad7af20c56.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/5c/34/5c34704aa3da26b5464b38928d2070f373a602ec717acabe32faedc202bbdeda.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/22/f2/22f28f137f9e4110030d337077beb4a34346b986a7972dbd8b48d6bce55a1e9b.webp"
                     }
                   ]
                 }
@@ -472,35 +654,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Shirshendu Saha, Deputy Head, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAABQBQCdASoUABMAPzmUwVmvKicjqAgB4CcJZgC7M4CBrX3zFYl9DuUa0LV9r/Stig/CVMAA+TPJRM9hO3g8CGYDT/cZ7Cf/e9NttbV02L1AmdM4Lzc3i1cD2rEaD2Hdg3uX6ZjLuPSNdBV9o0zKylDvMGIAQ0iKy4sj/v96ilsto8caHeKZVX6XGxu23AG8/N68aRlnuQD+YjIVvwJgk/AtcShIAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAABQBACdASoUABgAPzmQvVgvKaY0KAqqgCcJZADAKAxWqQvYRLyMYVz4skgAAP7ZWHk2IuWG6OPi0NbL2Jrw/tmcUl+LO7MOjV0OnqwSABAnr8ZUbr9w8iN1UnGXv4cXm9EEbUjLZFQSSKI+ttm1nO4ZkCMRf4fqQcAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f8/3d/f83d1ad8d7718695312884e1768f96711e4748e1aa9d9281b574f734bfefc02d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/1c/70/1c70d77f6215ce52f6c27200b2fa02652bbe6df035e5033c444578af950cf467.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ee/8c/ee8cf3722f0c533889f5f530a356f6492849d85a79c69054be7c6dde6a54e10b.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/f0/ce/f0ce37203129de206741408d1b643d2c57f0095e5e1154bda9f23d946fb9a13f.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/2a/c4/2ac4fc90dc8dda08827e582c9daeda0d88674d5a429d34f340f510d04ef9559f.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c4/dd/c4ddc9b818856e859fd53bfaf5adc35c2f1a0052e1f12af2d2b11d4681438439.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/79/82/79824ab9b99d5d77fbc649e984bc44448fb65040dcd0a4e2884f57942cfc5dad.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/bf/75/bf7586b252eac9ed27eaafeda79490a7ca37bad119dd2b9029241662fffa9150.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f3/9f/f39feac52ffb948e1a48b7d2d52af7e0a2ca2042413107dc44b35f22f1642618.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/b3/85/b38582c9bb2747a041b48ad945ac9119c2aac839248db88f50e555f2b086a0a9.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/9a/8d/9a8d1c17f4acef38264559981406ef488aa487036387eac9f34d9c28d2a8c544.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/3f/b73fd71772d0fe0da98f903550ff26e71ef74d2639b46a629faa41dfc0d71e1b.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/30/66/3066039335aa82ad12938e921b21e8aea76940a90c391e3b8df7eafacfac4019.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/1b/71/1b71ef2d013b0249dab644f64d56e54450739a95b7be8371b11e295965f4df58.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/19/d8/19d8c9ceb5de192227a15c8d884bf61bbe585d748b056908bda77faa07b1b587.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b1/43/b143836e62edd29871c1f4dd6b38621332f1efc76abeb7d5db5d95a55c00afb0.webp"
                     }
                   ]
                 }
@@ -518,35 +716,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sifat Rana, Secretary, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRq4AAABXRUJQVlA4IKIAAAAQBQCdASoUABMAPzmSwFmvKaajqAgB4CcJZACdMtTGuApTcD7OBd6J5zEZKkf3Iw6oAPjZO/mLfPYlxwl/MEfxWUeTMKI/VUQzvn9YAP+B3eoFpfYuZPw60lyY50k00nxIUUGjHVDhq1DmClrwJZlM2Q4qUMMrMuFtWk9cwKNQEAQ5TMUGILNd1H3Vpn4pPfaZKLxFvZe+ASH+JHPzCGvgAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAQBACdASoUABgAPzmSwFmvKaa1KAgCoCcJQBg5gYfC+k+J2RyHHoczAAD+2Vh5NiLlhujj4tDaCSVdOeDo9NDEPksR56cUUthhC5rGCmBdJx7DGbr9wulwC1TEOTnoSrKCXx+/TFjJ6vJLuVMdtAU3KZ0bgN2Ep/II1gIAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/0c/15/0c15e853873f28450b7738548b3634e6a56efa028035842763bd1bf017341bd7.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/05/46/0546f20cec60057a05e93fd4411677a1b413eb226ca088626116fed67b20e559.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/cd/4d/cd4dc5841034e23ae886a26f723849db77d44cfffed8794f2925e3ddb4f1305c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/25/a6/25a6902a4e4b6f4b2a22d1a0fab872018b0ac27691196849c91fe6636b8d80bd.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/7b/61/7b61c41ad85139cd60d337dc53510e78cc2d20ac8ea10635141f3e5dba815905.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/3d/38/3d385d47a3deb60bbe2a9712cc124286c79c3cc84cdf2816af0d4639f9a8b6f0.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/09/49/0949297227c393499299868d3e235abd497d758f9f05cb9f0ee2370e62287ad4.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/7f/78/7f78f9bd6db2094db3c89eb0864a4b022921f3c501a16292990c33961c5c0761.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1c/bb/1cbb9b0099019e055cb84f18a27233f1614fb5195c722599c1421a5e1a2fbae4.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/e3/13/e313ab3bbe31e21e765169a1c6d8b97244b3c664a06fcd30ed520240ae31f05c.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/fc/4e/fc4e72291ddde5e98b180e443563b9ded0e867515bc301822379ddda2f2e5f3f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/e8/19/e819e7af97e6b8991e63645fd2337eb2cf2b6f394dff68a76c36d3b39e3c5124.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/10/28/1028afb217418d0f6b6cda6b83b19ffba73ea18d6f52a6561d637e3fbb79cd03.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/3e/22/3e22adffe428a32eda893edcfae227122e2b2a03d04145bec6969ad3692d4ea3.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/fc/f4/fcf4b47def1caf8a2bcd39da00700ba003a97d09e2309447eb329ddd8dd206a4.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b2/ed/b2eda18872e97ebbde7cd09f044d584e8a2ac18751da137b283ade6297ae93fb.webp"
                     }
                   ]
                 }
@@ -559,35 +773,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Arnab Nandi, Secretary, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABwBACdASoUABMAPzmIuVQvKSWjMAgB4CcJZQDM0CHf36y2M2lRl0+VQlwMAAD+BLutWtc36jqQMV8GkwGydvWl1n1r6+l8y/u9U7eEDODER5Tic5qyoKpeFcuPp15tjlauzqDnDWXX3BzOYu/UF/MHJgAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBACdASoUABgAPzmQwFcvKaczKAqqYCcJZwDGBAxYLZXXBgwuL0ZXZ8EAAP7ZWHk2IuWG6OPi0NukY1REdv0jxEh0W4cTVh8SnarDjj6aC4hlwFV8Mtrf7DWzn592k0IX/4aThIAogBmhnjC24OHfYFwAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/3b/dc/3bdc13178adbb34d53a0f0512faae8e1ec9059fc4e92f5e8501acdfeba8beb83.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/4e/f2/4ef261b86ac9f5a363197020f1d6d65d6efce4de5c6da2c6e72144cbcb55c791.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/33/fb/33fbeeca0a089084f4f9875c2e72218e5dde75d4c8bc7fe88d5309d30be310f5.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/5d/fd/5dfd395417eb20b7718839121c182d1dd829e4b44e73314ee7a62fbee621a99f.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/66/a4/66a473c695b88c45c28eb4e3041a5e586079387088629253f2d3709347ed781c.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/07/2d/072dd24fd802c56b4494e4cbf565aadf18b9f7ffdba0cb4804783e89b30bb485.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/1a/40/1a401ef40462180dc184464115b4c76a282f4d3c3e18d92010936919b8da73da.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/65/33/6533084ad7bb5da0a4f403e82ec75c41adc77e8d238124fe765620e88cda7d93.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/b6/c5/b6c5ab6e5b510608a5a9412515f4a7b4cdecaec9f057e565e60cdcbfde12282e.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/0f/47/0f4714f1e69fdc3bf84a3770f92b068f994592d0288ef6199a111b51419a4c6f.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ef/8b/ef8b2da9241ed99f4358c2d3c09e111b8f85ff48f02c0cf917434281e5e064d6.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/4d/47/4d47d152f8426426765f3672c4c3608fe6031e35a739969c9c54c69e2dfa446c.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/fd/5e/fd5e3ca4568954d1e6c9ec2d205fe2edf4a0928c12fd2ca758a4cca317176d65.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/ec/b7eccb417a583c7895632222cbdfa24754c600122a3d337e0bb5b78d235a080d.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4e/23/4e23538ad996819dd4d0ee048540c364138144a2178d49e3ca066aeed559b4d7.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/58/4d/584d2b3a26e26e2d6561e243cf549813e1f3f9d0b577cff88bbe4ef82a3c5b72.webp"
                     }
                   ]
                 }
@@ -605,35 +835,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Ahnaf Arafat, Deputy Secretary, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAACwBACdASoUABMAPzmSulivKiUjqAqp4CcJbACw7A4tbl6GT/4gxY+aegBCsh8gAPWYwUjr5I0u2D4TsyC6xxb+nvW0md/sPm0a+CmsEhIIZSh+iW2OJtoULV6oCq7Ke7G9+lHZVfTyo4RjiyF0bg7EzU/QnS+sKiNFE4vzxeqMXGZXF1c03uHZtoijdZx/V0PHxDvNRn/sAVLE8U7atU7RnJjU+WHV3i7Ca10qcAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABQBACdASoUABgAPzmQu1gvKaW0KAqqgCcJYgAAIhcnDCGAxmpBPrCwOg2AAP7ZWHk2IuWG6OPi0NADCVxMx1clTYnEW0+dewu8gH9zfpxWDAPUAn+PYNVluXj6Nh7hSI6kwG1VnUw5sXyjBtpzckq7oG0bcWicM5I74wTXXpgmuN1MAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/30/25/30258bd12266a98b4cebaded6736c18e9829bba450986d6c9dc4d5fb37456680.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/43/61/43613112c6732c584bce0b2afa3ddcf0f577c9d59d40ba8e829a0c3c291e6d6d.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ec/32/ec3280862e03846ab77f491e4dd7ae7a83a1934bc04adef19ce0e89eb80bf6fc.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/79/83/7983eb732e34da9e269773af101e7f6e150dabce40e3abf92e64a2c1a9b1c237.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/b1/04/b10429c49bb3692d888cb546fbce8fb2773264805fb7e95efeb0e1cdc4602305.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/91/20/912089ba6580410e4576ff71b0e63f59a7300751ebb1830c8c733a97824e5085.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/03/17/03175d0f44bb87567627affc4f63e70ba129251251e0981c80068b9524f61be5.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b9/ae/b9ae8a03f403bf5f1e0b0ed598481eafe0fc3743090c85aa3dbc89fd43cd25d8.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/0b/5c/0b5c057747ad95452a697fa6590f065c45eb71d59160521ef4047574a0e67646.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/91/36/91362c814850b480868d4e14843bebb327d7897c98589c3330799c085c9628ca.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e9/ab/e9ab6b1a3e0969d129b4573a3a565c87026beeae06ac823c688f34dfce8329a7.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/51/e7/51e77dd4caf8d588776c5850b0ce46ea141269e3b7f4035019c1b7e58a9817b7.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e2/3b/e23bd91a28f79eb48ff3231c6d81ca2b6b9f43c6b1704de1dbba14b5e38eb5ce.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/5a/fe/5afe57ab5ad67628d206ebccc784389b2ce1a9bc501577107caf44c1e7e2b3c1.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ad/e7/ade70c1c414d48f6b3231c61225f5b257c4f4e3882ed363c6c8f05b2750e493c.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/db/be/dbbeda41d42af1f4d06b2f34cf8fe59d5df9dab4fd6c07e1a2afcac7c88dea65.webp"
                     }
                   ]
                 }
@@ -646,35 +892,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sheikh Md Salauddin, Deputy Secretary, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAABQBQCdASoUABMAPzmUwFmvKiajqAgB4CcJZQDKxf/gHoiGcbmQNqy65/Enf4mFfufcgYAA/PtpNGiqbMmeneFvCp7/SLjry0jwRHd/Rep+VwcRWR9tuYJ/ifBhNDmL9gY50NHgjljnpqzEvsNqzL3kOiYfMwvcRt4O1b6rBFAiq5LUGNuQVMQANBJupfLSlBXN1qDkFAAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAABQBACdASoUABgAPzmQvVgvKaYjqAqp4CcJZQDLaAyXc5CPREma77w4oGeAAP7ZWHk2IuWG6OPi0MPH/Jjp1NEiXIF7ue/Ke2fYlXvSOGluEpNC++mA2TDSc7OyFWw+ITwtV68QlZNSg++JkmPCWPBA5qlx+U9qvZO4AAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/04/af/04af173e041a0b0c1b41542feec156409fd91f8d07c07679813c44b41e733535.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/fc/fe/fcfe004d9c07dcb171b3ce9e744f3ad74328bad12d643e3f5efdce5509090931.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/12/2f/122f78e005f625e1ce35d2eba0eeaeaa571bca8686d4133c94035f33d3f5aa56.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/a6/1c/a61cbcf50d95389814f6cd3633e656203e18b8e68265fd7699d141fd1c1b8a48.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/ae/c9/aec93de624dc982ee5ba1fe07a80cdd789e3bfedf8eb60f100ce05b781acf4a5.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/4d/25/4d255fdcc94e7de70f68fbb5a00fd6a64b1035794a5de168d4fa5acca1085807.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/78/4b/784b8f1bc389777741a83978ae7cfead08d5aca4f54e3861f85f17131ba2d375.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/85/a3/85a3e797c08a508dc553993c95a8f1ce91cd57c482dfe91ca485e9aceb7f8ccc.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/69/66/69667f9f069d638c13fd99fc810cf6371f4036bcd3714b1e1235d11c5caf6f2f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/64/c3/64c315e049af61be5650cecc06da4a26fe2ba3d8b06156b6e6286eba78ad8bd7.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/69/9f/699fdc3d8a1d4b045d2d9c6530ee17654edcfb6ecc8064fd5a0b6e52167471b6.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/7c/3f/7c3facf7b1a034e68b59437660a6252ced71fb7fe9a33dbf6f99078bd3fcc402.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/4f/20/4f207c966210df6fc16e7eca95bc1714ffb3ace05de700c0ad87038fc681927b.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ca/03/ca039cd163b919c7282548d5e351221db1f7536cbd6c5841a1596085496eca05.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4f/36/4f362f7c8e4137cab19dd02ff2c7259b5feef5659c867d1cc39cc7e73369d6e2.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/5e/ce/5ece8e8c67a81f97225dc0f102c77eefde19ec19e9f341a3601fe0feb42b0138.webp"
                     }
                   ]
                 }
@@ -692,35 +954,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sheikh Alif Al Sadik, Assistant Secretary, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACQBACdASoUABMAPzmUwFmvKiajqAgB4CcJQAAEzIPIBs7Sw3iFNKm9pHKhhgAA/Y/WbGOgYqAvpjDHHtfk3TN/+/ulVqbUVzZEMz28/8Rve0MkKyBhox+WHZKjhsPvSGz4ye8dd0u2/upjS9VY/CVdHEOI3fVHLZU4VStn5XsR1U5Fl0dpSQswAAAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAADwAwCdASoUABgAPzmOwFcvKaczKAqqYCcJQBerAYZALTi3Jw0bncVwAP7ZWHk2IuWG6OPi0NbKG6vhN/lnbN40AN9FoDlaafp8Xh+DU5IKPyWwAsZjw5zApTwVPsKtsf7OLsZXnboFesBAwyt9ZmU+Eam8rMUZdAAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/17/cf/17cf8f8c8832e77c0ec9d65724682181a37fc18c82755cbdbe43781f63ea2d5c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b8/78/b8786290fe0112168b3022b500e4551aa953833f153303454c6a48fcda51105b.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/8a/94/8a9495a692cdc96be2928625f9a4dba702f95a7c51a3f21f958611a020cde450.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/6e/fb/6efb8c3fd6abb45d98f60fcce0c6429d28287621b854b37bb3a3917f967f30f9.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/06/59/06596cba88fe92d7cdcbc2a07bf5e8ff8ce72371a24ade2b8f81fa240810a4cf.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/15/42/15420897b87dc2fac2eeedb7e7082e8206bc7f5aefd90064dbd479b9da5c2216.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/2c/8c/2c8c6d7cae5deeaa49e62798fae21070978c05ad9c722992171e4b86be60bf9c.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/88/50/8850af0c2884ac146b5a622c87ac95f9dbeb43d5dc60b7801bc4a4bf964d98c4.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/ac/0c/ac0c466cce3e2cd1733640aa1c636b9783ca79b902d6ee3fd28ac0063c1a854c.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/77/d7/77d7b98b57661c8786fb2c18026b0cf3609e4582af0669d040b2e48d2ee9361c.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/96/bd/96bd96db254273743bf77c18d9ab98d5abae42b85c63991e68e7ab995e750b7d.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/f8/32/f83241b866a827b7847855ebb7f8e495560951aa6d9f15184cf2a83478d75884.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/5d/c8/5dc81d60ac02fea7e5fe3323dfb3abf07e61962b542d3f80aa1117e991a3edc5.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/4d/16/4d167b1ba285699d73f455a9e78048ea65a047c640c6e4f810a0c1768ef28289.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/f8/1a/f81abf69c77aaa34d3867d836d170f331e43fa3e6629176247060c163ef7df26.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/ec/1b/ec1b75ea95ae12deb72383a040fe258d1aef556cf6aee83403e59921d1d63bb8.webp"
                     }
                   ]
                 }
@@ -732,36 +1010,52 @@ export const COMMITTEE: Committee = {
                 "department": null,
                 "batch": null,
                 "portrait": {
-                  "alt": "Jubayer Ahmed Udoy, Assistant Secretary, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAADwAwCdASoUABMAPzmIvFUvKSYjKA1R4CcJbAAAEorj5dhotrw1t2kAAP6n5HufCpFkbmXFF7u8Ka8QE+k803zO7GD7ugFMeyL/+MjeFM48eEmBz/o1nv170JEkyuCns1PoW9r7HNK+QiTxVyGb3yfc+uQe3AjpPQ85Ojk5M22gLXyiPEFrByWnEDl6lSwBcX8bLAAA",
+                  "alt": "BUET Robotics Society uploaded photograph",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAABQBACdASoUABgAPzmOwFcvKaczKAqqYCcJbADDcAw7dwI/7NzgWTIZ6BIAAP7ZWHk2IuWG6OPi0NFfDdr7sL4+Ox9HqSOl4Lfcpph/EBYXyoYhg9RWaRnhSMGVntWIct+9geABlC8ZxdP8TTUpQb891uOxRUGz6hYaHKTAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/6f/a8/6fa886066ba42b505b764ff67c2545cec75c88336ce056beffeb53e2dcee5bff.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/2f/c7/2fc7123784b8f8769cd26d03b6affabf93486fa8753fa7bb9cf2de9160b44154.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e8/73/e873fe5c76f63cea55874b007efa4aab1264d95e2a3c615da3acde8862618a20.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/f0/7c/f07c5a86c537bb13d809f35660d509f58aea0c1a9d0a1f4e5a20da20c220ae2d.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/89/54/89545d626c9d7618b18c5f4ce0f5be7ff4cfcb5ef18c6d5821e9b98925b7a3b1.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/61/bf/61bf4f17f47a9c2b547f51ab5ea1f699263c9bceb000512e3d1abd64fc80cecf.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/86/c8/86c8a5c45d3b88ee601d7ae6c6f0e091074e2f7f34cc991ea9350314704083bf.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/95/5c/955cdaf7ac17cf5fbcccd7cb9970e48350da96ad57683a055c33f6798650eb9a.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/11/61/11614b1490714b92b12e92d6ae2e06432b6e3dcf2f426e37b01ac269944b74bb.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/08/ce/08ce21adb5f3d3bb46fce374d4b970249357995c30e10430a68b1d82e0ef8c23.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/18/57/1857aae9a177887a1f7b073f8343f5df85f891cce7214d5b4ede3dd80d35fb9f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/46/ee/46ee0da44a14fa55ea15911f61eb0c6fb57601cd069b5cf205759b700e5d1d85.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/73/11/73119a36edd0caae147ec70063802763032966e0d2d2004d0b4837c64b471f9e.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/74/40/7440a05f56561157779fd58731a762f4f35ad434a88abbbc779923e6b14ee292.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/8f/04/8f040ffc1bdedd6201027afc10a5f0fa3d9045e24543c5fbf79e41ca9c357468.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f9/85/f9858d57500766ef6f040e231b9a3147801b254c65afc84d320715de6b69a0cc.webp"
                     }
                   ]
                 }
@@ -779,35 +1073,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Meher Bani, Member, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABwBACdASoUABMAPzmSvlmvKaYjqAgB4CcJYgCdM2QBWvs+IfYCjfmzjgt5gAD+Iw+zhLwhwGN4U8qhr/ctVw4Jk6hARMZHeZhMtEwXzUnjIIdQMssioHR58uo2IGrNZFbqsoEuBgmusDMPnMmfJMAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABwBACdASoUABgAPzmKvVavKSYysBgIAlAnCWYAyFwMGlR3vdCDjJN5eIPWIAD+2Vh5NiLlhujj4tDP4sEBo/crwzPlAYz8S5U3u1rQX9F8NTkgpMV1h4lsgAQloB2z+T9sMcX1iifi22Y19BvkUAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/49/5c/495c5b06d24475082d4883700985e365c087505adf188dddba4395a41cf8e5c2.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/9e/64/9e644328354f2411d438dd382e05d9499b1d1818fa0cb2ddb04f78c13bae1f9d.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/22/96/22969808b67a0279155b4cea9129a1881c1477bfda21ae36696362a1ba7f183b.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/e6/bf/e6bfb5440f3332618d00677e1930922261157a6732aef2fde5a4cf6b155b09fe.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a9/d4/a9d4d0d2252b12d551f55db64a37fbda2da19aec1252bca5833a2eb4f91ed01d.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/80/d1/80d1da92eebc51ea1063477d83cc56972ae68d65759f01272deb2ffbf1ae1e12.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/86/90/86903ad2c71940d867e98144a4ea28d15051a07e36d03f77d3370fc41373e315.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/4f/d7/4fd7cb3b1dd561642aa0614bb090696df45bfd558f46db6ec7795847f8047dbe.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/5d/e0/5de0b8f2ba46227f693ec6dd46775911e7ec6ef2ccf6b9444f16dbf8cdb68bed.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/aa/27/aa2757a4f021833930ec931d309c8aacd4df199881fd50a4b80593857161d7ed.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/1c/36/1c369b81dcc28bb7f0df2ef680ec96d749c3037e679042cad49e050ea34570c2.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/a2/90/a290a8dd40af775bb806bb3acbfb194bbeca6822926fe1ea34ce8c8cf53e8a5b.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/99/a3/99a3c428ff6826fb94713e06e59f8a4adcebdfdfa71afe584732703428c06e32.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/53/08/5308950cf80c6751642b7181c774b463dc8cdddab8810465ebbdcbd021498fa6.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/0d/11/0d11e6986dfbd2c779d47d905fa78bd2e288fd9dc4995057c8aea77f3c1fddb8.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/37/06/37068dc702a0928b4ff5c30e3e40edc2c3fa621a1406c26548b84315ced2cf4a.webp"
                     }
                   ]
                 }
@@ -820,35 +1130,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Ruhul Amin, Member, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACQBACdASoUABMAPzmQvVgvKaYjqAqp4CcJagC06BF+MyCwrDRiCuClKtGKrIAA9plrxfu7BA8Nf3BMRYbz6k/IWRjRfO/urB+WcfQrZB9Ia0RPhfoeIEScWp8c3rS9XgR3BMGxLPMTEFfYqEE+T1fp3T86ZhwBhz2mc108YjS8NpQt9kjq3S5ozb/YKJPvZGAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAABwBACdASoUABgAPzmQu1gvKaW0KAqqgCcJaADGQAxWp9+xcM84DoE4IRYEAAD+2Vh5NiLlhujj4tDXet6jNHLetdMvfniakIBqQbxuEE5CM71UsQwAkvk43dfuHl5YxI0hzfhYxbnZWe84H4sYY4iOueROG7V15qhLRcVJAAAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/e1/66/e1666ea2dfa89ef18732ce38b7664ce48c8bbb1d43e33a033dd987d5dccfa79b.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0b/65/0b6535ea62b9850a68a48845af5a164c735470ad09ae80007a95e482c17ce271.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b1/88/b18873b7d6477197c53422e49c36ced91855497c17b8495ec07c160dc955be70.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/e6/a5/e6a5703f6a0e77c90b3c3e4686e6ce20f60efcf09208bebe12c33c574c743ddd.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/f5/81/f5811ecef1ac40a2423578b4ab60e8b35da1a918fdc3d3284026e96372795649.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/31/99/3199e6ba51e0a8c9aa1512b4da417f60345d4165e8a9a6625e58c898369f0c5a.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/0c/61/0c61f4fa2737e83f67989e141972243aeac001a6cf9e14be8188ee093428093f.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/75/be/75be228a459bd2654adde5616ac5501e883d286fb1a1712477d6da26dbf81c66.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/3a/a1/3aa149461b8a52fa6437aa122d42e118b2e0fbf3acfb6a08656b306541bd21e2.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/16/cf/16cf390f205d3ed90db6f79658282c246807719f339bd88b0e56c0195f8adbc6.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/50/a1/50a1d413ab9cd42a9641d53514157c1b9f096d2034ef5b66b03b386e48a91b29.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/c0/5c/c05c83a2e1d64256530e8470447e4846a67f4145f85cad57cfc8c3cb11dde0d2.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/d7/e3/d7e32ffe1e11c2a0c46d64ff84cacf66eb015af996c3b84e8391d5fa79a01202.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b2/df/b2df04105679843bc4d1b66037e7ab3f16555c99f5dfde1f05efad1d3232e0bd.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4b/79/4b79a62e1b3e1dfc5aa4d51f49588d0e7a7a4d0c9cf1977b42a9bef6cffa138a.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/1a/7d/1a7dba7eb5a440ba27676dd7b6fdeb8e07ec604d6a57b9795566692acf79af32.webp"
                     }
                   ]
                 }
@@ -861,35 +1187,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "A Ratul Bin Helal Woasi, Member, Project and Competition Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAACQBACdASoUABMAPzmUwVmvKicjqAgB4CcJZQDNhAoDIJvQfD7CXS+RpOZEtAAA/uNNFb/4ityEWra2uhszJtFTiZUwIHWf+wv7v1fpvsPn+VPSWXAQ8mgxa94xdauRCLNT7bk6xWH9eJJnnUm8vRCX6gpe/MX3ZlCID6CUAAAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAABQBACdASoUABgAPzmSvFgvKiW0KAqqgCcJYwDMWAxcjBsimbjdA6BOjN8wAP7ZWHk2IuWG6OPi0LTOHCTqSUWylHrBrq0OHngqpQfsXdXdxupyQIinkTnfc9DWS+qP8uelKQCyqkVTndtRGxGyKvXKiUasPdE0AAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/5f/e2/5fe2a2e43612a8d217dc0b4ae0a4352092574d63a9922879ee3d50889f0c4038.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/51/f8/51f8139e72a3bc09bfeacfb4a037f60a511e5f303c7e2f1d0ba28cf83e7653b6.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/39/b1/39b143059a6f8d352b26f9dfabe47d43b4db5e9f2d9e5ec5570ed9d4ae50f673.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/fa/6d/fa6dea42ee1405ec33193eb963819505a4e50ec867e0cb2ab51df1891d8bf3cd.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/4c/d0/4cd07aa86f62b29f91204bceb2046fdc446dc87b64ffdce991f77c4ad5dd51c3.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/d1/7f/d17f522357565787f3885a620df67b7f37e96219ef47fbca14327b0224265b79.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/be/70/be708c2fd82a6aa70c707ba23607ce955094eaab86049f6d5d68d28c0629887b.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/94/3a/943acabf0b4080903bee8f6d2088ab299a2455c0d58c2ddb68eb51f8a738b552.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/b1/33/b133e4da08fb4116f41c9fd7096a64fe09601adbcf8d3c3285f31ce41730bd1c.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ee/92/ee9237d3a2df303c38b56140b5256737273e3a59777643e46eea759f8772477c.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/89/85/8985ca2beed68a45ca03c26af8660820cb28fd342c678670b769d28df7a1b385.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/75/49/7549102ad8033a32d2504754eb661add15251748df1a09301619b45b50b29b32.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e5/ca/e5cae9f7d9fba4ab826e794fb73075f7440c4e702b775ac5d06c00ddce9f044c.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e7/b2/e7b2bc8c497b71d623ff6cb9041c3115c8301dfab3601b0a085593d82c3383b8.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c3/46/c346ff8c1e70c6b4bcd22c1d883d2c5e6e66f8084287510ff91669edc0cb7afb.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/87/08/87082ef329bc0689c6d8e949b9380778e6db1b27db278939709ddd18f4a7c998.webp"
                     }
                   ]
                 }
@@ -912,35 +1254,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sabbir Ahmed Dipto, Head, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAACwBACdASoUABMAPzmUwVmvKicjqAgB4CcJaACw7YnaEaikTX+JvfR4QJXlMYgAAP5IlQ7TCcjcj8Rtvu3OsKDVAqNUoBDgmeFo9x0CtUBTvJJI8Zi2L+zVJFJ0enICrG3icmwpv/itgToEjhz6ogK4l145Ic8XCPWUISZKAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoUABgAPzmOvlevKaYzqAqqcCcJYgDKAAw58DQWBhnRdGAA/tlYeTYi5Ybo4+LQ0V8hA2BzSbhZelCMiPHHHiIPRU+/0PEMuJ5s8byiIndwRi1KynXspPMzjZoCmSfJVsyNrGQAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/4e/a7/4ea7d69401c3a6e3d333a25b881ac06533cd55eab01a6a780e353dc3ad30f281.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d7/39/d739f7890ba4d73e4949804767b4d3a72b1fdbc27def3413ac7186aeffa5f68c.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/d4/a9/d4a947d87c89012341dc992bab8ca16ff894c007fe79e8be08d68f523dad6dbc.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/f8/04/f804221533aa2bec7f86a875d5eb7dd2a7a1d8215934997bf26f20c97a27cccb.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/68/64/6864397c0088ea0baa7f8ab6a631110656ee46beac65f1cd5f8e2ee039a4ee87.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e2/b8/e2b86741412462312e45c56265af72508f5f6ecf17b77afc9bd2c817488fae46.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/1c/25/1c25e8b98697eb0df7fedba90ab7708427af214f2ed9e649d9be96eab085701b.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/86/39/8639873cc5bce764f5f4f5e05f1a474bdc5a246ecd422f2fd35ea13b1f0ddbcc.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/08/b8/08b89213bf399fbcfe831a51f1db2f870a495fc8cc490db3ced081883bf3a7ef.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/aa/a7/aaa7a4031c122948855d2845e8131e25e1ea406c50a0e586d920c2083790025e.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/82/54/82542f73cc75674a791b9e16d8c86b0365d16250551abb8acad891c71fa91aa7.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/46/40/46405d5a449d6bed8b3fbaf29585fd869d3fc77270dba500c71be6fa7533d0de.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/59/ee/59ee38c0a50228c183be29fb6138d98eb48b572ce072d077c02bb3b1f524de3c.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/03/6a/036a2146c238ccc628d1cf2341a872572a7638ab4e10c826a7854b6f8bf71646.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/89/c3/89c35846539f5153c7bc035220acae10c70d91577c1e9ed0e3eeeadd25c0ee9d.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/cc/d4/ccd446b8dc2ae04c8c4feb0d35c77ffb9d9e6afe8b97ec23f93b133f83cb3e7b.webp"
                     }
                   ]
                 }
@@ -958,35 +1316,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "S. M. Fahim Andalib Dhrubo, Deputy Head, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAABQBQCdASoUABMAPzmQulivKaUjqAqp4CcJbACnFBGMIHzQEdx1orsveNlMGvEHaz+6zQAA9o/6nRsyw6GhwBA+vOIQPQClisklNe3QRaYJcQDvXUqkbJ2fZPthrhSLWbcajnqoFtdsgTXr8ma4a+qInMd3TWpvpC9tbrCkGpWQUB479IgqFVI/FPTyB9HvSPgWnOhiuDgVvIlhpN+by3rMibFcRfzRn5OQ4B2AAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAABwBACdASoUABgAPzmQv1evKaazqAqqcCcJZADKAAxYoc6AsLqnYeVT11hAAAD+2Vh5NiLlhujj4tDaVwOgxqd8AXpVdVD5ize6D0qcpwlRqys9WHDGtMpb0gqIMRxr/ov/hdrBsqZqreK8/NbHux/nZ7PiuMQDtMjq8ESLSknuu1iYAAAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fe/ad/fead6d36a774fabc59ba800f55f21d1df180c73a99addd94bd74b623f524703e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/5e/e6/5ee6cb664ae4a7c89bb21a2ed67b69b0aab88e30e2f8bfa97c0cde0700242c52.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/14/07/140763e5afc1137cf069dae973b560b9a8b2afd6bf440f1c7a18ffdcd49eae47.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/cc/9a/cc9a4be28b2402c09514358558a9e4bfad027071d172c8602b8ea28686670f0a.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/ba/11/ba11efde23f81784c5b5b8307498449a1b061f8a2d1e68ec8ecab35c062abd2f.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/a1/d3/a1d39ba2c95fc5937dcafaee36a1462c5034456d148ea269b0abbf77bed98ef2.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4c/bc/4cbc473d6d62c466b11fcef661a30eaf52ba241e5ab869e750a719771f2e7acc.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/69/3b/693b5869c4cfdb73d0598b46037ec93b12d4206a300f3391ad27ea53dbbda003.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/d9/cb/d9cbb992d6d484b9380e9e32dd50440a33cdb754a64c4e7ef4a3763f3ca42b02.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/4d/e6/4de64e3a22aeb011c1d42b7653f3f3d2b22588d23df8cba9fd1ed1deb2301e03.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/30/bd/30bd48647605936b5ffefccee1c386fc6436081d0bb7d28703acf8d6ee392454.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/e7/d5/e7d517fe500cca63c6051d6660d217364952660d5d58e40f2dbb8ef38f96b9b1.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/ea/e2/eae24ec82c0f99acd7a96fb4d12bc759b7eb7f9130fd0c1b40c469a6aeca5b7b.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/43/2f/432f7995f0b4bbabc07c3f43953bb26a98f366adbf8c8ae7fba9e282ef832ba2.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/01/59/015954fe729c483d33e127fc236b4c3d7880dab3e3980d69ff04713d70357186.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/d6/e3/d6e34a358734bb4e6232cc964633d537373754dd72d13df5b4138adac749ab0c.webp"
                     }
                   ]
                 }
@@ -999,35 +1373,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Prangon Dash Turja, Deputy Head, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAADQBACdASoUABMAPzmUwFmvKiajqAgB4CcJQBhmgkaTDIE1cSsDYqCqYI4oEO+kAADx/fv4u2CXc+9emwsDBIAICxBRx0lVLM8EobVZ+Q4FOrOYOAm0Mc3TdjDgXiR00E7Mo/neVJ3QYRc6bQ8GO/Ih5BC+XQX8ge/OUUmSYroTSbyX53AEUfaSlpEF1NKLpZCV0AS9AAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAADwAwCdASoUABgAPzmOvFgvKaW0KAqqgCcJQBfnAYc+G/5GyTJy3tFAAP7ZWHk2IuWG6OPi0NbKMJvLVq5Kw78b+P2H5f8aE1LdiB9MU+2pe/d1HU5IKPyyARxIjRFAMKRTI/fvSzoN5hcjuwdPQg6rdLkpYRhAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/65/9e/659e42bb7096cae81c7244e2729ff95f9aa9c89a58e16838cd21bb9664781c9d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/62/8a/628ac2928bbb5403dc81bbd940a89eed61d9e1025348173c27b098e82e61515a.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/2f/66/2f666e96486733c7525432386b50c613d097495b1dff2b2da1ee8170256ccffc.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/10/7f/107f3f877ec128ab906b38c4b33533de78d14290bd5d0ae260ccc061785a1231.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a6/a5/a6a5221d4881e154b1cb0ff501cff1b37615af2f0b188dd520a5b4f641f5479b.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/65/e5/65e5a48f21304d06d5a2adcad3112a98b8f3a94a297b138bd68b7afac23ec3c2.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/cd/2c/cd2cc59136cbf190c99ac42436a34767914599fbe0c6957356edba09ec2804e8.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/98/6a/986a6a3a421f02c69293473df914d7981e0e107afc3a78b20f2ab79a647753e5.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/60/f0/60f01c498fc50bdeea66aee79111ce788c668254af310f6bc3d22aed28b98db8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/56/55/56551165c96a31003b029f8fc4fb0df6cefefaa3b0f1a5e9a09f54f0e6c98763.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/8b/55/8b55b17942b123591d8591c53d810cbc0a0a2c31052bbe08e5d36e4719205292.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/11/82/11828a60f61ce42cfdc82428bc88ec3ed648ce0c4e3817f9aef11845d933a851.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/9b/78/9b781907da3ef0592732f9d344a3293de3ad1ab997988e543cc1e1b1847a1541.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e7/80/e78044aefdc38ffa5e583a13e2b6348326e7777c7cda7e6f476c61c539bbe506.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4e/32/4e321acdb60a6baaa81a70f6ac64c21b17f346a7f5061cd39f9ca3191d8c892f.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/6f/9e/6f9ed209523c9664607a1bed534d59120055e7f49e997d03349f918b0a1edd39.webp"
                     }
                   ]
                 }
@@ -1045,35 +1435,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md Khalid Saifullah, Secretary, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAACQBACdASoUABMAPzmSv1mvKaYjqAgB4CcJYwDImBEbe8UlQP3ipjWok3eES6AA9ohuMxsl/oZM9cuwOdo+cN+Isuu9eIM2xwEiFlAIWHqsHZeFbns2p7B7gskdOsBPtppKH45TG/nxKKNZCjGAcIUwr4vrSiVF24t4etnwAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAQBACdASoUABgAPzl+u1QvJ7OjMBgMAnAnCUAX/YGO4cB8UCdrnU5L1AD+2Vh5NiLlhujj4tDDyC9mfq33CQavTy8pCBhr+r/Kg8OR+XxxaO5f32x/pfnmaqeLMwv6A2q90VbfWrwfLxcdIH6R3TRAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/24/3d/243dd6c5ca9df8d80f5a50acdad0a0208afde77845426a19c2a1eef5be3ff7df.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/96/7c/967c8c3e04277a1093c4e78e5f08fb431234d6aa26a6ac69fe6d4c684c5c0a63.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e9/b0/e9b037b0d5480179a8780f6d1691f6990e018d71dfd046f35e30a27b2d9d230f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/6f/30/6f300fbb4478e36eac48e3af80e0aeac452b13f25629dc5b965496d07ee254de.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/5b/e9/5be91dddb81381fd6ef7fd7c3de206a47ce2461b1f772f646af0a9ac3357c50b.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/6c/16/6c16152c6ba4f69e28b0ef2561eab8be4b7a5038e13121fad0e21ff1d8b01406.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/46/50/465012c01b2a3b8c1f73db4445ce0476e9178237f1a9445870829383db41f943.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/7a/51/7a51663afba6fa749b549b0b94d818613ff3cea84db78de2251e99c65c4a9696.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f5/e4/f5e4cd5abc0ede53e163110065d5db847e51951dd83a26887c28e97d77959435.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/26/22/262225d4a6e79cae58b79d1ff5398802d6173f7c23d4c181c80d60022cd8326c.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ac/7f/ac7f4915bba3515dc4d3654257a011536996ca857141b02391f1dc9f78cb4baa.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/be/c4/bec4d58c0af632a489ddbf3dca5cd7174e356ff8f0ebc62c4ea6c5a27612427e.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/25/24/2524989c51867a5633cd9d397b58600e3774337530edeb22973402d96db88d57.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/9c/23/9c23fcf3a51ed422ae5900f72892ff4a91c80ae22c748ad404929d255d26fbb8.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c5/2c/c52c632748ad83e6c99289b3583e9e94b1eb7d058728a25658e603cc4e8a3383.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/43/ab/43ab7f72e6d371e98f3d3cca3d136a175cd898ebf441f1c30d0cdb4916647da7.webp"
                     }
                   ]
                 }
@@ -1086,35 +1492,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md Hasibul Haque Tuhin, Secretary, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAACwBACdASoUABMAPzmUwVmvKicjqAgB4CcJYwC2yBEdEjr8nFc50k+GI2SjLoHgAOHaLh86xLvw8ZMAi9VHLwgi+CBmW0sEyCE5ylJHAT3d+WLaDwMPhvgxetcnyB/i/LQaCFcdnx5axBwO4q4jNZT9LO8uRCzz6+8KO6UHhC4if6MJKgAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAABwBACdASoUABgAPzmOv1evKaazqAqqcCcJZQDDcAw/T3mfQwgnUZAapyui4AD+2Vh5NiLlhujj4tDaVwNFhIXylSnT5aEAkLoFqId8EOQ2oU2Up71YHkgKqNqErh9LuahnxgjdwRSxEtD32+koncYa1bFDKX08AAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/a3/22/a322ef8be39a51c9645f3b57f54ac1492776cde568ea08ef2173cd36fad28b64.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d3/1e/d31e112851394edda31fa2e83e629d196f00f0cbd9b94a5d71d89fab55f9be43.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/94/42/9442c2d0b9956274cb3c1508aece399ff233bf14907ab5c1bf925a5424e0a35f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/be/80/be80e62de36a590e38d45a515ada02cbf12277b5580656716716a3f718d7f98c.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/5c/0f/5c0fa78f2b2b09790c3eb62f5d83c17373b33fc9e57b5c04ef4216d736f417e3.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/f5/e9/f5e982996e6065788f677691892026fbf15217b24081af0e4f2fc360f5bf8107.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/15/c8/15c8e5576232a085a20da12a8dbde931ddff049de8fcd7f2750b829b1f53c78b.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/9c/6b/9c6b21afd002252c056641e2011c3d809c21add75a12e7f00feb1a38736220d6.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/e5/fe/e5feb40a6b5146a5b1c7a1af5f7920d66be799df987555314bf1654fd84d1972.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/cd/2a/cd2a5550923c245f38110ea92301093379b0bd5293d90a452651972c816b0620.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/42/5d/425d8790ce6199039e939881fb9fa8f56f7c186e28e7c11b2071e290eecfd5b9.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/d6/42/d64206b08b608cf573bce3d4e5023defd304ea72c47570ce0fee2d3a4d927caf.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/93/94/93941cc052b942f36812cdf7e7bef079661458856b1a790abac7a0d446a5eed2.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/8b/e5/8be5e76cd51e41c7c4ce7cbf2c2326cd7575b04853923fd511c1cc4b5118e52b.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/99/76/99761d550e1bab00f08e558861303d149bf03d88331304b31563ea88315af924.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f4/0b/f40b8b41a84c91e8ec91313ba1e99c7687ac36aebf49d09327df35346d37404f.webp"
                     }
                   ]
                 }
@@ -1132,35 +1554,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Musaddique Habib Fahim, Deputy Secretary, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAAAQBACdASoUABMAPzmQvVgvKaYjqAqp4CcJQBdgAa4l5ZM3h0y410eJQAD+PHF5N3La3zsZdFjHYVuz2k0iJz/GhaVxC3+jhUAgrDf6dpWL8dePPUXFcj7HccEyedgPjZeSQJBBVHkkAAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAAAwBACdASoUABgAPzmOvFgvKaW0KAqqgCcJZADKAAyZGzYa0izmr6kjrwAA/tlYeTYi5Ybo4+LQxIh+hs6H6ENYdv5Xrw/4JYd/oeIZcUcpCu19pAMWOW0pSrAzv+CMMTEJhgpWdoBvjtgAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/7b/4e/7b4e686e3ecbf7212833dea8bc4e9580a10cf115b1b3d074e9660d327fc9d89e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d6/cf/d6cf688716c6ac4cbb70b2935e3a00182dc0bfc658d312a46732eecfcb8b5d6a.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/40/50/40506accdfa4cfbe0e9a9871b8f75a16551a005b52ebd1c48dfc2face7711665.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/6a/83/6a838f2747444e3b56ad83019abf8c6b22d608c01704201d5ef27d66b7acf688.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/ff/58/ff587e76e1f4f9a70b222aec9ff52e94c3665dc219ef91ec60339e02189b7d04.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e5/ff/e5ffa3cf4c34dc35942eb9f11060b25635f9d75e58af2275a66d07b80fafa23c.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ae/ae/aeae7eb0faa54166717e7d342470538347b7e2eed7889b7c8a3f613955b97d89.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/23/d6/23d6d544c9bd9007bcbb8fd035d0b413de9e3611ddf37c3a82ee41fe83b45acc.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/62/9b/629b78759c891dc704af79f5a23fd4298eaca78017cdba1439f695d6886beca5.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/01/98/01987120f0b24e224af1d08facc1db495d4356a58edcd08fb3f0e95f9d2b5ed3.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/89/99/8999714e451706dcf3066ec3c486977459c8483efd8c0ecb317f110b107c798f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/c3/ff/c3ff40b353bcce27e68f87743d0c39bfe3d3a5703d77b28d4afcd65830b083f0.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/5e/da/5edabbe6c8ed79f4bb33cb614cd100ea559271661b05e55125b009954436791b.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/dd/26/dd2677fc51512358a6ef55ca8aa9a59ed661237ebae5974b7c03fc0f7f544fc3.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4e/de/4edee6ddd404e2328aae542189640c093138898b883b459c4be08bed0c887bd2.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/12/37/123713a5f43b3b3d1ae3f013fac004af64d0f5a0ca39b3776154b00f047290ce.webp"
                     }
                   ]
                 }
@@ -1173,35 +1611,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Shahir Rahman, Deputy Secretary, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACQBACdASoUABMAPzmUwFmvKiajqAgB4CcJZQDA3AdE2vQVx7wueud3SQw6ZAAA4lk5mqmXY5PSdJjvXa4/3P3k36fvSSXI/Sp/Pyc20MbXSxEYA8pykJ1+JY4JbWmKPIF/rMtB+kXGTy9my5H8mMKOsheILO+m7bieBpvRR6OQWEZ+JmlsJJq2XrAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUABgAPzmQvlgvKaY0KAqqgCcJZQDKAAxWq2Pklb38mrq3BAAA/tlYeTYi5Ybo4+LQ1svTCklQUQMqVAzsnMXeqr3AhrENC36TncQy4o6w12H3a9hIB1VrtHGx95cR2ZfCS75OdCE2ALh747wAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1a/89/1a89941fa19e4fb229de353c64b0792c339ef6f09d1a62b03ad9a75d3556e1eb.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b4/ea/b4ea24978546a3a5a5261e5c93d11c7e20a709c1ced68e86a720d3793247b419.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/35/3d/353df85e70b0c27e588bd3c2e1e2c77efb1d930148ceeb778c92eae6cd91e6d2.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/66/cf/66cfb1a11ef7d4edf17d6854225ca801984fcb573c70cdebfa54b99dd287a5ba.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/69/25/69259c8ba966ac6c57661ec56a357ba2cc00f3d1798f067a249e01c7cd8bc071.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/5b/63/5b63eb0863d6d6b5f094078acc09f4360be15ba47f93792575df44fe1da84ba2.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/e3/5a/e35a7ab27c8fcb0163715aefcd810d1f8f4bac8ccaebaea5c62f66f66f2a5c14.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/bb/fb/bbfb6861058e88e8e434dd6503203021b5ec6e0849d74726c4445b763cd9bc65.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/e3/fc/e3fc67bc4f146dfb6ddca696c137f6288d73c9de97bea6aa767daa11b14d71e6.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/74/cd/74cdac854cfcf5e017e0ad87ee84cd3f821c00622de0c88f9859e6ccdc90f0ae.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/45/ef/45ef4a61d7fc8a947bd49281d560e24c1c73e306dacd017a7321515d9b6f3b1f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/b4/37/b4376a11d75f8ff2b15f63cc46ee39428cb1e65876af7d89563abbfaaf8756b5.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a1/85/a18551409141906a78389b15823c0fbbacde56e69bee7d075a71c7318f88d96e.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/78/c7/78c7017139162bfde68d9f5c31994925ec20682ff85da145ca07db65151f2ab8.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/dc/a1/dca1bd58c8f05fe8c76e6057b88c970741ca581c069b6768496167ee262c4427.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/01/73/017330bb4c44a3f6a104fd69c5d65616b1cdbc84dca806b545fe35af0404977c.webp"
                     }
                   ]
                 }
@@ -1219,35 +1673,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Rafi Rahaman Jim, Assistant Secretary, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAACwBACdASoUABMAPzmUwVmvKicjqAgB4CcJQBllgkdzbIZLcHZulPK0bsa4/IdAAM4kCjZjXHLHsMMBVZz+MXvCb0dyeg3kjqWaBJDOhgUP8rByQfu/etEu5SW1ah6nUw/wGa98EgdBXaRwQWzSL27anErshzK7C1E3CjCfawbaBRS4YFQcAAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACwBACdASoUABgAPzmOvlevKaYzqAqqcCcJQBlAAZLs12Xo1gdEHbaS5vJmMimAAP7ZWHk2IuWG6OPi0LgwRNJZY4GpuTiNWqrMLKyftn4Z6R6iBi78izLMPWXC4S0wtDX30tR/qaSjGwsoGrIg4B7liQjx4NzrqOAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1b/7a/1b7a36065355cd30920871840229330b7427f6a5725c9d21206f87276b673c52.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/2c/0b/2c0bcd690b2bfc796a1fe5eeb8a22a704937edd5ef25c169c41a06f8875ae6d3.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/3f/57/3f57b9f8c0306b4d6ad73c69713406917b43d10284f33b9891e30c2a26e19241.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/c9/9a/c99a324874e7ccc7dd04577e93c89745cbf6997a2d0956be48f08bf692d1601f.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/d3/ae/d3aed384ee330cce626a19ba051e355848bd80ed8cbe0f3aff5855265ebadbd3.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c2/a9/c2a9c665dd8546598ea5697640af18f7dd75dfc8d9dad59bc742ea78cf09e7d0.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ca/f9/caf9a7aa9d5a5c559588d91301ad7928510e32034412407a666d4bd39294ee3d.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/01/7d/017d7e43ff47a4916ebe0e41682e78255d96a6ff7f57881f936956f0450e7c79.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/a7/2a/a72aeefc3695b7058e85c5f2b18a85c6e366c8194355b413907bc6d5ec93a4a8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/c7/fe/c7fe80563317a498dadd84b0ac87122790c1fdd7516f78ccf703a14be6e1584f.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/da/4e/da4e89067c8cffc4f1134053c68cf6a19dd0ec69adb4da7b1f5ea47c751c5c23.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/69/fc/69fcdeb8b434cafd131e42f2a5ab2f167f86eb05466f18c3d2fbf164baeb6c37.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/5e/8d/5e8d46c0e458af5cce84ed147b3b3483a5780dfc587111190a5d62c11218cd34.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/78/64/7864b6b50144c5720819a52ca90e145123cf5dc12a6c10a83d265ead03f61566.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/de/c9/dec9b258997665fc474a60534e5b47bbb9ac4ef1f6815cbf26f356f082070f05.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/01/dc/01dc516e2198f650b26fccbe0f6fddae0039254531e7b2e290637fa0c6e80f6b.webp"
                     }
                   ]
                 }
@@ -1260,35 +1730,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Mosaddek Hossain, Assistant Secretary, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAADQBACdASoUABMAPzmUwFmvKaajqAgB4CcJYwDNwBEcngIxt53v65xZ/nI2vv/KAAD5M8qRMZxQgt6Upnl5PPk8FhkGfhKPaHDgDUCb7/dchcreValz4cX1d+aOKjGGEAoCbORXJ8eIV+tmBtvnRUUXI524x3BZ+aYCRNmMcjamjuCpb2NAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAAAwBACdASoUABgAPzmKu1avKSWysBgIAlAnCWMAyNQMNnhYGvc+d4+fqmAA/tlYeTYi5Ybo4+LQ2gpfDdTkJneFV2fDHlrTCVG2C2Ij8k5b2jQ2s5cjYoKzfPN6tuDQJk4doqx/t8AAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/ce/cf/cecf5278b41415d54bf3376e7211788700f808527531a65c1f638332060b5adf.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/30/0d/300d8d4ad0cf677b5aec655aa9e80d71f38eb473e3883bcdb20d5d560c77cdb1.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/17/5a/175aaf18b62cf8aeb6c54015fe7fd2e59c237ff3cc52896405b2fe0c085b723b.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/ec/74/ec7456c59591e1c75b2d5bef70394a3556a2a4d8e499fd56b68345215d1aca7c.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/7e/0c/7e0c8ebab3cabe4b5202b544080c2e49fe6ec741eb3627d16995ba6b70d40034.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ac/29/ac29e1c8bba5887a8de1ac63d2c226a2f48aed90abde7aebafebb7788bb780f1.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/1a/87/1a874f4436eaee9442fb23b6c78642aee524cd2eefbd032835ea7513f09d5d2c.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/05/8b/058bed878722fcbc3393f18927cfb94b48ce424d442ad7aa56e90350a71b68dd.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/2e/4a/2e4af4264984716061bfd2104d4716f135539f09506667069267d9a2b2d10dc8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/52/b1/52b167ea685478dbfdb49e5ac9c96491403a3c62fea275c91f9db6586018ac42.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/0a/ca/0aca583d3b9fc05dd6614d7ac756dec28a983bddff4420ce515f3a1eccb960dd.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/d6/32/d632830ec490819e5c6dcf4a7e728ae75ab54459bd6755c143ef8cb8eed7525b.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/57/02/5702956462ac446bae0fab521e93f19da4d64099bcd16ae8f48d1d9c1c626353.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/4e/f9/4ef93475cbc3d5f173e50bff0fa3889fa8519c2535fefae99abe83f032b8f8b3.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/07/66/0766a87915fc797f5dc2015a2f03be23c61f00a3980852dc5f693f618998b5ed.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/8c/68/8c684ecb556987c269656bf3a0a54642f7ea759a497f2b0fa79c4bf8f1866877.webp"
                     }
                   ]
                 }
@@ -1306,35 +1792,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Tasnova Naveen, Member, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAABQBQCdASoUABMAPzmUwVmvKicjqAgB4CcJbADG9AtKMI+Fq9kiAJATdXzWsCD1m1ag+IAA/qme9Art7EAR55YKejcG3nC4ME7bcWx7RktiGColVnRL8gcrlzMyKQhlgZmIDCbVo9DW0cBhtiKwB+lUtrTaIPZr6jMnGteAdHP4KNezSAHtzecp2OQWYRRkOnwPwAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUABgAPzmMvFYvKaYysBgIAlAnCUAZVoGPILl1frydstUsCAAA/tlYeTYi5Ybo4+LQuU5VRLQ7yUqlrmwtexSLFmEpE+J4hBtAFs8NuvEM3GbkavFSsj+hkpyJjstZQab8WatuxUEY3adhPAAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/43/5d/435dd0a52478481548931f46c77c10d9900a2717e9da8b654a0536447ac8cbeb.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/62/db/62db2255fdcfe75904d8dc733f3976b234d258eedf6d859bef2293129d4d534c.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/94/48/9448e013c34d156026d7fec62a327281f74ba98224d5af922ab40a1fd1ce688a.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0c/bb/0cbb523d138292f01d63a1822fba59127fb6af8655199912abc5aa4b77365e7e.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/50/93/5093e8850d94639975ecc7b65c1bf53a0f69cffa826c0c88bc6868adca059371.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/64/c6/64c635950624f71836c2f5cdd24872f7945f047714cfc518d2752609a4611f87.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/54/ee/54ee574d4eb88b8467fc7c25b749482e916393d779500d01944dcc1078735012.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f8/29/f82952ecd0089abf4a4d8e3513a87f1811ff741296bf1553fc5aa597c76975eb.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/32/ab/32ab72d4679a040e944324929ec61ea1d5b3521a500136d46917266315921c73.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/7d/40/7d40c95336563f6cbd8d63f7ae0c7e9e1ee8baabe681171c69e59abb608c21e3.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/58/ba/58ba0b051e547048f5d631693522bd539cf5eca24a88d0db50045f5b15b0ae55.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/e3/00/e30043c8131d5e2e5e63385a7e64d5cc11c101adbc04db566d965e3482e7969a.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/3a/36/3a364a34c1d60768221eb3ded8de4a667939b0435f0bd459eb10658c63e6eeb7.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/15/f4/15f410fd98117bd705e579d625607886c3828bb4c5acaedd65cef40529159c47.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/e6/bc/e6bcd313a26ec69df5fda900d6221bdd1c04e723c2f7dd7034e58eedbf7cad1f.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/1e/f2/1ef23f03bc2df57ffeb686a89b376553fa735cbbe3bf2b3b02888ff515755de1.webp"
                     }
                   ]
                 }
@@ -1347,35 +1849,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Nazmul Hasan, Member, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAADQAwCdASoUABMAPzmSv1mvKaajqAgB4CcJQBhQARlbvb9LIVwwY6AA/oIOOJ/tYPxt/4wy+KU3f74Dlm/q479vThoiuo5sudwxh02YXCxfl+aySCZDDr+0eL4NTQY3TUax0dLZKtLMtFdqs1B+HN3DG0D2eO3UX4U2FsE1GmEQv2neLUQgdLSrrjGMTG6SaKFJErXct/IDAAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAwBACdASoUABgAPzmQvFgvKaW0KAqqgCcJQBkagYsFM4Lth1ABUXX1rAAA/tlYeTYi5Ybo4+LQ1soQKYx7SQy3YtJ+BdKmqCutEgqpfzgw4ryBlcehs32s40jPCDNGsqZq/Egxks1wCFVmI3SoNrR//qcoukao2AAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/83/be/83bef4e4e90a88189030595b0b08db683ba93ed96b71ad256b1432241b085613.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b6/94/b69442289e6f7746060e9b7026e0c563353dabf7e3fc26bef3a10dff2a75cc08.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/1d/61/1d61cda4bd385f59e71b90b0c76e014ea11c40d5140c7c2d039a40a9e3de76c5.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/1a/a3/1aa34deebead12b60371ac8f270e749f2fefac550d03430146062fc83996e681.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/8e/2c/8e2c9e6a98e9983b4d44a2194202bed459bfc9539696553f589f3d87c41032e7.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/9e/c6/9ec6f0381e8061d6f02930edafd6965d16af4035fb7c3a07e8cba33a2404d230.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/fc/91/fc91b693a8035ed72badb3108fae9d357a479eccd37400fc4c8d9d2e8f0b8820.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/37/0d/370db275ee97a6b6f3c7c8eaa9c65f84d3e0f4fc1a2faf9cc80574cad7e31996.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/93/9b/939b5782880861cc17dfdfe7dfd250406a13fde172c88424bed81a9d5cad47ef.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/82/81/8281d0caf268d814552b1351d2ba9ffa0442f46a93a367db5369922456245abe.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e6/7f/e67f875d96e5833e73372b0996330b407156997e258c62bee3519361c90888de.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/e1/65/e16505a1cfe9945f1841c528f466802d2858f3571f252affb1b0033ea75f6526.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/9d/46/9d4668621232f53a00aa39c651b6cd6dfea8ba8b72ce82305288424bcb7dc506.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/cd/98/cd981f58fcecaa9748dfc4b48891e0f0e8dd07770035c6a50b91b7107ea97981.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4c/38/4c3846f2973d5b3a6c02c2a239b948e69d307d5a7841ef401dbd99a384dfbddc.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/da/c5/dac50c2268f395bf9bee8d74202f6e018f96aaaee32ce1062830e008dc44b5e1.webp"
                     }
                   ]
                 }
@@ -1388,35 +1906,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Nusrath Laboni, Member, Workshop Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACQBACdASoUABMAPzmSv1mvKaajqAgB4CcJYgDGfAzoK+RwX1ls+/mnjdqpDRwA/svsP44qVKIHxeilZjvqjwheAI+zYrjeJk3Ge+4jpfJOFBwQWZr3XdnAffZyoWmyqGwZ8kmQnG+3BFO95rse2pSvjp5usqErZcILsjAaUpjeQMKScmA5OiYaFMwAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoUABgAPzmIvVavKKYysBgIAlAnCUAWwoGNiq59qLm9ap/8/gAA/tlYeTYi5Ybo4+LQwMm8jLHCedO9D2KA3saAJuPLm0G4UiOpKFRugI3svT+NdMTdSoEbWMpVgBw+RO6UbRqckv1AAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/2f/ef/2fef816de4b37b71aff6776aaff05adae753a4df81e5c495a394770f0e9c2fd8.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/6c/f1/6cf17140aa908ce4298a614412955346001dfb5941ef64ac5f13a070127e7ae6.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a4/c6/a4c69ecbf66ff01c9d7403e38b160757830d7d6fc26dde144b41794fc19fa6c6.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/e7/7c/e77cc9f10b24a45b5cfd58ccd5b776f0b96b58a21eeeeba58c3cfa6c1c72eb6b.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/78/68/78689a89750b87b2fff3df9076e11c5833f8c12976a6aa140eab610f6eb76384.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/a8/ed/a8eda998d70dd8645c90b810c72b846278e13d26080cbba56e85fc74ab1a1cad.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/e6/fa/e6fa3a6e77188e508ab00be65066ad5953e83ca1f3e7a58766eb1229b193dd07.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b8/e2/b8e2fabb1b969319d481a27f14d5679985243b8f501821b408e5400db1ae3633.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/cb/4d/cb4d953c0f3ed01cbf1dd341348f29d4818f0f2292aa954f59b7067c4bffb6a3.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/7f/16/7f16122874cbde65e5b2b7bc316358cbbb73666eff77949fc5432204ea827274.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/83/d4/83d42df4ecebf3cd553183bf1ba0e52752ed387691502518bf00254da976eb8b.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/be/30/be30b1fd0ee14119dec36e3eb55ebef78160aa77a52e0111276370511e94ccf6.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/6b/58/6b58d6257e37b92a67a07f334fed3aaf99293aaac40919e8f1f0fab97fccf611.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/97/a7/97a753586267072f64ca7b0f40a343feeb37d60b52b455f5c1fe900f27f13489.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/f5/6d/f56dad980f6584edaf4f6edceafbf540079a97fd89b70a221861a29caf824b0f.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b6/43/b643da6b7aefe3d2dda8389732c22c7f33f15265683710d55cb66ad8ebfaf8c0.webp"
                     }
                   ]
                 }
@@ -1439,35 +1973,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Arif Billah, Head, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAQBQCdASoUABMAPzmOuFcvKaSjqA1R4CcJaADFCvIBo8SmLYWsfhBOhN8wi+ooPaQAAP65JJlhq0jMGt/v4DnprqCGzDL5FO/2wVgzphkd1KcdwW0T/n8uDWBY8HooDEBWffAqcYzaE0A1coPVZSoUzwtr+EBqLieZJ1Zw0AAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAQBACdASoUABgAPzmMwFcvKSazKAqqYCcJbAC/OAwyhbDQ6cq9T6KqAAD+2Vh5NiLlhujj4tC+yJqsk9cDC/oYWxiQtwDpiVVRfaJfowEFLwJJ7V49Ndsi8AK7pV/JlGGVDUk7/rMT0bpqzhKhmlfmAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/3b/e3/3be317860c8b23b7f9d4cfba95d7e39ea512c8fb43953e185c8075bd3b7ce67d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/26/5c/265c7d21eb2aca12762a9c15576deb76eca09d80f51197ceb2065a619043f54c.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/20/e9/20e9f27b05de642cd96048221ab9ef780c5cafa462f671c563908d63a8c01c64.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/da/cb/dacbfc6feef79ad12f88a963b030922d4b90e04c9d02f62f3b48de0d8450ad93.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/30/bb/30bb435a9acb5d8608657961ff316fc5712217b09d33a4a303a658cbaefffe29.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/a1/b0/a1b0c9994b53622d085a4022a401d1d146a6ae920f045d89edb8c31d8acf0cd9.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/22/52/2252f202de77701b06db3a5e1c37ef673fabdd34c6631dc541de61bc97b93ce3.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/3f/37/3f3797e7582f0d989bf7329215aa9ebeab6c03f90c9eb98ac1a9efe87a0e8580.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/53/12/53120e61c3820f276de55190578d2230440b6054e9448b46458e0b0bd0d17421.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ea/c0/eac08158b065bd0fb5427a6d257039179922e1d12aced806ac672b1c2291cff7.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/74/3c/743cd7d5af3b894424ad51aeb9571bdb0f03b16b8e8a4335b4987191e5d1256e.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/90/37/903729b813bbaf1aaf47859efa4be4d1eeb859cf81e0dc616ef82e73780e74de.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/de/4b/de4b76e7c230361c035484e0f6c47da49c67526bd89318d4f93fb7fc7bf24cc3.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/73/e6/73e64331acfb0e03a0b8981a7f0b9b5a479ee806cadb109c3e0b4e6ecdb2d8f1.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/17/82/17828b542af205de211f1846a6dc01863fa028cf9c36132a177590e8e7d53852.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/cf/db/cfdba24b1c0187c0894225ac757f7f61fbca0b97405e3cd1c9d3a3329f5b25ff.webp"
                     }
                   ]
                 }
@@ -1485,35 +2035,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Arnab Raha, Deputy Head, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAADQBACdASoUABMAPzmUwVmvKicjqAgB4CcJYwDNwAz3X2vC9bH8tYIXgxdv0k8YAAD+2pyrIRC2cdKBvN8U3uTOjgI8eOLe17M9SNx8xKtB5AewO0TkbKq+EBoyaVZXU9A7pBPai2hQaMakOLS6qwAor5SJ270sX4ZRD/C0wwLJtuQfZ3uwjqrirop7yyVX3clCi9yQrcAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAADwAwCdASoUABgAPzmOvlevKaYzqAqqcCcJQBl0gZGFwva/uYzjp5XwAP7ZWHk2IuWG6OPi0K8ykQWEa8g5u5B/DMhwSrZrk7fvRcVzwv/61zqckEGauDnjXAUfkelrRyLR5ot2TqAFZ4Bh2bTanAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/40/d6/40d6ede10d8f0a9e81c91625af6aa8b7d9d08800cb3a4d679f6612a6fca00448.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/aa/19/aa19fab27f9bf270e23bc62d914d5e4ae3ee2d2c2c8a9bd649a0460a951d1891.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/c0/f3/c0f362c191afd3716ca97bcfe378a6d31e7719024136721887c3162e2864cb68.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d4/d0/d4d049773e29655a59d240c5414016203eee223f8574ccbeb602c23c1c0dc5cf.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/4a/a2/4aa221c90dafc13df92d10ada426235a3f795ec86bb052d40003367ebda0ee03.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ec/df/ecdfc72f2ae650b8c69d670bd3971d99e9dd0096da9dab698ab840491ca07361.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/1e/90/1e90e970c9e288aed7188cdd47167cd95c47dacc4e64eca0761ba2ce6f946e03.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/3d/2b/3d2bf5f79e7389137e1bdf6de2197ecebd10e3574a9b14dced78c6951fe65048.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f2/77/f2775ce16bb120e50cc804c6ce69f3868e0320dea7cdbe1ec3143cec890abe11.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/0a/43/0a43735c1d4a8c682a12ee07b4f6c38aa4875065eabc3de54b1596e882509107.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/eb/f8/ebf81fd6311e074f3a8397fe910ecee7df358a449b3656dcddb922b550965f00.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/bf/3f/bf3f36c03985a2d61d882b107b52d748e4305bcc2b0b70e11b30e3cfa300fd33.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e1/ed/e1edcd8cdefe187ce3361301e8701c81de93182e00d908a7dd022b704d538495.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/66/da/66da7a8048bd60edd724094832b99b28202d7b08da20b17a48dd04d39b5cad18.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/5c/85/5c850b0884ce8bfa1daf3760e7b64d0ae328e0547a90a128e0af99aec5048494.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/c4/e8/c4e815bacff28fd681478cc113860256674ee4246f714f961de2e7b00e6e65d4.webp"
                     }
                   ]
                 }
@@ -1526,35 +2092,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Abul Hasnat Abdullah, Deputy Head, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABwBACdASoUABMAPzmSv1mvKaYjqAgB4CcJQBgbggp3TFfEUHN1UETzbgT0gAD+vAj3CfitzHrqwQcB+6gPIXlZUZfJ1uZiINkcI/SjHAb90DjFYTBXjYz6RcsanMdCfI2IeEfTemJq+PUZsDa6Zy6agcVdwAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAAAwBACdASoUABgAPzmOvVgvKaY0KAqqgCcJZQDNhAxBBCuxSttR43W1fEAA/tlYeTYi5Ybo4+LQvsjfeTx79bCm4+aL0M4IM7Z5CB4XawuJ+w/tAjhGg3j/qmuGbnJJlIC1iAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fe/f4/fef413136a2f2e0ad4401480b12056351e2c04070c28762bba719e7369c25b6f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/80/eb/80eb5d72cc769e77ac53c4a985a595270567fecc49fb122f22899b8a2389b9d4.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f6/b1/f6b1ddd7d53dc28d56993cc8e46ca37219d71e9de7a99e4f76d5107a3aa66328.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/da/ce/dace31cb8386236a9c1a49adba64e827f4fc9144fd3c8d9f2cab36a7a881d5d9.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/fb/9d/fb9de1eb5ee747fdf55f3cc89aece4385e7251a2bcb112881458501e05be8659.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/7c/bc/7cbc490f6f4339b384a0df26e9f1f4d60d6e12fd3f1472c9dc997024e939c7c0.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/7b/a1/7ba12932f6690e69662927edc82508a55aa1c33dff96a8f3310c3e8fc99f84aa.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b8/89/b889440db237aafe10c16e49f45d1442c4b80b546801da32b5da6248c435a43a.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f2/fc/f2fca4a80b2184b9eaeb678c4d61f1502193634d534cc236a7e5f7ce26b907c5.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/39/90/3990fea89c1086849859f02d48608b69cd9d8dfbf270504e77e1fc956ef4d59b.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/77/d2/77d245f6aef368be635af9fe29ddd7900ad5c9729ca2128a7ce049b0ae3097d0.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/c1/82/c1822f93853ddf34c295553af25b491f4b634d44cd257692c6b79d6a58b0b8f8.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/9e/9b/9e9b463eaa2ed9c56d7fa0a57f18c2352eb94e501d224e435a64145590302001.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/48/9d/489d9d75c2623f29b3988e953a3b7b72596bd3eb911da21db9f2537585f97087.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/07/fd/07fdb64f0722acbd36a0216ea22827af1bf70316c62c31a6924f249251aa6051.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/3c/d9/3cd9f0c708bc381c9d0d8e8167c3f493dcdc153635c2b83faa4f10c6431f5a81.webp"
                     }
                   ]
                 }
@@ -1572,35 +2154,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Ahmed Nur Ratul, Secretary, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACwBACdASoUABMAPzmSv1mvKaajqAgB4CcJZACnFAqBkyWpvT2ARC7uXx9P5pIAAP1Nft9ifLbWQ9SToq8wjnRNs/UYP5ekUilVp5+esuknsYBRYzOYSDkHDg4RpxDJPjarcM4r9YA1AZla8oXGTZltQfVt2nmIXQTfkQxq06NPjGu5c6Uv/MOGNw/e8QhFVDfAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUABgAPzmOuVavKbKkqA1SUCcJYgDE2Aw/WVdUi6oPRGfIuwAA/tlYeTYi5Ybo4+LQ13obuW/+n4xZ2l/p03/yfT8ANWTDNwTAZsHx+J7tSCAfSSUCVK9w+rbI6PlJwZ26vigjCg30vEmLgkf6M+MAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1e/de/1edef617431b36804cfba62ca036d9245e05efea7fad2bcd4026c27b95d9011e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/a1/6e/a16e6a8e579f1b2102cbc5fa03767ec2620d64bd29e6e6790dec93232ce0812b.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/2d/62/2d62a992ae6c19f3e076d3a51471be89ce580f6336fb50b3a18d82e5745c9282.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/de/8e/de8e55b894ace453d51624c2e5666376ae10caeb0c978af3784d5a1f82257fe4.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/2e/87/2e877e0f0e43780b82e2df10dcebc531f6b14e2fb83f8fd5d801384ee103d982.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/a3/be/a3bec5f6dfb11a252d63fad09b34215aca8a7548206ba94ca92d0060d19b0163.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/79/a6/79a660bf921d3ac2c6c15122530fa73f199a12abf39879cf0132177aad67416d.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/54/2e/542eefdf1b7cff113626b8d80a4af1cac09624f3ed23726be424ec51a13afde9.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/5d/eb/5debe3d33a434b0b36202f8123ec63e5eb7f2e0f60377a257dea723dd37114cb.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/4c/83/4c8359813db9b87b9f1faeb362b9e580dc835cedafb08ab96c19fca7e491ac8d.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/21/86/2186d85bb2adf827dbba0e74806a7409d0b752457ece94772f98593ac7a79932.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/25/35/253515f6fbe30d992134a8a12dec81c2cf8a2ee7ca663e42d0dead501c8fcb64.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/f8/93/f893522f8b18b5ac1f6a60bf7230ec7348c4901758bf4195c35a86a5264904ca.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e3/4a/e34a45afddf37e5b0ca6efba5fbff6168d902a7bd23c7d9859baf2b0bd4c282e.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/a3/e1/a3e17c3d6ef214d9b2e3a1b4d4cbececfbf7dbf785aca27648d90950d4b6cf13.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/48/a6/48a610e8177288826201b09e45a7ae002670fb0b46556c1ba8ae12713e620fd7.webp"
                     }
                   ]
                 }
@@ -1618,35 +2216,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Kwanan Mahmud Neogi, Deputy Secretary, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAABwBACdASoUABMAPzmUwVmvKicjqAgB4CcJQBUegRFCxG+VG3U44pcvlXVwAAD+gYKufgz5Vgj9EhELOAezxqBFbTHYKvnA+/SiHpQ+W7n1LrfFkayyLbnUgXobdPauGSfwIPkjbCK54pKAm8h2DSZ4X46XcoJsZlUYjSMIE52pBjyEmyyLewB/OAAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABQBACdASoUABgAPzmOv1evKaazqAqqcCcJZADA3Aw6TxZNG814849/VzuAAP7ZWHk2IuWG6OPi0Nd5/H/OCSoOr8f00KWUPK0Eclz6iP6HXYhcuS5ihS9hQwmxW5w2i2hrDmjwXiiBdyMzIV+v4btK1I4AAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/5e/76/5e76b7d25381af46eca38fed9774437d79a4a6b001468b1631e23d9d408286f9.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/89/d7/89d7cf33b2028f305eb44c399ad13c6317a29495338376d623f067d5c070afbd.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/3c/e4/3ce4c8d2665f71b76096232a92e0ffe89b890e12c4d592f51ce7261de09ebab3.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/30/dd/30ddf7fd3465eacca62488559a321bd8cd1285b417bfb7c159107827d139a747.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/24/03/2403a57a083ae55070bac64a02534e7c1e5401e91a9e9ed0cea7f3a0f544d607.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e0/f9/e0f912fce84a5f4f3241f228b32e55509823d661cd0e3c6566762fc663b779b4.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/91/61/91611857d1b4543d6387778c978c2b512a6bc2257a00a8dc32057c298145d1c7.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/e9/95/e9951c78e48e38b90a2288c5f7862dd4acf4960a652f5615de6df2d5cbc0b24e.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/2b/85/2b85ce902450caf05c5c8997427da168c33f1cd5693e6a5515f5adeaba991a25.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/a2/a2/a2a27bf3a843a22ab04f6c4e86cd9c6ae3a0db2eccfd38fb5b09ab8712260350.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/cd/d5/cdd538656e4fbbae981ed6d3f756b5a3e28cecee3512b13b05fbb50161f11ac8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/81/dc/81dc087c79eb9f31d6ed1f12a2c3f6e9f7638b7d5f693152a43a33d4e741bd31.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e1/76/e1764ee9a7d02d8d4b53668946915af9e05b162ae8e1fa7479372a3f8437cf5c.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ea/75/ea7593ed25eedd73e21f2e505cc80b9fcfe5c37e46b730de1e60867fce5a2935.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/de/bf/debf63452bea400a458dadbbab9ef50c2058eaaa7d6b3bee4f885b719b26baa0.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/72/38/7238c3f81db75e0cff00e34e74d0c8c29c2581b327c85d508e05b04c3edb7f9d.webp"
                     }
                   ]
                 }
@@ -1659,35 +2273,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Faiaz Abdullah Bin Bashir, Deputy Secretary, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAACQBACdASoUABMAPzmMuVYvKSUjqA1R4CcJZQDGBBC8fhKRZYSmmCjCx7Kf8vYA/suT3Hlr63kxlkEnOSQt30c4p7rlfwlcAoJt2LeZDSpYBDaBYaMZu5f4I4Ita5qfOjoqJLMoIYpamVWamwAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADQBACdASoUABgAPzmOwFevKaazqAqqcCcJZQDDrAw2F3P4iqYM2whLmVuda8PgAAD+2Vh5NiLlhujj4tC+yKAhVoGdf41MAsvCHZdIKnxEWKfR/46dRHn/V+mF6RlTIHnLW3FWhzmlTQAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/3f/83/3f83adbe4ab67a34d22b10b4f354ed08256b74eadeedb7814a4b76d042cf3a32.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/64/10/6410583541f7d0ab55c9220f1be8523a761a8a83474e5423454af62cd6525457.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/6b/b9/6bb9138d232f4e72fcb80bcc874ff95f9a76d4acbd8b2e54f2d83881f6ef6bbb.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/40/08/40086f3c9c3b1502242521fa6007e52444b1088991967711a25a673a12b28213.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a8/3c/a83cf91195ab0e5728863f984155fad1dfce89dbdfd982ccf79c45c1162cebb9.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/33/64/3364f793dd5ea0ef505fcdeb68077b57784eabdd02a3d19047eb91ed76a447c4.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/2a/7a/2a7a5ca1f6de8ef68461b367e92293874b894b18dc7d294173f0ac7fac5076b9.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/e2/d1/e2d1e03d532a4de1c8468a3f75144c96ea9f06048d697820fbe8c6d84a4e1feb.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/e4/d3/e4d3d89661f09cdd989ad7c0414bbbbdeefd52d109ba940fc32aff5e796c7f7f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/58/aa/58aa1f102040c92d7953ff788dd5d8690e3287b593b246cb84b9424e239eab91.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/72/22/7222d0d2b5365ed0632d1e9b7f43d738f728d7a079e97fda1194be270310fe6d.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/1e/18/1e189a9c565a2e3208a51704b07a977f779b7a234b6f26fc8b3fd85b65e15ccd.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/60/0e/600e507e975afeaafa293b9a220ea499512b9106b1d73550a7ba78621e8db043.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/04/af/04aff9a6e102d52d6f4b7f226dd70ea9c1240c093bd4a416c92b668d23df9696.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ee/9c/ee9c11139324e59e2461e80eb17b89687b2a59b5d6f6e22c8400b9b6a91ac735.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/e3/fc/e3fc55f9f97ca2d21a981050b2949e56814646e02ca3093c187908f6732f63f3.webp"
                     }
                   ]
                 }
@@ -1700,35 +2330,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Ahamed Hamza, Deputy Secretary, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAACwBACdASoUABMAPzmSv1mvKaYjqAgB4CcJZgDM0BEIt8mtAsnBpPsJm3kBHEBgAPkzypHIv74GN/2OCv8ComX34JvR7XQJG+BwRwPtHiApD+dNnjhTLOnqySZXJYcGrFh9sdT85mvXqaLyX0R11/pvyAKIkK4F6h8eFdNUGNoGeV8LrrKSgUNpfcnbq6/QllfTIAAAAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACQBACdASoUABgAPzmOvlevKaYzqAqqcCcJYgDI1AyXc9LcNq5PvuLXn5tKcAAA/tlYeTYi5Ybo4+LQw8f8mOnU0SJYcgC3oINnYk4s8OOOw96Umyfkgd4Ay4ZduiDvou7iTYBx/0Vm9y1Z7sRRG4gYQpshOJ0e5Q9aQAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/2a/eb/2aebcf10446726d6381383360d975fa500e3cf3758bf736c19437e2b32070420.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/33/72/3372b563889c264e9a1a6e2d12adcad17768cc8fc813bc2f21edf86272bf13a3.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/af/76/af76a4990d11fec7a82ea9543a48357a24dee48fc6cb946dd7bffe005f1dd383.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/be/19/be1973a8ef615d2655e01d230e7955f89e9c50507cb46c8029b78e77d4b1346b.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/59/50/5950ec4f9f8729c1d8d9cc0fb548b9614bc7e4a3aca833e879abb534ada4b5e7.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/44/f8/44f85a94413977f19d6344412681f021b913267dcf0e281b5bfa82cc58806f67.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ee/a6/eea64ee60d87052653fac6cdbaa20ebe00968070d793636a6ad3a16a51cc596e.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/78/7e/787e591d96411225d184918ad6a18098b29c6f298536ca756628a5e37e09f4ab.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/d4/73/d473f6f39fdff506978d2645dc3d0595e2b8314b99a517b409a492f22b5ed351.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/92/d4/92d4e9490a34cf524ac0e70f3973a86e2e6a37e15ba5ce740ec6d1a132b2e180.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e0/44/e04463702da10bab7ffa6876e154369f3dea2826696cb5aac4737de4acfc1dbc.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/b9/95/b995c0df7fa72c94497782772d0095f884d37bb71ba02d329590f2e9c15764c3.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/07/21/072132c567ab03ddffdf9a238def2a599e7449e3bf155ddfd6051eb2fa2411cf.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b0/a2/b0a2a89aacfea935d6c36401ef2feb48342d5757222396846cf6724ccad06d5a.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/67/63/67633c6369901b546426c74b5dadb78de81ba0bda1c48aa25a016530776706aa.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/12/5f/125f308ccc668ae50dd61aa75ce75c8d61292d595206f1c51569410fbeb7e0c9.webp"
                     }
                   ]
                 }
@@ -1746,35 +2392,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Twha Nazib Chowdhury, Assistant Secretary, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAABwBACdASoUABMAPzmUwFmvKaajqAgB4CcJZQC4qAw+df4zeBqZHEI4pV6YIAD+gWVV+zAQ72Aubg2Yq+YNgECRfEbUfHfORPCTd2LoUT9RkZkSmMEGDe3rl9L/R9PO8LmlXWnVjKnvWi/c60+l60ki4WPynjjw1GaE3AMsAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADwAwCdASoUABgAPzmOv1evKaazqAqqcCcJYwDAKAw5blcquK5cFvqAAP7ZWHk2IuWG6OPi0M/lJX2Nc9mAIEzldy7gK6tmOCGdxyurQL/dSWpyQPZGtc2ONqUyQTlmRhki3nmlP/FEB/d9pI4AAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1c/aa/1caac7e9e97c1562c08b213732a2d467f019fcb001f3d1eba90e118672372c4e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0a/7f/0a7fe2e7ef752cfed98117274cd64c5a77300bd90fa95641a7a45540bb73fa6e.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b0/48/b048bb3e3352b71b8c14f2f21ba986242fd1acaaceae9c54bc7f911491b181c1.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/4f/0f/4f0f1599c76a31bde5f9922117ed1136d57f716ff4db4a91d9697b28c4001dba.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/d0/19/d019bf594711e906b4f92788b6c1a2ce5fff359d09c4d663694f01ea824fb768.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/28/ea/28ea48c41b7ecffb2d955c2653280097ede6715130c331c076d6c640e6ea5bc0.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/79/eb/79eb1cfa5f9a31ce9ee35f58be955226cba36171d61e66cbb5b1ab1e19fa9f69.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/8d/ea/8dea8878c812992834025568cd01f4261da949f255c52fde9d027197c70e7b11.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/86/4f/864fddd8f0ffefe2cfa80a40705124c1a4c31eb8eb95293c1cb197051166efcc.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/17/76/17764795f7b27b7fb15e2dd7259e3ddbb7521f7f060a93667d0c5bd73adb1e72.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/12/6f/126ff7edf8f6486700738b56be8d2e57074862ada5e26a0d2f172f07ff077b32.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/4e/29/4e29895f04d21c659c64863c5901d908ef36ca4e2e354b9ea216b84892f568cb.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/30/14/301438e615834a5125936e7f05ddde5702ee773066488d5207b2bc109dbbf0ef.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/93/4f/934f191bc27393eb35352c8f83ab0e4c7cf743c5bda9b5002032c06ab5543a52.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/8b/74/8b747fc68cc38ef4a2ba95c29d4541e20afddd48a5b13b54f9e7207594856a7f.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/59/99/5999cd12ecb5dd4b1120f448330da38daba8ae10616f35c4f140cdca20d4147d.webp"
                     }
                   ]
                 }
@@ -1787,35 +2449,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Shahriyar Zaman, Assistant Secretary, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAADQBACdASoUABMAPzmSv1mvKaajqAgB4CcJZQDM0BEdCtKIo6l+SKOmVJgoFcchAADOGjLb/uOB4xOveVR2aibrT6OdyWoV0TVx0P+wbcg1IPXMda0dH1vAiDyi2qpO39tKIkQ1ns38iAoCeJa1gi3IFdvCuCTF8nlAM/x/XHrlGZ8xR2I7eAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUABgAPzmQvVgvKaY0KAqqgCcJYwDE2AyXceuvAoZ09rK2DAAA/tlYeTYi5Ybo4+LQw8fs6bCLsI3DawADNiHFcWuPMi7PC79nhfWSbcKRHURDOm8jPdLlgHvZBgR0cKPW8VX0D4LR5jTI/UAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/ae/c5/aec5009f25c93096e293713e679d86bf5e9dc1e34b8a8c447baec3606c4cf639.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d3/bd/d3bde1ec536f45809524cc9ac2ab3fde82d5cca42a9811ce15bd86bb14fa6a7f.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/9b/79/9b794fd903c27eb97949b840cd4010f2ab0d6592fa718b355f621d925e75d2bf.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/79/01/790138e5443f2caa7edfb4966f09020017acce1a773a08fa9a257c966c18f43e.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/61/1a/611a4c90c6c1a705c2aef1838d99c19dc63409f28e69f0ba0f10596c667bdc41.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/4f/f8/4ff8c62cd43b178f0158e126fb03b8cb2195269de27d4f2b155d64c1f0765ae7.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/20/1e/201e9d12bb06192b9193961d5fe642e6b8657089f0ddc53e25edafaa5e91bea1.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/50/e8/50e8a3c8ac8a2c6f000317b9669ddb4b38c2d2d6ab476cc25421810188cf1bcf.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/c2/bf/c2bf71720d186853d266f785400ea75f095f999ffff15a97ccf792e7deb0e63b.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/26/98/269847e32a50b661335b28ee527764300c6a10c71a920f3340f79ab51b5e1e1b.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/d7/96/d796a8f96adabd63907f046e616acfcab7c1e611c4938181f070c5fd8dfe0391.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/81/11/8111d22d6b98edabb133d33ee5d5d61cc9a300fdbad56f93e18ceeb222e81971.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/28/e3/28e3e5523a4d64e92f14d5378dfdd805e5c875387d45368732f172f73db3dc36.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/bc/24/bc24af0061e6a4c773ab84872c9b9be4cb87623f27b6f46330412439591f07db.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/33/55/33552ae222f01e9240e0ac3284fb4b07ca30b003b559abbb80182f81671b1c98.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/4c/bb/4cbb93bbd41813fb47370bd404aade0e4243d170c9735fd762677084f09ff312.webp"
                     }
                   ]
                 }
@@ -1833,35 +2511,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "S. M. Arnob, Member, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAACwBACdASoUABMAPzmMuVavKSUjqA1R4CcJZQDImAkxcj848Z+rAASQ/I9x5iUAAP6BZTIG8mGQLbXFzLlP0D0E9DkK9r/kAhOG/T9+EricpvK+b+LSktkAqVuMYQNjm7W+PUjjocjRH6lnWHT24mSwtUPgiqQEE0FRxm7glkAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADwAwCdASoUABgAPzmOvVgvKaY0KAqqgCcJYwDKAAxA64+GHtzWTnRAAP7ZWHk2IuWG6OPi0NFflL7CtJGLVujyTGtHTBy4y0Z4rfnMbowEEXvfozh2Jw2abE7OFOTI388bT6Do0awoAgAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/33/cb/33cbe25d2a39e924fd5df8c265fd9d799cfd0a2d7d9d08225f48aac08e9d046f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/47/68/4768465a98a971620ae71f8ffd7c5372493c394bbbbe2021c4ed0dff94dd1392.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a4/9c/a49cabf79cead69371d584039ef02536f8553567e03a1485af194bf1c59e8923.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/8e/46/8e468f5da10b23cdf19f2f1ce5e3148c8425fc67ac94aa0edf86fbcf85f6745e.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/9f/46/9f46ac4e99504b057f498060cdbfe6f36b13de31967d6473226e91b6583789ee.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/6f/c5/6fc53ed8e70b56e2739dbf8d7e46b4603be6a68fabc9e594d2343a8632e24ff9.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/7c/70/7c70245c029de7bba01bf85069f256791b7363a0cccdc04d917dfcb20db00aa0.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/07/b4/07b4a6186f7fc11f23a1b649b72cd54e46ca1553bf00d4527b2913ced7234fea.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/14/14/1414856350c3158068c07516fdaf12d525858b7a78b751b1c761c47dd3249a8f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/1e/e8/1ee894346e6df240c0c16a17e4f4c8796957705261cedcb39b5b69322e09c690.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/77/e1/77e1bd58939617438838f8d688bbe826976eee724dd9fc2fdf771ca7e64cca20.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/7b/bc/7bbc3aa50461e8a5f5adadf61214ed28bdb462211cb322911df3a941527a9c2b.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/10/ad/10ad4bc170a0dd0905ba73265939c8e3e0b6af4c014b117cce633a6ae6fc9925.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/19/b7/19b7cce5a7c82d2b4b7cc98c9ee630bcfa6779278368f5977f8677b9ff32edb8.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/98/81/9881ca19b68f903445d95b589fbe9e1595c18b698d7bc321ef2136c115b43c20.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/90/cd/90cd02ba1491e6ed005d30d230b3bdfa5d391e403f8f8a1ebab1387162e80183.webp"
                     }
                   ]
                 }
@@ -1874,35 +2568,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Samsuzzoha Zihad, Member, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABwBACdASoUABMAPzmUwVmvKicjqAgB4CcJQBlAAiOKKhGzVXpVRFSNQnwCQAD5M8qNHWI9RAznJinXxKBPAsqiYiMOQ+xL4AufyI3CaQbb9Wr630v/4YLoYpVBkfh+vmQ732UftTzSYpwVf46qIuOtw2GHPSud/VFW932wr7d0iRrCCAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAABwBACdASoUABgAPzmOvVgvKaY0KAqqgCcJYwDIXAyXYqpYWlUwR9JucIA/wAD+2Vh5NiLlhujj4tDDx/vMFFrcP7pYrXNGR/83Jadj7ZX23B1q9kRvDuy4KZmULJuIKXbv5grRlC4azV7n2DuTmv7EJ5TCAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/db/ad/dbad86ec9f122e559768476f3b57f44d557a221b48ef6b32cef4a564f9d19116.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/18/a8/18a858a902a9300323abf6896ec1af126f24f857cfd62abed2aa77d8dae0548a.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/38/8c/388c5d8e331e60e378ee436dc0cb0bd495d65c133dd4d2c04d67db367bbff646.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/27/0c/270c371eb11a21261009ae80bc31affee18a703d7f085965c417e5aa44c4fdc9.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/da/30/da30fa716e634063f32ed7fd8b288803f95b3cebb402dfe3e0ebdad28e943a71.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/62/08/6208d9fa696329af05ff4ff1f48c3308f578172e0e215c413f54b698dfa72ce2.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/76/d7/76d72d17cf1270e12f084b3263aaf832804f87c8b59298d8eb23f8372c694b58.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/4a/b6/4ab6a5cd5b7c32569f299ec6f0b6673a288007b087b51dc11a2aac8a0eb1af53.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fb/ea/fbea942642e55f889ded7b94f1477e71d76d322cc14542df33f51dd9efe40324.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/4b/21/4b216b49cb38349fccbde4b8d3f8858fc6fbd1137048f2492b30bad85a9b86f3.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/22/86/22868e6e5f75b35bbe76ee908a21385d5dc46bcab3ceb4243bb97eec5d645954.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/50/f9/50f9697955d643fe73669525dc46379374009ae3d4f4928a76a54d1506d9eaf5.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/1f/9b/1f9b8f4c12b52168c89a0efef082e198a66df30a6274efc3c3e256c9294a980b.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/5d/7b/5d7bc85a208158c16d0feffb4e56466c45f0f1910d0d900aa6b297a1ed308673.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/4f/2c/4f2cb820034340c85eac912c69e616c2106db9a0ab0c83e413c520036d926f83.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/1b/63/1b6323b1930118f0fccffeabd9d2ed8b246f39c14d8d32978c5c3566e2af6a9c.webp"
                     }
                   ]
                 }
@@ -1915,35 +2625,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Adnan Adib Khan, Member, Design Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAwBQCdASoUABMAPzmWwlmvKqcjqAgB4CcJZADK1MgBEON59IryeHUXlAFE5yaR/pCSAAD7lH8uvTx5gjaYbVj5Ml0/0SxmKrtErjvnw/DlKtE6CSthlD93NSrc1coSywfADuTAeXHo3VhG39FIa8y1N2oZheVhg+priwyyQB0VosyvftCUBdgGd7p7SrAdGAAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAADQAwCdASoUABgAPzmKulWvKTMkqA1SYCcJZADImAw++A8g6nQGJdgA/tlYeTYi5Ybo4+LQ1soN7sRo8BlsMoLgXBD2xzYGA2OFJweirTwLhBpQQhoxejmDpcHsZdTeVdqKQ0HLG4PYveI7K15nTr386AAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fe/bf/febf3b6e62a69b3af5107657a403cf1c0bb3b00e2b98c4acc22014e308a3cb76.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/a1/41/a141cf2abd8e3fab73f2d47c7ce398c01e12ee4c2c2f298288a287260ed733a9.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/61/99/6199648a039ed8e9d41c12198be9f53fffc762458d2f48b1355d733704b38cfe.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/31/7b/317b9507f749378046ce87fa7fbe55452a188707d4b065c5dfab17091657780b.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/b3/ac/b3ac9d5431ca55a738b0b6c3babf4ceb9d90b6cf95a8fcb2d4f1a0c5af06775c.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c8/13/c813351d81984c600c0b50d4ac625e37b4c6124523ed949207107076970dc621.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/df/a0/dfa04f9c7d4ba09c9bff569b0d5f44970bd621711314a9a66beb94cbc8099828.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/cd/91/cd91b21c425ad70cd2393e36f78f5f79534c55eb115a77f7a1f7ee4a74ec9b70.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/87/19/871945a52ba4b60f07c3d694e525076a4aa2d3fc981030ede74a2fcca073b9e0.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/22/13/2213fe7a60cb8b13d4bfad7494092c48663fba916ee4f1b2934969cb36482123.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/1e/84/1e8436cf5077af214053d6d81ab4cc30db554212105d29239ddec7a1c200b77b.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/62/80/6280d4f620fd089126658696f1c677d2d61882eb79ca8642c808f70084e298a4.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e1/7d/e17d05bceee05bbcabf71d6daf36e18c03d21a53e48cc174160b245053cccc3b.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/25/51/255102272a12bf90dceb948ae74bfc44b8d18157fa3ac2e8662ed4172a07c5e4.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/d6/51/d6514286535367d486696e7fea5c495d7834e2621e3142228e145e2144600df9.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/39/2c/392c21f077f261f0a5cc10058ad7cf55b53844e78f1a3f6fa0fc0cdbb034f33f.webp"
                     }
                   ]
                 }
@@ -1966,35 +2692,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Yeamin Hossain, Head, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACQBACdASoUABMAPzmOuVavKaUjqA1R4CcJYwDGfBEcZsiaPcen2RaRWNwUigAA/gS7rVzIuXpFbR33pUjJXy7AdqzM0VQldpZmdRSNKTIhvxtecASNRpcRi6/IxakFeCUfn9t8Xv6dnr0jy/7hk3FeIhK8OZCQVRPUx4wCvtTHmRCZDzubzAQWOSYAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAADQAwCdASoUABgAPzmOwFcvKaczKAqqYCcJYwAAIWq+nOAcFLDoRwAA/tlYeTYi5Ybo4+LQ26RlGX/pZt+MLcYDlQGJv5KwypB74GyYZnxCHuFIi/+woiEMatq96aGV6gpVPfmbMjjTtEtYiwPILPAAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1a/09/1a097245d2dce36de559cb2532dee0e63f2a36f357affc454a8a4100468e0477.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b1/6b/b16bfce0dc78f1ff88c38e57c3c7a1f39e3ad365b844d8d092deddae26a76544.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/8a/87/8a87a88c86bdd5823ceb9959e7b451d228d081f2c6c30ac32d6cf5dc88a91fab.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/5e/e4/5ee430e18f4b6039d0fa64b803bc8833ff441ea229668f4ae10fc7192404cd65.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/02/4d/024dbfbfb67c50108b8b64c92ea694332bdd79aac428054e284ee46666c88e53.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/bf/60/bf60582dce5bd4fb4123d8d0f5cf99f0c927bad4142c5e4722527a93fdb707ab.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/9a/b0/9ab0634063de9e11355bf8f22f30aa5336d5b596256a19c06ee32765fe190bd1.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/93/47/934778efbe34c3eab2bc9792d99e9ac8f78b9d5be8bf1046feb882cf433908a0.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/bb/28/bb282d530adec58ab75edff8ba445703add545071f07e67d26d7815f1b1ef75e.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/fb/35/fb355068796ee116b69b89a492f2dcb463bbde602f785dff2bd9613daeadaa16.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/d5/25/d5255b0528d81cccdd01a95e638bb0428b6650845335ddfa4567b23ba964e18f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/2b/ba/2bbae2065c6ca582b4999eb73d3268043c68ffa0a08ae6d9a52389d36d7a2212.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/fa/40/fa40c743c0c374d1774c3663e5b8505ed6c31695c7002ea1b24c99cf6b4b154d.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/14/c4/14c41840a8bdb63f622073793a826e2c4c544221210a50d5d0c1b346af694d24.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/34/c9/34c9b07a24ad5cdb48d552422fc24bb6d6c1a1480ab9cd58bc1a7e83ff9d898b.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/d9/a3/d9a3feb324297d55988d1fab6732ae3bc4c0de4990201ea3becd36f67dd11bf4.webp"
                     }
                   ]
                 }
@@ -2012,35 +2754,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Pallab Kumar Paul, Deputy Head, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACwBACdASoUABMAPzmUwFmvKiajqAgB4CcJYgCCLwNJY4DhCLbt2BDMB++colMAAP47RwwVAJavqvJE+6DafY/YZJZnti5qwSoJpV9INCodP/qTQ6+3PDG6K3aeKa25Y2SeEN7ZMKT7WDHkpibX7/5OXH5UhYBk4JityCVCP0OHXCWKtG2QG+NmT2YwAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAADwAwCdASoUABgAPzmQvVgvKaY0KAqqgCcJYwC3uAw+9UvdmAxZ0PJAAP7ZWHk2IuWG6OPi0M/m4uUQVjY2Lv7TtZdPFj9uM8qErgZtAi7d/VupyQQZXEIodCu452v57pjsWeey5I8qSRBvSG/CQ7gA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/7e/98/7e98c472378f6baa36fbc723727d54ad86a57fc2fda0e59152dee82b12c462f0.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/a1/b7/a1b7b801124f8daed8fac1ff6df56892972a05305ae2ac1b02e0351731d48075.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/88/f3/88f3fb27be5860696a4b09b5546e7276c3df52b581d98ab17acd043cc288da7f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/ad/34/ad3483c8d2af5cb5e0e073e1db62d3ad410b1a4c59b847ed54a9490af56f3f07.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/20/9d/209dac5b7da5da6293d467c622a8aea6dd360d38a4751169591df19053894ab7.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/51/19/51192189a242bef004c80e9d6bcb4468bd7bbeda6d0aabc2cc0e6f3398d30248.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/23/01/23011e0a7055a60bba04730d5951a4109030af973c18a9fc6a0c68666ffca39a.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/da/cd/dacd4d1edce1818a5ed299f33f6ff9fb9d379fce44deb3d5e72a5d5bd4b16898.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/98/51/98517b4589a3516393d8e42fc14ce1ff476fe5959986444bc1d2cff46a0479f1.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/6c/18/6c1800f7030cebefd7f297930e0012720e189e627f545906c58e845694c03817.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e4/1c/e41c66a999c1bc90559389ba9a128ef0bdd2113587e70bc2e56fc831d65c05b7.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/0e/b70ed72c64c1c6fd85a89c88623ff4ee401c4ce6ac8d8bccab0b8c4502440343.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/d8/e5/d8e53cf82d4814a07e300e0a9c696927cee09fc68bbb3a02aab81f5e4f529334.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e1/dc/e1dcdf0bf3ddbc98c5af70417572c6139e47b6c726184f5ca826bcd0a4814c96.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c8/d6/c8d6191f6222fab0751edddbd898b6d414e8ed1185657afdbe3f24158b2f237d.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/23/d9/23d9a984223c6abc13630025392e99d5f9621bca423a1d8d84643de25111a9ad.webp"
                     }
                   ]
                 }
@@ -2050,41 +2808,7 @@ export const COMMITTEE: Committee = {
                 "name": "Md Safiul Alam Dipu",
                 "designation": "Deputy Head",
                 "department": null,
-                "batch": null,
-                "portrait": {
-                  "alt": "Md Safiul Alam Dipu, Deputy Head, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADwBACdASoUABMAPzmSv1mvKaYjqAgB4CcJZQDIXBEc2o5ZAHXA1SpkYriejaseV0AA/gS7rVjpNdr/OizD9R640NobYRQ9TV8YRhu0IGn6j7fNdCAvN5nG3N6BWjWA9HCcFHpuDnjSD76iPqd5tyiTnyonM9grV5v6kajLGD8FuxAA",
-                  "avif": [
-                    {
-                      "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fc/e3/fce3d7dc8602aa905b595c66abfb3804f1d314ccaccef4925f78d5cc18b7cde7.avif"
-                    },
-                    {
-                      "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a5/64/a564287cf8b48d56321c416034f7320d55e3131d9c960a7f20f49a9c746b7c7d.avif"
-                    },
-                    {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/96/62/966228cd1dd4d171427930f981d58ded90e88b3c263ebf46ea7b8fe177c607f2.avif"
-                    }
-                  ],
-                  "webp": [
-                    {
-                      "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/42/a0/42a0fcf19df679227814345f1f455e9b9f244e1df0e259af4059d413c88a07b9.webp"
-                    },
-                    {
-                      "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a1/0e/a10e1f25912478cbf7abbccf2ade1dbac86dd8ab06a08a34e03f8ea5a73f6bd6.webp"
-                    },
-                    {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/82/ff/82ff377e9e3c099aa57bda7f09c14e6d151e00f7b3a0b782761a43c5f7bc50d6.webp"
-                    }
-                  ]
-                }
+                "batch": null
               }
             ]
           },
@@ -2099,35 +2823,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sakib Ahmed, Secretary, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAACQBACdASoUABMAPzmOv1evKaajqAqp4CcJZwDH5BEcsBdySkgVtrYHG/AStEAA9pkkse772Lh00FsQdovjxOclhwlvt0L4fd65jA6aShhmVtynbMN6QPubORYzhK11vfFnvqtGvRjzlHRXLwZ6aU9Bqm0AAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAAAQBACdASoUABgAPzmOwlcvKaezKAqqYCcJZwDGQAxWu+KoVa4TY/9cAAD+2Vh5NiLlhujj4tDXetqkbyHXNqHi5YZgN4dX+sAzMb3Vv6MBBOPozoOxJ0ZKEoeO9EV4NGJ1FIaOAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/c2/a3/c2a3cb8ff140720cccdeef5d438410a88abe4d19bfc7c07a51f08b5e1842b8d2.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/1e/a2/1ea2759991f73b8563063d66e1b6dd302584312570358ea08214c4703e0650d5.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/21/ee/21eefc66db5e8dec77ab622904bba2b3d4c08084c8c92689e1bad5158453328d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/5c/06/5c06395e256e8a961a15e70416df9ff3c84b486a87591619582142b3d3cd365b.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/cb/ab/cbabccf87e559a878d95d075ff5212ed6fda26be5b3bfe6bdbac599752072576.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/26/67/2667ff33a8d8866e2bda40eab0c0563ef9b169d8a774cfa184cabeff3721fd7e.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/09/a6/09a6ae0a794b4cf249f836d4a4947ce5cdcb62b5304aae84e4db22e8ddc0f580.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f2/68/f268e94f5d10011af24b8db60e9eeb50e06d095c76c151a1e9fbdc8dda1cab15.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/a7/ef/a7ef0655f48f8d872bbd24d3acd2a3bd20b56fc0508cb2364f8399575d56e23f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/c4/ce/c4ce83f566d87102d5313f9d04f28b6a92857be00d03f9efb8d99afc9026a672.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f1/28/f128c8d152060f89a9daeb6824f6153dbf5d60cf5df81536620cb6dc272bda8f.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/55/ee/55ee550229e1b20578ed2056d77de650e4f7eafc97d3f7e227db9aec4f67404c.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/7e/e5/7ee56e51925bef2ccbf99c57c58bea0456433682ddc68321b71c9593496baac3.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/17/73/17739ab3a744b39e4ccf65d2b71c19dc879765104e0aab75118423e86df2fc58.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/3c/0d/3c0dc32e0970342d7c53e569a63fda3b56350f0ec178ac73788adf38c1f9b65a.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/06/6a/066a9f8e8cd954ffec200ba546d17f8a06dc22a22eb404f5e36fe61167813ed4.webp"
                     }
                   ]
                 }
@@ -2140,35 +2880,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Zawad Azad, Secretary, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAADQBACdASoUABMAPzmUwVmvKicjqAgB4CcJZQDO7BGbLm54QuxwWUPyywyS/C8mgAD+ug3KULmBBR/sVuGbckbaFoqCnybYyaEdCLWoXBluLngnUDdo/NliugEbug3cnFY9QyifeXjQHgTQWPlLQjsk5VmQjyGy7bg0MAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAAAQBACdASoUABgAPzmKu1UvKTOkKA1ScCcJZQC4qAw/UDIZ+9JGRePdAAD+2Vh5NiLlhujj4tDRXw3duFVTtNdmlDqXXHY842/DP3KRfus3MJJLkfTTCbSFEv51ExkFloJbJmkJJ1Ea26gAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/d0/19/d01967daa5c73e83644c79144a1be43361c3a3b00b710e2eb54ab06f610a6941.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/ce/e1/cee1062ea8389cefb532c68dce23bac3f8c0342e5995a973f88343f3347c9336.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/55/4b/554bef2fbedbe43ff7e9d7f5cadd64d3985d24128fd7d9e10e6e13fff0e69c2d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/07/15/07155519a58e7c378b093d263517d82cf09d55195a0772f5b31a07c7d5c2a47a.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/0a/0d/0a0da040e95e590bf7e3bd026ce436a0a04fd161c43670fded7414c4882bae38.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/d9/85/d9858d297c9947dda33e887daa4311976ee4f365705b2ef43ca3514b6d85ee57.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/67/92/67924cdb0bf35b7ff30fd24f122330d640496f91cd75c77174eba26e59d1a423.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/8d/5c/8d5c4b77f27db5a641b72888a882052cb34acf1f412111c410801ccb86bdeef4.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/06/c4/06c445cbfd1ae5fd3b5b18c6a4e5ca4749b1f8a04521c7629673a6025635d671.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/fb/04/fb049ddbe87be8af99e4433a023ea3192244f49b2d697f0105af7903dd02ecf9.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/df/55/df55e13ad6942635f22bfbb658d8f5f427457562dd36381d59e84b8aa833fbbb.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/fd/a1/fda16fc7bc83266d0242e747de76792fb7f8fd8929506a77f47820f92c5ac2e3.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/53/ab/53ab4af75ae4d5606c7c98119f99a017e78fe30653ce64f5b7297ccedfc2c718.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c6/df/c6dfbbcb838bf53517b341b30a8f17e127747be7cfb631ceb340fd0528faa85b.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/5c/9c/5c9c9c388f7be8e6a62930b5470be37f54b52c0ff7006b04bf459c4de0a09f1a.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/15/12/151250e77fe9a9bed4c8bee798d34b80c26bbd060ee689bc34bcf2f9887a0e23.webp"
                     }
                   ]
                 }
@@ -2181,35 +2937,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Adittya Das, Secretary, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAACwBACdASoUABMAPzmUwFmvKaajqAgB4CcJZQDCgBE3MtKvo2gn1HsI0/KdTzFAAPjZO/md2RW2bad5xZt8Y/c/vaaVW2fXAch7/geH2R3C2hJG+eerVTYdoNDYMCfYpRptXDWaCX94f6bXcm3lEqKHuRa4Ic8gAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAAAQBACdASoUABgAPzmQvVgvKaY0KAqqgCcJZQDLaAyXZJda//lVyCn5kAD+2Vh5NiLlhujj4tDDx+zpyuOOb7B0DJxB8Hr+huf00LZ/z27H4RsgjLa+ADfyrhG1/4kx00Ewo7dTUBe9HAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/9d/8b/9d8b609917297cfe8c2d5e674034862e053233ab8c2be1d1a6f3927d69dd2d9f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0a/61/0a61b1aad652da73efa024c03f314d16a2b0fb117f0450974771c23350bcc100.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/52/48/52489b751e3f091d4e623ba0522b735c9a49109500b072413d2c1e9a090b2771.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/8d/b1/8db1821528e84e79aa338194c4c0adc4da377d102cb8c2816e39ff1304158558.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a4/9d/a49d0ebe3b15a237474868dde6e7f87784a7d33d65ee1bb6c71e70f3805694b4.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/47/94/4794f5db86955cee4028af29f292750ec57203a3f7830edc3b13f00644442d92.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/41/5c/415c170a05aaf97cd2bb22f559d3816ec0fa95fa03ba1a42eaffa03da73e6634.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/ca/b3/cab3c3b5146ed2e4b3decab4123cf38c8147c31476c2b9f731c04b7c4373f939.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/a1/1a/a11a0ce36b64e6b29fed7b0b8d96a1f87be3cc723d9017a992a42138539b1a42.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/48/f4/48f456acec39c1f19fb1d18e18a930db4f11aebafe1fb19cecf65f128dd3f6d8.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e8/11/e8116dbed7b33b31139330896d309ae0c1928a49560c72c016f40129e6f4333d.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/a7/5e/a75e8c6b3b34d9ea5d738d13ac47caad88209eb0c8997d04b6438db6b299e46e.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/05/73/0573cb4a9a861688e0ae19e3b7c2920aaf89be3d29294cfb6b65af94ada3d7a9.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/cb/0f/cb0f9f93971ab977dfd4a40bb8e3b6dac41dd1a84afb6d4ec2330444314af6a7.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/1a/18/1a185887ac89b34c749738536ee6a189495fa74b14b25d882a83b49f9d0c0a1c.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/3e/1f/3e1fa6a1e03a57bee00ac3ad528818d45a6db5924ae83ddd6b5eb44d2f6caee6.webp"
                     }
                   ]
                 }
@@ -2227,35 +2999,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md Zunayedul Islam, Deputy Secretary, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABwBACdASoUABMAPzmUwFmvKiajqAgB4CcJQBe6AiOR240Fg9XfAfFiYxLKAAD87xt5728ilR3nbH05pHlEEOUTz4afjS2wmLXd8ort1n4YEfZtK5eqK1pGiVx+JMgBMfBTKkMOsXkvTH8xZ5OMUvCaFtevmFkwfS2xJfQwbEDsCs0AAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoUABgAPzmIvFavKCWysBgIAlAnCUAYG4GG1XD2QFW5nE+yrdAA/tlYeTYi5Ybo4+LQ26Q85einYYjRUHpXPIo88PMydXd8jlu+F191+4YOFltBBodUABswERnfKd6DD2SxmgaycyAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/88/8f/888fd3899fea0c1eaa44c7701feac2e0a1d90abe1c83c66208a815aa5e16ffa1.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/84/cb/84cb47ee6f8924cd8aeb682c4194e8f7ae505eecad0e1fac5672a82dc4b6fefb.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/fc/aa/fcaab91a9bbab55593246808059f9979e7398fc1729ad6e4ac37b371113eb0ca.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/c2/eb/c2eb25de1630cfe065220933f8093b152b79373db6e20ad7cdc89088cff8e0dc.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/38/f0/38f07628ad637f0a087274fea61f9058e89b45d5064612741be6c5d5ca5611a0.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ed/f5/edf576bba6aa2f5c5ce0baae3936c3ebe4b3e65b1ef5551fbe6d380185119de6.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/a2/59/a2590c6a38a974ac455de5936225f865112f5f4727d42e73a6f9997f51c90daf.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/25/1f/251fdfb0cb415164e984d0ef941c26abbd454b77de0cfeaa623ac942e501faba.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fb/34/fb3495a99a97023fee640958490329d607a392573e8a93a86f37cd11fed4ce59.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/95/e5/95e5c5549624a6d25c257e2f60c46dc14072a83239e5b16a0249200572ca4973.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ec/85/ec8598dcf196d6fe91cbfe17fec376c8e2677bede5a968b6caec68e38cf79cbe.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/f6/28/f6283d4b8e8e359f678128c19fa2cb665cf4d50711e89eb8c0d389ade5c67ca0.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/36/55/3655cb2cbb9066b432cdf7ff36879e1b419529d182c12c251208bc31e6d9095d.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/7e/12/7e125fe9ba99ab350d54de4868a977a4593a8100957f7162a11bdd2f7e79996f.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/5a/32/5a326953fff6b9de8a82a454edf1d4dccbe89d2bce6f9382edade1c92682fcf6.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/54/7a/547a4cb7a5cb7378a950e1e901695961ec0728f585a36bbea91fcc4ec87feb44.webp"
                     }
                   ]
                 }
@@ -2268,35 +3056,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Arnob Halder, Deputy Secretary, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAABQBACdASoUABMAPzmSulgvKiUjqAqp4CcJZWHgAB1iwR1TIr8SCDnzyVwAAP7mSmLI9XB0nxiCYGrW543pOijTFNLjIa8mkV3VVAoG571a0ZwUF1oNw4SOKIOGtLvwgAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAABQBACdASoUABgAPzmMvlevKSYzqAqqcCcJZQDKtAwxaw2bNWQraddFpifAAP7ZWHk2IuWG6OPi0M/m4uYXcTD2dXHWgrWTA7wBlvlX4GUy6U7JgngWKcVUzTHU0+7Dx+P8hygAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/af/ec/afec579c09c46ed3227897d5ef3d04dc140a84027cefea864f9030a419354313.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/c0/63/c06364381f6f2b07a4bfa11a5df88e2e13bd0c742c16f961423347b4ec145a53.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a2/ef/a2efe6ebf52390cc00663c77bc6d1e3db5dc613c314bec0068985aabf750340f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/cd/44/cd44419a7064cfa9d0d8258638805a3aca49a75f397c02bc36139e83d2fde0c8.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/85/1f/851f17f01069d100a523f15270745f932c75a47f8481736c9f83dd080cb190f2.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b2/4a/b24aa16098047e72b7cbe3dedf60506f300ca1f6524ce70d25631cf465698841.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/85/a2/85a2a9c706d072ff63a057371dc9bf0bf1432e0c556a7173ee06686738ea5a51.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/25/ef/25ef552f7f04cac813aa893dc83893669e6445031dec38e55a55c87c643b8ecd.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/16/b9/16b90eba59e12e2b5e4800bcf27f319e5ff17f72d9611c0212b6a16797b0deaf.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/a7/44/a74470dbfee3078997a0af756dddabf58af0839c735a4542e75ceedab2ae068a.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/3d/d2/3dd2ea1efe0ab31575241f79a7a50e7a520394454036778ced1fa74c29457063.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/37/0e/370eda900ccb060cf94613e8d718285b12eea58d1c5c2b7168463fb17eb70297.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/d0/c3/d0c31d26de5f60b893594064ad3e8efb6a74ab4153285ad0d49b3624dec5e571.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/70/b0/70b0b95860bd080a6b60d67125ec0d777d3711d1e66c7ffadedb59040c42e976.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/2a/0e/2a0e716e682df324aa192d90aa9c8f728721feb1ec15cd4f754feed55c924f90.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/40/77/407793e0ed86d0b016bfb6250c97c14ac1f07aa371b076c470ccbbe0b54467a0.webp"
                     }
                   ]
                 }
@@ -2314,35 +3118,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Raghib Mazed Chowdhury, Assistant Secretary, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABwBACdASoUABMAPzmIu1UvKKYjKA1R4CcJQBkageta1ZsqUMAxavpjAmyuAAD+2VjTQNPo3Eg5/kOjHyYNbhWtmqVo/GLIGCFq//byMuC+Pn5O43aICWlwg1w/TX/ktvuiFTHEYJ2+RSfqCs/2AAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAAAQBACdASoUABgAPzmEvVavJ6YysBgIAlAnCUAZbQGHkgiG8xea2Hxw4AD+2Vh5NiLlhujj4tC0zhw+7cvXG9ejGQtYUulgTkg9+T72jQRh5ezMQjzCf8cSanC9wj1NfH/yWoAAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f8/31/f831b9bb314dc0cc88001a8bb9172573a82ad73da73fb6a9a4c72ff0af1aeb3a.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/70/85/7085d985fdf1d12ce871ea75e62e18707bc2f126effd8f66c59863883af8b3c6.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/c8/43/c843f5510d48262231c5edfe62a11479e4533ef936bc4740db4de06ef1638761.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/6f/a1/6fa162d001f6fccf86a182ab1411c574589b2fad724afccbd92a301162d31cce.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/8f/7d/8f7d3c1274fed9942f0bf81f76874b11e3bc9107440d4abdbc01b3e82c25a450.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/2d/3b/2d3b7b4a1f148e63b999e214f9a8f2ad1eca4757bf192c0c193061f19a803eea.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/df/a7/dfa7d2f16ee51f50545185258b3479b5f60dabf39a4c254608d4aa7dab601655.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/8f/72/8f72fee0018991c6cdec838fd48d3d09f711ee526d4623b3b398951237858c36.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/b5/66/b56607950e7b2b68ada4e7ea1f0e2dd9679fedd8489293df2e125bc789ce7aa9.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/a4/24/a42470d442442e1b6293739ba491fc0cafa48812ff39dfeced61d083484264e6.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/99/81/9981047f3ecaa6d8b0f875671cacf0527a6cedfcdb9ddd31fdd47b19c2869214.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ff/72/ff72d2a9c024e8f4910f4093339e3cad743232a2bdb0d839c2cba140e782f3d2.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/37/e4/37e4e52ff3d27966f6763785a03af823c56e9666cd4a768e9e6e77a38cf82c0c.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/0e/1d/0e1d549ff13994bd842613b3558d67521b2f7c3eb12376d39d0af20d232fc2b6.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/f2/9a/f29a78a6e2dc1f3a50a54c1ab937b4a288bf3d563be59938fa5a53956145f7e0.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/ae/d6/aed636144340f3e8a48124bd2369d9ec9c10533b432f6b5979d68a54cce538cb.webp"
                     }
                   ]
                 }
@@ -2355,35 +3175,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Riadus Salehin, Assistant Secretary, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAADwBACdASoUABMAPzmUwFmvKiajqAgB4CcJYwDNwA/D4KFWqf7PQK0AgCRVf2UcLgAA/gS7rVrGf+TQvK2QfSWFCBaIv1fcFnCWozakeBg8OvntX6Aazt0DZxomb3OLtjP9iKtKXtzHfGxl8nS80yDeSCkynQ7sLmkHMp3cYmaV4bCsBaATETu+GKGhdEHDT01Yg+RAkzs2pmgAAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAQBACdASoUABgAPzmOv1cvKaazKAqqYCcJZQDDrAxBBWRoZ0X+bR2eAAD+2Vh5NiLlhujj4tDbpGUZcl71KKa0c+56qSGgD7SX5utAmwfhndZXjF7m4anJADVFfdf+aHJLRyQdelmqIEpdKSem4jynZsSXAobx+AAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/d6/fe/d6fef95198d16ee4ea8bb30a42720a3dfc5f41c57c4ede0b63f7cf9a2561377d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/6c/b76c55a7bcf325d03cbffe6e4a63999863f811ce90673c5fd54e56df6126c8ba.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/d4/4f/d44f6110543a77f343fc17644e5f6974bb9e99cc2fcbcff999c16e140896cd4e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/4f/7a/4f7a91aebc217b08ab1fe6e2029f0fdece505705894e29e1abe804693f40ebe7.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/30/44/3044b338384e96ee0c2f1c68549acfdbc9df41344e61c8673746e19784683880.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/20/80/20804ebc23a4aaa38d204ebd0c41c56dfdf55c5f56edc20b26b79d640fbe5fde.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/f9/fd/f9fd342a16f9dbd3a98c87b91d5bf1f398ba547560bcb8174d70d9374bbea0a4.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/c7/a1/c7a1675120dc85ceff0b783fc87214541592817f0d8835bb56c838d1ca8ec3f5.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/19/3b/193b9a8f66ae3d25fc0d69fcb13867432761d21f24ac0938b5376ea129568640.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/11/ff/11ffa2aec8d84a6e597d3ab6bbdc95b644d6f7503a4daabbab6b2022582a8b38.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e7/22/e722a27d1244e904ea08cc74757eb3e1c1be84a3e6077f3d52822d623fc569e1.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/55/6f/556ff52c73dd8b6ec44f6ec45dbae5fe43f268225c555aed714acdcb859a7456.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/25/72/2572731a393bf4779e95359bcabbdd71a68110f71018448e4018c819da7e21b5.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c3/95/c395aa40d1fc933b9c5d118948294486e63012522931ea460e05d9e0f8b170db.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/e1/ce/e1ce49bc76b337d0faa8d99c4ba06eb2b06fcd78d6f55592d59bf3b66fdf814d.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/03/ef/03ef10dfbfda6b2072761bb125441d68a25256552e340c1c497aa3e329159fd0.webp"
                     }
                   ]
                 }
@@ -2401,35 +3237,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Joy Sarkar, Member, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACwBACdASoUABMAPzmSv1mvKaajqAgB4CcJZwDLaBE2TqeQLGuNVhTR64glr6ggAPzvCEEzxJ5qVjGGSZMTUYf2tVR46zL48sGQ2vUAEGDTwWho/ei5N6yNniyEJ72gXc/3MvmYwSxp1tchocHRUPmg8SmXX01jJY2O2IioxFHd/g6A61LVeBFHFoAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABQBACdASoUABgAPzmEvFavJ6WysBgIAlAnCWcAy2gMOCw7Y1r/IL0Zj9eAAP7ZWHk2IuWG6OPi0NukPOXolMjS0ykAE7h5tnSQjGI7H28g/zrpwu1gWxrUyfUCB6YA51e/5VwbJYI3DADJfJ2EAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f7/25/f7253cdca59407a54c6645b169d8d21d5089aba0a3eef58f9ba24ee4a4c07add.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/10/b1/10b12e792ab392e061cf7507c601436da3ec4f262cb2b3fea7f3dabbd12e6750.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/25/fe/25fe5a9b763866b3dc85034ebf5cfc8dc5a46b38d67ca161dbf748eff6520959.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/14/d4/14d41cf0aa6cb5d05af72cc9b3d69b23648e358988f23794e6c00db5355272c8.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/6e/6d/6e6d9b8e083e6ace04f1f8f8231273aad08f7c397ccce40fd7d22f166c13605c.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/36/b736ea2a1044025686408bfb8242845091ad53f0ff0f37059ed08358b2b23b6c.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/fc/ec/fcec64d6a90325c8e09ce696e2ee9c70b57d4ff8b33b8523ae197bd684b763ff.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f3/f8/f3f87798f44d633c5ad81c609c2724a68be51e26994bf252311d6457795daa9e.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/32/86/3286ac35d55db749c2970f56bc1d771356fb646eb04805e85614e7b37e12ab3a.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/12/38/1238b4e13c0e383fff3023bcadafe8c488db6fb2c7d9e9a2fb8a356fa6805ad3.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/15/dd/15dd00ba62ed2150c9f43f0cdde7ff53d521c81d93b9f88786f5e0a19a915b67.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/85/a6/85a6338d8f9edf44b85b664e3632f380928cdc833e2376381ff11ae1e4d08347.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/3b/e7/3be7cce4ae603ac430ac9fb9a8eafcf38fa540114e1b7167a896ba7e941fc1a8.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/03/82/0382f12d6b35c272a7821ff0623db673ca45e917efbc700552248ed272d4f70f.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/2c/4b/2c4b9f4442716f8cb7e0d3818b020afbf4ab502c1ebd185f4a9d34e8b9567e96.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f9/00/f900b21b05cb6167e1b292d92ac4749cea2308770f69b7243c11e2fdf1fc5914.webp"
                     }
                   ]
                 }
@@ -2442,35 +3294,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Abrar Sarowar Alve, Member, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACwBACdASoUABMAPzmUwFmvKaajqAgB4CcJQBl4p3AmymaiPzOkl/N+2ZQE76AAAM4aMtxRUnsQHB9usHoHyRpukJP8L7Y/8m7LUwg1BTlH0q5qTScfkmMtgjx8j4lWCp8DIEXGZq6gyIaRBjh9IpRtXwBSC4mVO+f78JFEiAIb4tRjeAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADQAwCdASoUABgAPzmQwFcvKaazKAqqYCcJQBltAYsEy5oR/cbkZ4AA/tlYeTYi5Ybo4+LQ2gpfBYIlLRD2Alt1rCAZKeiaWf0wr0qJ/AnusbqFR7qdS6soITjw+KQqU337dN9RX2hhHdn09DAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/25/a7/25a7a86deae64e67fb37553e8d1dd55107872376d421f28be054464645aa2ab6.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0b/52/0b52da302abd1a6af93f367d9184156554b5b039daf6f5a0e8d98b3f82db94a7.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/61/f5/61f5ba814136eee4459fc4fb32867f97392d92a6dcf2ababbda34aababede32e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b3/43/b343b5b460c064fce1c8663bf77dca044ad95555d49430caebfae88c89838729.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/c5/af/c5af6bbbbec63c3589242394cb2f11eea444859a7dec5963bfc29c20441a65ef.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/37/97/3797612648c8c21fcc5381970b34404eea0411e6e4209c0c0ac4fb206c4cff82.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/0b/e0/0be00da681d10d14fa2d4f95aa7852fac8c257725c6aba97d2b7ea5ab5a03b7c.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/c4/24/c424d43ff82860c4182f09422622fba5eec23febdaba05f7756986631d61f6a5.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f3/bd/f3bd817cdfb8c5898d20fabafad7280ab73c8dde08fd4683e6191e98f0527b71.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/be/25/be25e7da255309a46e4389ad77ca34f3943dfd3686ec2b38e7ab51c14293dca5.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f1/56/f1567e7d71ee6926815227a6e7ae44f9da92616b9d7678552eb42afc32de64df.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/e8/94/e894cabf77a2d0e93a4fd8079157f9293c44cb1db23174faaf5f38591518a590.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/54/f2/54f2d420a01589a908d37eebc533ea8aef6199c9620b9e53f9c6038cb75da385.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/8f/ae/8fae544bf7b008b1301d54a8ad54d34e10f2c65772f44821a97496899150a60b.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/6f/e4/6fe47321d7bfb7a37a9a76117cfd28f6611f76211ec6bdd9c8be893905f46790.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/76/cb/76cb82542f0094e5b7f1ca9b7e71ee4bdeb59a73fd71b85176a46bd2137e26ce.webp"
                     }
                   ]
                 }
@@ -2483,35 +3351,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Muhtadi Junayed, Member, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAADQBACdASoUABMAPzmUwFmvKiajqAgB4CcJQBhxa/gDsBXKpP7DpXr67H4030nFeAD6eNa4DJC3S3jmxFRdNs3UoUxktX16fIP+4A/MQtPywXIc3vTUJTvp+kiSSDZGysg8iR2Yll2SMiHfW4Di9IOQVPIYA+0PFhHAHioNUEEU4k/M1vfeMJw02XOYAV+/wHQ1V8XYicWMuf3fp+KnDg8JRpoAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAADwAwCdASoUABgAPzmQvVgvKaY0KAqqgCcJYwDIXAyUcfagVMqZHOUAAP7ZWHk2IuWG6OPi0Nd6D9jz3kAAg8ZMaqQrG1pP28tmksEX2ZCV2C1R51X6MBBSZGjNcuPkZhJMdpzXyLNHW+J+6amtIfrhzObvIoBIAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/ef/e0/efe00b8c674930936052a6225aacb7af82164757a9018f3fff967a1015683d42.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/96/43/9643fb48bab50eaff5cb14986fe37a2bff2cc55d90e11b657fa10086432aa38b.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/00/f5/00f599fadc0051966a3740d790012c059e6262253b3ddfe53d522d7e647886fd.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/22/22/22224e75655e68d58b58471cd980da49349d704fbb438ef3037e8ed7261aade9.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/c0/f4/c0f4ae6cee5262fe5e6b580c79a9e3742b77d24af186a1ccff069fd29568b5d1.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e8/9a/e89a78f0015c2a067d572e124dac7adcf2a00f2b2c6bfd8bd5ce33f8a6aa66fa.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/28/10/281050222dc15e828d2d08da05e41f3447a33201e3849f8405bad99a892f99f0.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/a5/60/a560ae3d82a0ddecaefc12915e3794a29391052c11f2f7eaadc531d29acbe83e.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/46/89/46895192f7510205a2146cb05b68404fad56283a98c22fc9e05abcad324782cd.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/17/04/170443e110c53c90c7194d167d61c71ec1f40d8060bbbf61757b631bd6eaa629.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/0b/b3/0bb348a4c2ae1e404f3a7a6b923c272021f3c5865acae0cb7a8b9456655a9ee9.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/6e/67/6e6784640317d6a350b193e0b5c2c8dfceef604451402c6da7b3be4f08d2a4fa.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/08/a8/08a8ed3b34ff01786a2c07a82c7c240cc3f5e784e49e4a8c8f91fbe5600990cd.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c5/a5/c5a553c7cdfd4e49882a1cd49142fed2cceb968dfc3c73182dd27bf04f2e3b9b.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/18/17/1817eafd573f3ba163e59b10a7cdcbd65270abec7d61129da4a65e7acd3e3816.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/0e/db/0edb5f53d13b45a28febda316b787a7fb8935b1d1b346407177753aaaeb629db.webp"
                     }
                   ]
                 }
@@ -2524,35 +3408,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Rowshan Ul Islam, Member, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4IJ4AAACwBACdASoUABMAPzmUwFmvKiajqAgB4CcJZAC7AA889+tFD3GHJ1sJrwv3BIQAAOJZOQZIxRkhPa3SAq54Lbpsshxo7thUkTDat282m5bcAgdmtyIJQ9CalKGFjBRG82KmJCLoZ2hwwguVxmo91N3JOT2LTk4NwHsxPhtfPfRFn9k7rJu3F7t4W/xuDGzAmBtAqyBkBDAc1I1GAAAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAQBACdASoUABgAPzmGvVavKCYysBgIAlAnCWoAyywMIQNbTxr3KGuHwAD+2Vh5NiLlhujj4tDaVwNV2adEJ21AyOLRwBpqNzV2474Ps8JqdmNvU6HNgmKOZjFkh1/c67HelNI1AaSWVyBsL6EsF04QTHZQl7AAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/2b/6f/2b6f7e98a294a5c99ee5d78e59cf478b006c2e236d9fb585fe840793488c07cc.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/1a/d5/1ad552aba467125671b508d5000dc5cc56d707ae5e76ca74880d1a175477a6ee.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/85/5c/855c408b46ff2991a17cc9829ee23b66b8c6d5a51618ecb49a73f5605028b16b.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/ce/48/ce4801c1fecbbdc1a58bf0dd438cf47563d134a8e23139683fff85fcebc418ec.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a4/49/a4494e7b6e831603a1243f50692e52a5cd08f9eea0ade631185597090936d4d8.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/d0/66/d06662078938f55eea6288e3c31b5cebf9dcc4b68bd5c1fe31ba052d25f997c1.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c6/e1/c6e1fa6c36445c2cdf9236ceb4f874bbc846c7c10cbda2df8ecf337901d9071e.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/fc/68/fc6838d3665dc5ca0f8453e30b3b5089a90797c1872cf088b5b848a50ff3524c.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/28/0a/280a99f310ca3d3c1297988f432e004b14434074151006cfd041ef825e973a60.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/02/02/0202aa61c27fc78a43647a23a1eb3d26b83b56781b2c56bdf621ec5c435d1148.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/95/cb/95cb6557b73bbf98175100461781806aa3892c8f4c36f9ab0c7924efd54e2f58.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/1c/b2/1cb28aa1f72d07dc3e1e9bb6d315217dcdd8cc71a012764b0e13a5bfbd5cf668.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e0/83/e0837d9c7d6911d4546f908399776865076e634d62d3f2fe2acfdff93a63bdba.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ad/50/ad5050b6e001add48da9c865f6a8bff21d53c1f29481d3f9abdbd8a84c6e62c1.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/f6/82/f682baeeca137daedc5c494611abff1ddd5af4cdc21391a253ea0bc1ca0068b8.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b4/f4/b4f4c282343ea25a7dc7d3ff677f42b0685b3d128c84e3e4e20a42b36476e842.webp"
                     }
                   ]
                 }
@@ -2565,35 +3465,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Swayanti Dey, Member, Event Management Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAACwBACdASoUABMAPzmUwFmvKaajqAgB4CcJYgCdMt8BgB7EFfr3hmLgxvEfTahgAP6CBgoqNSOnWyDw/esogGLsoDFfEGft0nD9Ypr3OqT5r/WHaNCa8WQXVPyjHe4z2B8S8MEBCT4YLkg0VUAfrPQHyjtLt3hNfkQdBOeH3oRMsEPmEmYAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoUABgAPzmGvVavKCYysBgIAlAnCWIAx+QMO+0xhtsoQbrZXiAA/tlYeTYi5Ybo4+LQ0V8jVWwhL2SByVhimXxAjHx04/TZaL9+jIuIZcXEe2qKH6YYqqYysOW+Qr0Y4w5pFYZZgtg7bPwoJgAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/a3/d8/a3d80f7c109abd292ac092b77579082ce11a2d1fff7718115c9410622cd5f058.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/7e/94/7e94a36f10f228eb28dbf40ed98812c5bc95f4735180f5f39a12e97916c20876.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/42/b6/42b6047eed75c953371c215bb0aa40ec0c988fa1edb0063c817e5d4ee03b9d9e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/26/6d/266ddc46acee5ddae3ee7d2430119c6c5fb32c0160ca5a6952eaf5a91f75f5ca.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/cf/b6/cfb6b2ab709ac29c859e84f0d637e1eac5410583d1f7c36add302f0374e61367.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b6/6f/b66f3b706e6455622c7c8d5b5a12e30b0b11906aa9bb3efabf11724ac1006697.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/68/03/680382cf40d061f1327bc7a60601c27d47ffc3ba629aab406fdef0ca6b158479.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/78/94/789449d5a6f0f94d86f85d7c13b3e606a543ab2a1cdbcf6038c32dbb1431bb61.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/d0/0a/d00ac20c5a1d8faec5e73011c2142900a9a79d2be566485e158841594faeaf80.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/f8/e8/f8e8900241d89dc4dbb363a92611c80a44cb286982ab0adc762d721852fde1dc.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b6/1e/b61e8131f4930f4bb720b8803976bc936139917b742c7f8e67cfb19d6026a262.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/d3/9d/d39d208acd7f92e20ae9b8ded02cd821cc89631b7b60cad0a4da281b3eabed77.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/b0/cd/b0cd7e9d5eda130a55ed2742f061dc55e90160597af0c2f826a275aaed9fb64e.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/0d/85/0d8566b5295f8dfddf4f4bcb42e20add2a2df8c2016f7ee157a1792b00123635.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/cb/63/cb6368b1a7bd723981bdc6a2026dc922fd6c136f4f64a4d05945c5975977326d.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/5c/39/5c39b3a71f439c22d0acffe728f79a40678ae6346b4cdada710e6cce56080135.webp"
                     }
                   ]
                 }
@@ -2616,35 +3532,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sadman Kaiyom, Head, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAABwBACdASoUABMAPzmSv1mvKaajqAgB4CcJZgDImAyJ3UCDFXqaZ1J4c9x7gADN57Xe92xenQ8p8gdgiZSqEfOWk7p089bcI/YspYr5QT/SQkTW5u9rtUPQwiO5sc31ZJav9SZmJDWHhXbFv5m+KWOSMpspVgU81ihM6xqiWrpQYpJHC1Z8WgZJiXL4PQAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAwBACdASoUABgAPzmMwFcvKSczKAqqYCcJagDCgAxb3zT2lcYFvDfhhAAA/tlYeTYi5Ybo4+LQ1spNczdMLoY5ECZSi5IPyaGZC6Dz64+Lhm6/cLp6IDNdegrFxOlokyTwzjV5FhAtmQ7al+HmAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/3e/2f/3e2fc10770434db27029ddf56e7c92c8b9421897069692d4609f6f37dcf9e4a9.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/0a/9b/0a9bea2b57456af772a988b072ce164439be7343dfcdaa829a753b2d262dba22.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/7c/a4/7ca4a2ef0aae335af07b0b2be392a701dda5a90a62edec6f0faaa22d5e563c62.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/91/8f/918f82972ac72be6adfa3bc55fd38cf3f80966e2af0b33069451deb905e9ac53.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/7c/10/7c1036beb1769f43b3fee18d21c54c6c2fa3d45dcc8ccc44fbd1423cdd9d938b.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/10/96/109614391408669fcad6340b94c01fd8e273aaa73863f239991b35c031b8f2f2.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/92/9d/929d49da6423fb0f2f3ee031f70ffb9ae827555316642844e764c329a8995ce0.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/43/81/4381c120144ccd08fa0493523a06edac30a3d8e4383e85c7480bc61288d6bcb2.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fc/92/fc927f7fd61c9c7a611fa33a4ee977ee1b4bc6d97609ea4f09d9534c1f49ac6c.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/42/cb/42cb0d7d1fc5f75e1908bf50f3cfcf033173dc87395c80aa99e4798805bf5270.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/01/d8/01d89bf1036e572a9229801185374c43bd438a9025f35ea0fdc36cf4ee4e678a.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/48/f7/48f7a484127d4ab0da6ebb6c297d5be7e989d851767c17fa9164586cc9637441.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/f6/a1/f6a1994bf6b187b3a18dbff511861ab4acdf4def865451601501431029f89f49.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/40/c5/40c5d7aa4ece43948428d62ced49196003f415496527323d902c3df625a59ea7.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/2b/d8/2bd854437987b4526f854ba15eaa70d7c83c99e17fa96ac5db13c583851b432b.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/24/49/244948bc51f3afe1ba73bd72815cd9f36d836ceafacf952e8749f5a913f015e1.webp"
                     }
                   ]
                 }
@@ -2662,35 +3594,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Mahadi Ahmed, Deputy Head, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAACQBACdASoUABMAPzmUwFmvKiajqAgB4CcJQBibAjU00Cpr0qDJhCjqoECDh1AA/kAD5XOzvphHQj56/x3+8CZs4NEKDMvUGt6aKXU5Jl/eBihjHuRp6U3tXan4hy7+hq7+gN1a1Ve1/MEw2ERDO+wDJWrc1WoWJW2+cIH48VacrU1+KRG6w3J36YByAxAy0cmMa9AHjOl192SGlkGD3fFsVx10MAH2AAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAACwAwCdASoUABgAPzmQu1gvKaW0KAqqgCcJQBh9AYc6yoHyAaEeAAD+2Vh5NiLlhujj4tDXefx/0gfS7PxVfnvnplqmLFWYI/DOTIrvwuaoekHEd/dtnpGeEDLMnNn4YRYPFiavuAcbmUIBXd85Y26n9WgCgpA4AAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/a7/a5/a7a51924fe48acf3794702df1a674e361937277a1462e7b261706b274ddce370.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/03/fe/03fe734f2482f12237657dea293ae7e121abfa4a76f0584b4c3729f27b8c981c.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/23/cf/23cfd714275b6e751943b774e3793ec2de2eb17a2eb3550183349ad35c00e145.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/24/16/2416218068581106c5ff3c4634e066ae5978e22ec4100277536f3fed1b0cbcb0.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/67/9e/679e7e4a613c515db34e3ee651b77cbe3e4b91eb687181f30ccc5e07fedc9d58.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ae/03/ae03114a4fcf8b5fcf76c2a80c3c3e5992dc6fe68d404178a93abd8846e574dc.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/21/8b/218b6bdb57e3c65f4fb8dd1589be1ede0e4c8da55795d7914ad55b5762c9d534.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/3a/ce/3aceca1711eb6871c60affe4f3a8cf0db8897675cf2c6905af26e2bb4bdee73b.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/bc/ce/bcce8a37145c2227fcf1c15b17d4ff699d30a337f9500152f532cdf9a4b0d935.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/61/e0/61e05985dc744521e98f54013a678f9ac660f744fd62abf5085870562a1bb126.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b7/fd/b7fd27c92137c4a2faa6dd6a6923dc7074f640c70f01ee22d77981c8c236f606.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/8f/df/8fdf99ce0ce51b6c4c68d6e0ad9a40fa3841d1189542b330b7cac1c90a6f5218.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/2e/3b/2e3ba0961f8bcc1905b9f88cddbc0a950d321e6855eeda53cdf81ec135af5855.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/97/0e/970ee850658283eb7a9fe5aecb3148f67267381ba05c9e6cdbdd8f595194b4bf.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/15/67/15679d0682d7a4b8c1705fb96dfcc4aa315b6611bf74c4cf67791c1560c213fe.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/0f/f8/0ff89b92bad6ac40ad21d7513a9880117de04b6c912c133d3fbb247c95177e0d.webp"
                     }
                   ]
                 }
@@ -2703,35 +3651,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Shahriar Alam Patwary, Deputy Head, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAADQBACdASoUABMAPzmQu1gvKaWjqAqp4CcJYgDE2A3xApy761k54o9eGxJDjUuigAD+cjkEEgPj5jM+aRWKREHz7fCR8xXcV8C4uhovW5nYRCzivlgLtv7PbU/CDGZaYLGU0lSXM7GIuRk0fH1U7LwZ0gAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBACdASoUABgAPzmOuFcvKbIjqA1SQCcJagC9WAw6RsU+mNWfQP5PAAD+2Vh5NiLlhujj4tDRXyEB/F213VDL0l0xhOrqNAASYEd++zcwknZ1QbhuznQL3TLH0OzFswtJsEP9Xm/pdGki3NAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/bf/91/bf9117b099bb622ac66fe7aa59cfb3c2e4e0c9daf7d02f79bff1367b6702cb39.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/e2/43/e243f56a5918a30e574de05c3fa58414b3d118b9c16606afbc49356d75c6c632.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/e9/52/e952ac52436ab9a02b5fb2d3d2958148458da26d27c2d07e52f1ea3609aa7894.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/8b/fe/8bfe122e1b09a03105a6acd07fb56b77d063f9bb6f6e4050128ffb99dc39246e.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/34/1c/341cfb80b4c1f3b304da2a4e4a922c01020b643453489a9d881effa935d1d86d.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/24/44/244495882142489e09c6ad295fadc00d3296e4c34fe7576e5746d6ea54651256.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/05/b7057cedaaa8c04a4f05051cd8c2eb54da47c8e850100ecb00735fe3e305865c.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/a6/62/a6629a4ed602af04f73ba10c02116b71317e184ed1ede8a68bbc827c9d4bfa73.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/b5/f6/b5f6c2d4af9ff319ec0cb77993918595c5ab4cae67dd2c79f630a11db867ead5.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/b8/77/b877194feb8d6166a8ae928b6d14ec617ccf4a1b6ba055ff00636d8ae1f8f7bc.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/39/54/3954ab46ac09cbc91a2badaeb8f5da25313f603913720abc28754da7ed972854.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/66/e8/66e80abf39cc52124e793d6c6a7b7f9822d2ef937763cfa3048037c436d5b9ef.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/c7/71/c77148e40823d14feab5751acbf163e52f8b7e3288e5db48372e4a51000706e5.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/46/3e/463e9b1c23dca997082a28373cc0a6d6b603e076e99df3a137367fde3c0ff4e2.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/fd/c3/fdc3d8fed67c0748ecf6672d340924469fd020eb3bd50767f9952c8270b5c47d.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/4a/b0/4ab018d4252f93e0f0043df156ac5876c1d2af27d86b84270ddd3a0b1828f350.webp"
                     }
                   ]
                 }
@@ -2749,35 +3713,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Al-Jarir Siyam, Secretary, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAADwBACdASoUABMAPzmMuVavKSUjqA1R4CcJbACsL46A92T5wz7TPPZhbGPXpY5L5wAA/Y6DjqNiepZeWwOAsNkWOQydxM4Bm1tL4BlRX/q7EPWVaQxXD7SpmBJQbXXyjZ6DtpL8+qiymYXtUgGK5ecZKNfgBSLqPu8eHm4LJ4HhTmJdEViSWrR7k6rPaF+8bVmicyxwa5+YXqcn5Tt88+k5hifnYgr1sAAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUABgAPzmMvlevKSYzqAqqcCcJbADDrAw/OUoN+U21iYMhigAA/tlYeTYi5Ybo4+LQ13n3lwyxxliHU4D6VwXPP5sDBUkxTenfn8Ri02+1yW9o0O0I0YfMAKyJ8ryd8MJAeq9qGDUVYJT9qyiKooNcgAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/2d/a1/2da157d2e93b58eca1da0d248988e26a0b0fede570d919d2ab71b02d8a38fc69.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/52/45/5245754fd972d5ba41daf30f54e20c9efba47921eeeac5267b5b2bff17dbc29d.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f6/18/f6188ba1930a73337e7dbcb763d2e070081a69d5fb593f2fda2e59d2cea46d48.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b6/79/b6794c86ae6efd59f0b57e08e36dd0cf5343cfd4e636e62694d396317773084d.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/1d/c6/1dc6d77da745c7790025879806c96eeb5c04f614ff1763bfd3567d1128b8a224.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/7a/92/7a926d89e689aff9ae112e828be226b455cddb633f924e63f36846c5f4c8fbeb.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/53/27/5327b25b0a4a3ebb9f435bb817487595faa99183c5dbc14b281310a1b79f72e0.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/9c/41/9c4181ff3b02922baf5f71cd36b37cdcda105c63629e6553c346cc4f1f5e248a.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/c2/20/c22001996b35923a36f80462ac57d39c49e69c05c5e3f5b1a84bc66e06bb1057.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/a0/ee/a0eeebb0fe3248906d13d7a7a4946afa81d48184586217fce1fe7062eafdce2e.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b5/41/b5416af1b85357cc82180a4dd79091800542f3f7bc91119d192f782719fe04f9.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/37/13/37139b2d170261c9d1af256f11ae6b8de9cc383a52d61a8c54df300d7d792a9a.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/b1/c7/b1c73365bb65b07f3f87526a20dbb201f0ae2dde292fa36df3856bd9e43b2c43.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/fb/ab/fbab16b251ee32072928c8958843b0420685783a4e556bf0f772c7b4045660b5.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/70/d1/70d18e7643ea9b536515b1328e3013a21f3a7a2e28addf7a120d123e35f35074.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/4d/40/4d403413d75b817abe38084e98351db5fa9cbdebdce09252c87e1eda8cc9207f.webp"
                     }
                   ]
                 }
@@ -2790,35 +3770,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Mostafizur Rahman Maruf, Secretary, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACQBACdASoUABMAPzmOv1cvKaajqAqp4CcJYwC7ABEc1q4b+6zvZFOsJIYzvngA/gS7rVrXO6g6EoGSid3w+D25iQXLncd+4ABksiEKyiJe5/SWLlS/JzVDBW7J18202485mkLFh5VlZiko9TRJurl6Yc6+b+s9PdKAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAwBACdASoUABgAPzmOwlavKaeyqAqqUCcJZQAAIWrBMAKXA8yQ0PjB4AAA/tlYeTYi5Ybo4+LQ26RlGX/pIL0SwSthYlG+rIuvvpf4XX3X7iDKuwtFVe9OZmrIqPppM2zcbiDg40rd6Eil8SkIBAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/a7/fe/a7fe75fed0d0fceee7768c9697398bf40b54d53881f495f2a9a9798b98955dc1.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d8/8c/d88c74b9b9e0d29a6d9d2c76be1a022ec6905f4bde1d39e0d917cb629d79a69e.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/3e/59/3e59d793876e0f8b657eba239548a3329cc1393dfde2c2b0a497b5947eb6cdcd.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/16/d7/16d720f04d4dc40f823d273397ee5effc29755ad4d8e486bce9ebcdf2e4bc5f3.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/5a/38/5a38ba5dd670a4b5ad6fecdca1c6748a1e57b0a506ed66adc3bd1b24ae7aed44.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e0/49/e04941c75523d0c898ccd91e32321898ebdbce53e31980cad56b48af9078443c.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/32/92/329201b91874ce50a4e8c331147a33e436cd00baad9b89f68526a20352c8bd53.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/ce/aa/ceaa54cb3dc6408b28c831105c6264bd644a610719069ecd8fcb9fe9e5294542.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/cd/3c/cd3cde91df9c211dac13e257710436dbb3035f69020741fdf8af3ca466e0e35d.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/dd/e1/dde18fce870f2ec2262dfbff5c384a7a0896aa0702597a6f975bb830c43728eb.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/84/bb/84bb5d945e5f47485b1cc8111173201f62909a490bfdb0bf0aa49fa8299439f3.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ac/31/ac311829a84753229ffc5c7ac4df05515b5399ba1f09fd36172ab6b3e5ad86d8.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/82/1e/821efe4937cd857b253aaa8f7b6516ab7857db46321a8911751c5e59764fe8a0.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/21/b9/21b97a408aabfda97c350ad192048abb3a633eb57b6999f96195e87582d5a293.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ae/f2/aef294cc4c3d398e634e91a2f30953166b0fe157a8f5e3b80edbad6b9a689773.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/c6/20/c620616501344c46543321df1a6476dc8675432ac5941d885662b4f51eeb9f50.webp"
                     }
                   ]
                 }
@@ -2836,35 +3832,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Anika Tabassum, Deputy Secretary, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACQBACdASoUABMAPzmSv1mvKaajqAgB4CcJYwDL4BEcrJqAd6Zfjc4FjGWtJwAA/O8IQTP8yD25qTs5gnYbLWNkOeguhOh2euIE7lOncU4+4PkjB4iQ5xgiDcxYw6RDF5b2/nTaB4se8TcjleVf81GfiKVju5ZrPPvwK8pNLaaPaSUGHpJqJhefPtrtV1TAaOgAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAQBACdASoUABgAPzmOvVgvKaY0KAqqgCcJYwDAKAxWrl0NsgvwJ3WEQAD+2Vh5NiLlhujj4tDbpGNUR9zn7xtvPr7ByYq+uaEporo2gMU8hu984T+F2sTQtaIMDrF8ydRyCvto3g/vSseUBBWF9rYlcvyPAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/9c/09/9c09adbfabbe6362cc02e350ba4d88104efa33645c6f6ab2aa6b3a4940761e83.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/6d/32/6d3239a00a360924e164da11d0f730b7e234a379d5d1fb20cfc09676c96da71b.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f7/70/f7705ca6f5f7c24ede73c3ea2f8a886eea87a81a1817a37b2ab6438fb7a5e6d2.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/97/bc/97bc734d0bea25d82d9d4cfa07bfcef6d62f09f3c4b6faf6c10e7fb6b813d068.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e5/5b/e55b8acc88dd25c5a4ab52e53eeadb7cfa329ecc440c23e0ee31f4e5d29f64f8.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/66/98/669851f49f58c9613963d7ad1917bc5efd1b0afbf3d3b3155fb441ac1417e0a8.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/db/3a/db3af85d33cf173fce3d44eaf37a6bdc5c4f46df1115331f559921008ca40774.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/60/32/6032b6de1e11bff82661f46da279b0855351ed893986de5706ea584dc5a8439e.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/b6/08/b60808f2d145db76e1480553b31f84bf7b3d339dd67f57f42461bc141e2e4b04.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/41/2d/412ddd0cea80d6398495e371f40d73787f6ec5ba714552a16ab1d2b2b396575f.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/be/12/be126b68a47ff188e8006beb666661a9b9297102ec2a85dc62c8ac98c51709ad.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/f4/8b/f48ba889d96820e0bb38ebe69afd14d9ddf94432fc1a8f5712e8b0b990bdf1ef.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/57/71/5771efc8f30e56dcec2f072ab300a3c7ce573ae81bae9e21d5478fac2f2e267a.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/3e/ac/3eac3723ebfa15b5569f76557d031cb502f149f2f25396f88fd7a6db3d1afc54.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/df/b4/dfb4e4a004bbd631eefd146e7f09fb9d5e053876e747d8978dfd39a08cba416e.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/dc/29/dc29c9659238c026b584f61e2fe72a0b30fe3c94568d557537b9913621eec787.webp"
                     }
                   ]
                 }
@@ -2877,35 +3889,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Nadeef Muttaqin Chowdhury, Deputy Secretary, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACQBACdASoUABMAPzmSv1mvKaajqAgB4CcJZwAAKdLDtjwOVTpiM9z57kky9sAA/SVdE9n60hd5F3P+uLfchZuKs7sHTGpoyBq2dL0eo4p/qxj7F26bcrSJISiURojJYyfAzrsBmNXvRoZBwGVcIvhG5VPR7iyPKAwAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAQBACdASoUABgAPzmOwFcvKaczKAqqYCcJZQDLaAw58DE4oK6b8cDUAAD+2Vh5NiLlhujj4tDWyhur6rx5mn2fcjTY1JWZgIOIKRcDzx9yId7RoI1XbTWaRHGWs1Ex2Sbutho1CAjHqhhbaSuRyWgL3YiX/0AAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/55/10/5510dff489085ddcdc078fca34684875704a6b81b5ef3563d3b20c579c5401a1.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d7/eb/d7eb32b5cc6591354fa7dc3241d819d3b05923e7cd0a73cb884271e5a6f3b26f.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/3a/0d/3a0d08e810fb9f3a704ee0c79eb801e1313790bff3e2acd37706d2d03f778f1f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/69/8f/698fdcd11dbcdee89610a79825a70194a1ccb97fcc62676497304992cb57d13d.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/e8/96/e896386735af15aca008790d881664a8469a68dc4a6d1cfd3e146f529e27deac.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/f4/aa/f4aa4fee537b7efa497bc585cefe1be537dcb491cdfcb66c3f7854c1d179b302.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/60/d4/60d4a5479064eaf526970de9619167edcd3065e191da209440c0af3a933d3650.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/58/e2/58e21e8d978c61ae29753cd8b034b5a77d3374474270928e67ec852ade629ece.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/0a/05/0a05439e998623d4e3b375e645c7319c55da9945b5386d9329fe04180eaac1ba.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/3b/88/3b88e077cb5e9af9c6e463baee5d3f271854a0fcd774b20bbabd9f04e37aa2fe.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/51/a5/51a5dc09b6b82efc045375fc840c81ea4d83b3ff87066cbfbd52d1641f01eb16.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/86/c9/86c99adf1e8277f4a7d71417bda546342760ecf19a99fd9deab3fb5b52a3ac65.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/06/26/0626f3a0ad79a6fa0c1de8ca4a81505c692b9276f92e65ccb888c8a914429b51.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/73/43/7343a109b5c3369960ec05d38882cdc7ab63a5875ddac02e8c0c99457fc78c97.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c8/77/c8778cabb9066ee9a5b710c1813d8b6819343d120648c08205b1df69702f024b.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/55/26/5526c5886416c126a182ecd6ae005aabc14144068ce061af3f898a0518336252.webp"
                     }
                   ]
                 }
@@ -2923,35 +3951,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Omar Faruqe Rahad, Assistant Secretary, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAACwBACdASoUABMAPzmQu1gvKaWjqAqp4CcJZwDJEBEc1jATrZbVik8nqfp6OrIAAPkzypEV3wWleYqgQk1FjT2RVZFUnEZuYFkZtl2AunNBfyiF7LuI0wLG5qj0uOI+ihuuU3XlOCrwsMgA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoUABgAPzmMv1cvKSazKAqqYCcJZwDH5AyXc8/9OznE6N4XFIAA/tlYeTYi5Ybo4+LQw8f7hTPIA+xvr6mHlVicsXPc3DU5ICvTzxxXABTuj5mgK18rU/CWxWx1JxyJ7g+YfnIHK0wAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/af/a4/afa49e1d3c68467ec5612dd6e39240ddf1853301b9219bfe732cc0a74f8f6c28.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/18/39/1839045aebd004cdcde66d156aaf38a22d0d5b663674f7682bf4e00b7a93befc.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/70/8c/708c68a00a21c5455732aaeb7461cac5c5322e5ec3edc6d6e2045ce84d061d36.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/59/79/5979a448877084dbdaf06f35a42f13198e21241d293a4c071218c2aec73d9563.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/9d/12/9d12927020e2c95c23490eca1503ea582499c7f9727882b0f1d5d817cda9acf6.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/79/a5/79a57534de83b790e695ea7b2e2a49e1ede6aa700aae18b90835d8343bdca2db.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/d7/3e/d73e0f115820bf081fd6618ca39c8052412526a6a87280f477044194edb0e239.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/2b/9f/2b9f71cdd727d7d79d07bc44667e42718402b74c448d437bbf22fe43327fbe00.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/bb/8b/bb8b7609492e1b2d288f810f677009ce5187e91b6dc3fb1c17e24dc4227a32e5.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/99/47/9947fb3eced65eb311bc893a9952291f81f4e46b3e241d927be4c2dae0f19ed3.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/21/62/2162f751123dac413f7805c32a167a90c2953d9f1a34801907c91a9ed6c3cf18.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/d5/5f/d55fc8a39370f626df2e6083c534ae622525c3a669289da6b3959f6bcbde587a.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/16/ab/16abbe177eda8ac1c9ce0c54ff95eb4ff8d388d4a448301d84c1ae18dfb666e4.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/a9/b7a9fa0d0a36e9ef33ffdee750c6decc374525b3a32bd8558d9d7b708ef6c588.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/38/58/3858aa366d42f8512d08a7d44609e33a3b0fdcb5ae7e874c7a11e3621537397a.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/97/5c/975c478e6048a20a0ef3a3a969b09b63fe543439dc8be7f0bf605f309ee418ce.webp"
                     }
                   ]
                 }
@@ -2976,35 +4020,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Adib Mahmud Pritom, Member, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAACQBACdASoUABMAPzmUwFmvKiajqAgB4CcJZAAIGuD3ETq7ELs20O8klalJyhAA/ngpElECjXY6Xsved31Vwv2zz/I2MFy0SkJlbKT3UTGSmVcbXIDLoziFySr2Mn5f5TVOaXLw32AlHJJxVoauCJaMfpWkPReElssxP6WtJbt90wzXM7V3HMCtEhugzcVIuxqGczW6sQGo8dQ5AAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAADQAwCdASoUABgAPzmSvFgvKiW0KAqqgCcJYgDKAAxAYAzI2cn4AbQA/tlYeTYi5Ybo4+LQz+K/4OJ+pr4lwp/gka6KtN0vtrtdszkzh6B/2nF8EJ5sExmyI4gV+bwOYyNS+Vt2S2bwhHIYO5RVPzpio+31tiYUwPEAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/da/69/da694bf59ed0b6fda6262fa84f643b7ef1a311f9a172acdd01139a60a08dd66e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/ca/64/ca648ea95ff6ed625f52ca0461f87d560c01ac3a26f8714908eb890156ae68ef.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/63/72/6372b67a38e93dfb34214a231e5bfb8458b3841753207730fcd2d944f46507eb.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d7/7e/d77e74469210e9fc37adeb883c211a945708134a934811d1891004ff477d1015.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a7/4f/a74f9e2e36f053843298fe3f0667235cc6c064eb10842f7031dc1fc6cc8d5b57.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/66/6e/666e47405dbb10ba35014de650ae3414d4f59529dd145ed6f060dc2d4ece3cbd.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/e1/aa/e1aa4adda025ccd2b1951f16262668501691863d8d455b90abfb91a514eba6b3.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/9a/af/9aaf3e9e6bc0c3955db30d431e2e2fa74ad907e823888ac687df6a2b0b1b83cd.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/78/a1/78a19d831f18c8392b09bd7b70fe3d75818b558015ca69025f2af794b2231bdf.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/10/8e/108ecf1c03637ff4c4ddafa8bee1b7de6746d34fca87b025671a6eb0e2636675.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/99/1e/991ef9afa4346c73b3782f4c97554042d2976d93b8af48091f8525e754bdc843.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/59/04/59042fcfd6549aba3cce01ac094b01ec60e78d1e45728072d40c6984adc46ebf.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/f6/da/f6da0eb2c18c7b407209e89212251e5066a7700ee0daf49bfe8f0e1ae4c0553f.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/3f/b5/3fb5b9d8fdd28510571484c20da3a7a7c16327f2d10e024d6db8e590cd4b0a4f.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/b3/b7b3370f11bd381ddecdcf81dbcd0219c88098e98bd3c9d1dc47ec81e5d79c70.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/73/1a/731aec4620b80f039b8e3b7cdf592398c5437fcf650be8ebe7bd6c8312933aef.webp"
                     }
                   ]
                 }
@@ -3017,35 +4077,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Nishat Maliha, Member, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQBACdASoUABMAPzmUwVmvKicjqAgB4CcJZQDMWBEc6p3K1isOzw+fjy6cCJoPAADONaGomLyLijQxs0GDMuSNJ0qoMRXCjfRW0WNc2mxV+4wpQBkYj3ZABmS6b0q2LaGnSobavYakrFfCi9FsWEtV6emL4AAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABQBACdASoUABgAPzmOwFevKaazqAqqcCcJZQDKAAyXdPqL81pHag8R0aC0AP7ZWHk2IuWG6OPi0MPH+4UzyF16M6RqAioeEmrv0Zib8nUfqVTiGXFHWGRHRW9xsuiF2RVqadGuijvsaBEZkaAHLZAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/55/53/5553f2fc49e803e7bf4ddec39e2e4434869a7bdd7627ef82b1a59709abf52b8f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/25/d8/25d8bbe10630139ddaf51581a2d8350213bb5bf2d60c8f4495e712a973c08886.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/7f/44/7f44883723cbb87dedefb7fad9c07d7c7d35df3e9fd8c1b73a91f7c4aefc701a.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/3d/8c/3d8c41c913d82903e396d3b966337e6ba7cbdcbef0168c67dd05cd85ac398825.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/79/dd/79dd1f9ec85a184c8cb0d60b633ba4992750a2693fd8f44daa98c4952d5a8d29.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/25/29/2529483a26f014a6b3fa569fce6fc435fc86f970110336b7b7049ef62ffb34cf.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/07/45/074539d8d59cf9c0ebf52b91b722c6bb5033f8ab0abcac684730cb04bcf5e63e.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/c2/ba/c2ba8f843d2c123aa6448e22a14167f535aad2a4d7892a15ed7ece3e43f90b55.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/fd/3f/fd3fb3a843e06bb571161ab5cbf561e70f761a6b21491a42395f7368b518f07a.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/55/02/550290b40c09188e6991574a2ec69d9f32f2f14715c611598a6c09afc782e62f.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/95/90/9590c1f22dcc1d1c98874940dfca63bb0db7fe526dfa056aa1a96333fe2259f1.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/48/35/48354b65026d8f8bfe26d50852c2247ed9bcd0c294f81b12a2b3905f2ae140c1.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/6e/50/6e50f2dac9aaf76eaea513c37cc3b1d78e9e3b375f8955f4db389f01bce0d7ea.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/a1/5f/a15f203128811a04510e22404e657982f08015c7a05423bfbc1b1611ea5e1f87.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c3/78/c378a99c743d4f681624ef9675e20248e00892049b492e8e78245ea6720ed248.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/39/83/39839caf3e5b7ebfa0b4f638d1c52bbd2b689fc14a7d9c633ac0cf0f762bb935.webp"
                     }
                   ]
                 }
@@ -3058,35 +4134,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Dipro Sarker Arnob, Member, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAAAwBQCdASoUABMAPzmSv1mvKaajqAgB4CcJagDA8QAAOJHEfM1TcIOXMzeh8gpUzPz0PAD+6+urJDLbS2lKrhNOJrwwfQb5SgB/MVBF3d7BgtRlcS90nOQJvNIMS4lAEmzdwJkoT+Mzh+f9EUK+o/V/lEHa9RNLUt2q4E/AGBNEznXutN3IxvQ2TSI8wvAMJik7OZKLIAYUdyRjOKR2rtcnmOCGFjbhUnwynuRh8AA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAQBACdASoUABgAPzmIulYvKKWysBgIAlAnCUAZQAGHBnF9D84vIrhPkAD+2Vh5NiLlhujj4tC2XRwu0dUiNQYg+U6Rb/k/AnEh1a11o/6jn56gBmvkivmwTFxNFDqbbmMj7r+UHfjhDoo84w/7F8BeZ4jfLZC4ODjdey3AAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/78/10/78107c49901df41d413c3700a132c30b7b7793dcfa473c01e021b3d43919bf98.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/d1/26/d12667dbbe41e6e383be46fb164a3c5b2e509b9331b5c4f26f9245a3cb747c78.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a5/7f/a57f410baa21317765e17c2e7582c8e7d467a16a69ec2d972b41522df543583c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/73/97/73979638f3703e1b47bd8f7575f90f62726181419103847124cb740fc91b70be.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/39/a0/39a078da533bffcaeed162f350820c86597de75e19613e32b27c3fafb478d9b4.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/6f/80/6f805771f8fc7fe2e39ecb2e6d00973cadcc80d9b4610555fcac350f8c97834b.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/bd/3e/bd3e3e63cb8b9a289470f1b078d792aabee3a644c4284e01bf894c7499006935.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/d3/a3/d3a35bcf045bb43c664da0833a724d5f713dce41af8de33a90e022176878420a.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/e5/53/e55399b57551b2a434c88c4da215d41b9795737ec370b25d2f950d84adabf25c.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/36/29/362928206aeb6e80ccba1f3b3736a72bb419114430110453bf6a3cd135b1ff9c.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a3/b7/a3b7d942f02067f7d310599bff31de8fc83bd5402b114940f68ae973ba3fabf3.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ac/6b/ac6b0b0d049e4211fd3defc73cfe32a92b64b34b3b330a2d4f948c40fe4a845a.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/8d/a4/8da4a60bb339df346978908122705496b2eed08255fe332412f5c3f7efd4b76e.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/2b/b7/2bb70151760723e2925c284ea8ecfe02376b37bb9588ca73ffbc2c1fd9ba53f7.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/fc/1e/fc1e90755376a44a49d7d9f8a996c8a20425ac1fb54871ceb70f0f28934a2839.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/8a/cc/8acca1d7411504aae6c7bf43a410684c660ce92e88cfef3bc861b8556d41da91.webp"
                     }
                   ]
                 }
@@ -3099,35 +4191,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Nazifa Binte Borhan, Member, Media and Outreach Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAACwBACdASoUABMAPzmUwVmvKicjqAgB4CcJYgCw7A8jNeeqFNaZVPMpSDUxWyfAAP7QyzhzpS810kTOyF/sFiY/n8EqDApsZB9mDzKjurHLByoOEThgsTAekvDMfi/irhhrefdJwSmZUWuEAV8fpE4rWHBvfAy+Nokb4V7vbV2Lc20+UETZIYBmch38QAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAQBACdASoUABgAPzmOu1gvKaW0KAqqgCcJQBjIAZMVZ2kmfg6larUyQAD+2Vh5NiLlhujj4tCz03kaAyK1VXa4wWYtxbfpHL+9lgNn2lwEvCl3dBqckG55YvNvmMPU3V953ZpfJaopdZq9zqA9SoB9wEtCiweAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/62/bd/62bdc12069c4b5f3411d688f5672e6d3327a8fd3c6e87e3d57b2b21caccf2928.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/51/09/5109f1ce6f89d51130c5c14d7c9ca4e71d75ebc69bcf5b0c1ab443117f96c673.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a6/dd/a6dde1c0706aeffdbffe10ba367cb2513a15c9e4e42baeec7920799a1b4212d3.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/01/75/0175d4a0bfb011561d0ef5998944f948c3caed5958da4ce11e194b0babe50e4b.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/3d/b3/3db3f84ee118adec9187613dfab0c715d9b391af132f92773a835902778e236b.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/3d/b4/3db4267beea4ccc2f69428079eb5a61148b5bd2603bdb405a08502f53672f7f7.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c3/e6/c3e68b3355cb6ed816fe831365a7fc79eb5956b77e861cea9e5e09b0a6cb4be0.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f5/47/f547abb36c4754ced8a0d17dc53fe805eb8f52f779554e8c0f1a263f6f898a63.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/41/85/41853ac4e02afb9d6363014816d681e59328b105d2d61667f68ebe8c104e55a8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/6d/83/6d83f51d9923e419c9ac6bad53968a271be5f9f2542334d0f792a4e14ec1963d.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/27/8f/278f0327223472e10cbf3e7848ccb358259c4372f0ba8d739bdd2dbaec4a3a52.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/40/09/40096795973019d37f85f1cb74d2d1b0ef3fcc7ec406b69604dc35457c357d73.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/0a/98/0a98a01ae48e0d297b85370e312950fcfc99af388530edfa1e910f0f9b632b6b.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ef/87/ef87d7dcad23260843ed075f6455e7e3b919a99f20cc6826633cd95fded74671.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/70/33/7033fd6a3f6fc0bea3feab5d6693ccbc19864c7c72d0ca8e89c9458092563438.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/1c/b9/1cb97aa98b20286ad7630351d9cf13cfca6523517209b63337eb046cb00c7fea.webp"
                     }
                   ]
                 }
@@ -3150,35 +4258,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Raihan Chowdhury, Head, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAADQBACdASoUABMAPzmSv1mvKaajqAgB4CcJYwDE+SABhIlzPJfF8mHnaU/DNK8KAADN0oEZr1EWMuNM5aGwWWUpF2WJ6h15ttkU6yh52wWP771aCeBLMrU7xyg1Gqh1EOQmzZ0WTDxkuo4j3Etv8d+sYjQEfYDHNOAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAwBACdASoUABgAPzmQvVgvKaY0KAqqgCcJYgDKAAw6disiTXgbK7mqYIAA/tlYeTYi5Ybo4+LQ1sobq2bQEXuFKgFeT75fKV3OifJqfSM8KTFeTTxrP4s8jce08WJOG6aFvcOHugpq9VDZfpoL4T2AAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/48/31/4831cc9a55b97b52a027ca8acae11c9da15a22dc97763ac8d51a6b328c33d798.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b5/4a/b54a1afedf0b0d805251d0a76a4d757ef59872d9e9dc0307665f8bd1ff4a9d33.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/da/a4/daa4a787d52517c1df0ca43f22936e754cda9eb076781c42816eeb5c286c5ec1.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b7/a4/b7a4d32c062ef9a87cf2765220129e58553294e4d204724dd973033bec3a0ad9.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/00/4a/004aa9a7fa68cb6f59f87c48b20db6ba19623a40d2f214fff7135d6395d9941f.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/b4/cc/b4ccc10aa38f7b9025d549a39deb99b01a0b9334674d120fd81fd8957cbfea55.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/09/b2/09b29d89e8d9827eb71de6fdc2ed27ab1f70851804ea0614e9bb49386b21e195.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f8/35/f83509561395f73f617e3dd6865ffb021184363f2f6c60f285607ddd57714d42.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/e3/2a/e32a36c7cc0f63053d7c724eef2a1343c51b536d0583f8c8d145c3e7d2ea5eda.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/7d/94/7d947c99711a9f7b8d786ac7b6ae930561f90171a3dcd131110349c3cfda36a3.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ae/17/ae17e7759cd891b6f67ff6eee963a4cd7226ba8ad559617f3d13b2a51b57a215.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/1e/25/1e25312dbbe6239eb99c05af99327c540b876c29b12324d251022dc39dad41f1.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/45/78/4578e60fadc2c82ec299c7c53969f760577df53cf6d463b3bbf11357c39427c5.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c0/6b/c06b3ceb0df183f8f5ca747f877628201c135558ce7ea678620e5c3ff3248653.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/11/be/11bea335e3ebd8cf948b70077def3dddf915a1f194476448acf8f5cc0984d039.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/36/7b/367b2a765e3ca3474bcf333aa960cd250700d33cfcfad9a6a90b0d53bd3c1cd9.webp"
                     }
                   ]
                 }
@@ -3196,35 +4320,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Kazi Wasik Ibna Nashir, Deputy Head, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAAAQBQCdASoUABMAPzmSv1mvKaajqAgB4CcJaAC1GtDBMoZOqmi8kasYDClW6BtuanQAAM4kCZh1qfjjpcz4GUzJvJKEyQJCltXnBEvuyzoSIdenz+XG2ogs+Il368vddv51UDQWfCTdTYkj4Wqf/5WDpSLeYIovWFktngqpYa/Nblxhx0v6JprlO+haRwiqRgG+u6x6k6wYdeTArIHX16mwCC9UAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAABQBACdASoUABgAPzmKvVYvKSYysBgIAlAnCWgAxNgMd2LGepIQ16EbwI4AAP7ZWHk2IuWG6OPi0LiSiIzNw7pw825oYw1RLM22s4kz5NFa0bxREMfp9Buv3Dy8lFgca8pWq1SUl8b+KHeDXDtBQHAldIjW1PBpmGYPhGpOAi1L8wAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/4f/9f/4f9f63c006b341e695ef0c764d5cbed05e1591f59905de0ae22d0e24a80caf47.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/be/52/be5205095e356cf85ba7fc60ef66d034f981d34b08ea33b0b3f31b1ea8090d3f.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/68/c9/68c9d96ecf9fb9a3e2859def7441f964e5a8d001e7c5d7d5fb7a72a2cd5ffd4b.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/e9/8f/e98f9d7b90f4fd10ef61cd915f39ac3d6333d9cbbd33220b0881c0b585484aa8.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/ef/c8/efc88e4bd9ee823a59433e0694ded3093bf8df9fa3f3ee2d43a71ac2479a435f.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/f0/fa/f0fa78f98231c504718d8cedc2efbe60914d6cbbef87c64ce9af5f9e2b698802.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ef/fb/effbacca3b2a94ccb1e7261f3201326b6f8e3391152912f21efd7cb7f63c42f7.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/fb/b9/fbb914f02219547364ca87cabf6c7f21bd7515697114539ebfa3afd79b7526d7.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/4f/a6/4fa67d0e0e0900791289508819ff21ba99d8f0acf0c5418c599c36bec57c7e7a.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/6b/ca/6bcae3d742720dfa9dc5acd3c89dc8db3b2835b01325606d7b46eef6885f5525.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/08/33/0833ba921799eba1a0a35a47d5ecf704aa4d306289ac938d8ed34a7dfd9f6d38.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/28/ac/28accbd5ef3538f7333f9344c3b49d7a21d080e0024f6ec970461e0e1dcc3a98.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/2a/ca/2aca15b9fe7d3bae67f40f5f9a8416c19a7fefd53272b9fbaa7236a40823e7b5.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e1/0d/e10ddb9f351b47a73f3a268a61f1e4611a450339008baaaad745167a71c6ba20.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/81/31/81311e56c2e0e34157aa08ad623362476a3b80fb857c7d462ec97ef49ed29a70.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/67/f6/67f673b7c934e5390c8c0686621ffac0fbcc22768f144ab79b78d6c4db165a33.webp"
                     }
                   ]
                 }
@@ -3237,35 +4377,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Hasibul Karim Ratul, Deputy Head, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRqwAAABXRUJQVlA4IKAAAAAQBQCdASoUABMAPzmSv1mvKaajqAgB4CcJZgCdMoPHDBTqzHS6JW3XB0uNc5OvjZwAAPYaLTG1QWBI5TquUSnuOQXqfVKbWQ8dC3IAI6mccCM/xrdenLmJyQl8znzZhwIoA983fT3rkoJd8iICBIzPBH6yzblDyWp09jBzXk3dmfzYCxAjVgkJ5LhZgjQgG6uD6X8+z0TzT/azgc7JAAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAQBACdASoUABgAPzmEvVavJ6YysBgIAlAnCWwAACEbe0iZk0uc+8WgAAD+2Vh5NiLlhujj4tDXefx/zgkqDwbzqiBi5cR52Q5pjFTXfy8D8qcn84T+F2sUdUvQS51UTufPO21ObRpF0Q7eTfz1pVtBmI+IQAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/78/e7/78e76a60d5f3b3f571bae483c367e46235c8b50e432e2ae6c3d6c3fffe9f12f1.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/f0/06/f006e8a58f7e3ac5968010836b887fa0d7f8e313f409707f87631503a6848353.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b4/52/b4522594da715560a35bc44c9e816765dfe79b3f668464323e02f7fd6bce033f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/b1/10/b1106fc2cdf2600a1ce915c9a539cca8475fe8c7303d85d998916cb2c063b442.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/20/ef/20ef2d70ca313dc1df9b04aa5169e925bf8a850cba43b4bd8db031a8e81d978a.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/26/d1/26d1faed3b4f3432a0455fa395f2a6c5a73785bc3a605f468e66d051198ec440.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/2d/84/2d848d8a7213f48de26f9e25c11ab74fb399d88e7ea7f082ec2e75a179fbaeb9.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/fd/6b/fd6b504a3c22efb55b2ef0107615a92b5533e180cb630ab16096e6675730fc85.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/4a/5d/4a5daeae984305a9e2ddb4a239ff801854eece1a280bb15fde31c5f307918aaf.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/cd/81/cd81d388505adc77b961be62423faf661083d9d483caf334a843a1fbe462420f.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/5e/88/5e884bb6a5bc5010c8d0da5fcfc5bf89946b15b92f315521af1c72947123a85c.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ff/cf/ffcf367b954e93af2e49429de53796a9a82067be0c15126e099252ed894312cc.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/2b/9d/2b9dccdfe15bf2d5ebe45fd73dbaec0ffc04bf52c15e5b2de3cad93191694fcf.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/cb/86/cb8675b264a1c417e281faca4ccaf23dd65ecba918fbc052f3c394123814c6de.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/d1/09/d109c53ea25a908e32ab8372fd1d18848c0d4d8ddc548bd96e48f5280bb962ad.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/41/16/41161c851586b1e68a1392af2da77eea2d9f798d89fe5d4b810f472908d20622.webp"
                     }
                   ]
                 }
@@ -3283,35 +4439,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Mir Mahdi Murtaza, Secretary, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACwBACdASoUABMAPzmSv1mvKaYjqAgB4CcJZQDIXBEczEe1h/dT3XbrrfPuespAAPzvCEEy8wTTqJAJPEzX12u6rSeQNO4DsijajTOSkIHuHAoMdVdN2fWMR4mgOLGoOgp/APVMWMHju/x2QP+sGqAjYnjAuD6D0dm3WFFxahEn8bMW4AA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAwBACdASoUABgAPzmQvlevKaYzqAqqcCcJYwDOdAxYLdimN/2IaNtqJgAA/tlYeTYi5Ybo4+LQ26Q8/joo4Ri8wpoP0mrB1HPTN+2CSkgbIe6t/RgIDrm8HnMneOx/H9HuOFf/Q5oxSY97fXdU30M5wJrKAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/3c/2b/3c2bb25fc019e1efcd6344d63b8bbccec1675d8e7d155c7426a1523e748b1e12.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/10/3b/103b32504a38e9de3b5c529e396e30a20c13685a44d6e52f67f7e959282cb0b6.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b3/97/b3974891192eb61e02faff5fd3379986d41e71a5d61f8730b732d8ddba28601d.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/3d/06/3d064e84f3d32b579a2eaad55fa47cc6343e0eb206e7ebed35a67ceaefdc8013.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/0e/91/0e9178b70014c7c0b3cedec051653b90d93c499bb12fd1139297b797e4d9247b.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/ef/fd/effdc2b8e38a784a51fc5676a2cfdd103710fed3464a1cc0a8367e2dfb79fafb.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/39/b9/39b9ebcafeea6790652d291004900cd43090d6fb2ee45c62562cb5a60e67d8c8.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/a6/d2/a6d2776f7584f63d8f7b1adacba5fa7929cbcf588b1b417a71ec26a6d68b4bee.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/b1/c8/b1c82f7f3a349aacc54038cf5fa883ad86c3c2e7d5f5cc87982dd40d3ecb79a8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ff/a2/ffa244575a03533e04ae5495dc6c7a0c82a203d71fed890a8e63f3df48dd817c.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b5/0e/b50e30b3f7b18abccd873bd93c49391b2b86a5016883cb6fb891a5711adaaba8.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ba/b4/bab46207a59290f4b254b7ea6f2a41dbaa5ed4750103f248900b92346695a21b.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/af/ce/afce44c0d2ccb9730e0c9a4db291148c30a047c4178b825100615dbeab646775.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/c6/fd/c6fd34e1de34744f65dfd0413c6cfb14dd9b0dafe6eb32da01251802450c113b.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ec/42/ec42f8f2c5899ddbfae7d8d51be42813df1f3727635288844ff1b5d869d93fb3.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/02/6b/026b038784e189275c35a8bfb9db5941a6c4d39e10edc38d44e8fd9e81d574cf.webp"
                     }
                   ]
                 }
@@ -3329,35 +4501,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Farhan Ferdous Anik, Deputy Secretary, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAACwBACdASoUABMAPzmOuFcvKaSjqA1R4CcJQBdgAiG/18OMBexrDZ+yyb4W5LPAAP7NY28wx2mD+qej2kgKREsFsjMPweYdEBi4THY1LN+SMgQ4b/tc0Zvdf/sLoHqOQP0L1OhVuhoPDCeus8V4NZgCh/URHbP6iyZGPOPhq9KghUsAAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAACwBACdASoUABgAPzmQvlevKaYzqAqqcCcJZQDKtAxcjkVweQXFwh1Jbkwc4g8AAP7ZWHk2IuWG6OPi0LTOHD8ijGyv1xUzcfIYFX0xx8gpG5b5b6/4yDN5pn0z/wr1KBm92jJeklKSgiZtocjlfWJq5AAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/62/d2/62d2ede2e19515b6723ea1f8f427553476b1745fcae4b208104143c008bbd633.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/3e/95/3e95877ef56a39dac8347641c3d8099fcd2722015bcbf2e52eefef17d5129181.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/55/ce/55ceec9945cfa2612461e29c084e656e6c09bd30cd18f8694d779f59b9cdb152.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/19/b1/19b102bd4c78747f506b5c1111dcccb0f2fe6c73163c7a2faf7453aa01be2728.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/df/c6/dfc644af364e16295677d15202474a4e8cd875a66f9a6a57f1cf07e6fc9707f6.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/f3/1c/f31caa3e0c35119426dd096958cff2a06fe7635f242d6cf38ab5c34d8b63ea0f.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/9f/74/9f745e7ef36ca6129a818719a44d3f3c45f844c6fb34589e032e49ae5d6eebb0.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/13/da/13da1d48ec4c1d0029ee39db3b3df2c9e72adfb5ebfd2868d2d7e14d775fb8e4.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/3d/31/3d31b7b6e0767dc02fb1972b39713d95c6b6ea72dcd062dc692c09e1f89550a1.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/84/9e/849e6a6b9e8e09309ddf0b237e747fd570c89ddc76bcf201aa8893da37a6eee9.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/03/92/0392571851263487ce68c39df3a6985610cc922b129849c11d7681a8352adb80.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/de/0b/de0bc58268d837aef897efcf559428e81d520b7d362c4cd9b758adf65d216080.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a8/66/a866c2f8ad3de96fba00cdb4ba1ffecefeb96a70459a1637110272c6adbdd73b.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/32/d5/32d5015e0291b48f1a9054a807d8958007cb664d667de2f33a9480cbc63abe0d.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ec/49/ec496d50e45be372839715ed89a28c5ef0765baa987be12a3b903c544ae7d886.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/d2/c9/d2c91a895744e302c2e082142ae2bab7005bbd31fff72386d2ec1e9763badd29.webp"
                     }
                   ]
                 }
@@ -3370,35 +4558,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Rohan Sheikh, Deputy Secretary, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAADQBACdASoUABMAPzmUwVmvKicjqAgB4CcJaACo9BF8bZNRpz4jHB+p04T8zCA+wADiSJJNEeryjz0l/UinfyTJ6g2E6UbMwPnwZpBDDlgPTdGRguKcVC5UW3dWkeWrZYjRUipW+XfiHJWGrWDBZkcEaV5K6Kr8iY0WcAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAACwAwCdASoUABgAPzmSv1mvKaY1KAgCoCcJZAC90Aw8pCPc28o84AD+2Vh5NiLlhujj4tDaVwOdcKbMBZ/a5FclsqoJ7ogqsFpa5z7S+bhSI0qSm4BDkawmbufeCSBn6YcVH0cueoFpqN78qepMccvdW3SGlKYIO+znHn2oAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/0b/8f/0b8f896ff381adb108b7df7a4e35d8617f8c9df47753c6907559e6989331f9ff.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/2d/5c/2d5c074d3f7772671ab84129cad3d393641dea29f8c9fc8f7f09f62456130765.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/ae/46/ae46f8d7cc73b1db6c3344596711982ce71f6da4089fde610c6ba4fc779f1576.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/35/3b/353b04126544eb45efc062e8d83b50e73ebf01bb8849568bc8c0af54dcf9c287.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/72/13/721332c5f9d9badf07c14aff7f854b0103caeff4daf95c20cc6fd3455c8f6177.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/19/46/1946c30254c5218c3446bfdfe887c2f749efbe8be6502df83e780afaa0c29829.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/ec/f6/ecf6ee5efa76be899242dc8a5baad4a41d8e075cc24766ef33f632b5f36853a4.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/88/dc/88dc9faaea3015fed67e7ebc4f4b0ce7c2f889dd6073c13893ca648775210b51.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/27/53/27538419681def2ee92221084b6e19eb02d30203cf8a9003605fc37f740c43ff.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ba/5e/ba5e70560d5a34b541c3b43571bf0e69615fb8bc48802dec84d6a540c4999823.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/8d/93/8d937d62906a554fc461a7449bedce07a7b3663f945f0011bba33d0bed153f38.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/59/3d/593dcefeb34fda763934ca8f053496bb58e9ce00aa4a875c1e992be579cb1a66.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/8e/2c/8e2c4dc0f83723f4794b7528b7785a1bb35094981a95e0122c0d3f3e3decd678.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/43/c7/43c79d91a9933af204ab52e9968c3f291092e81b5cb267c932d64a3edc5d82c0.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/cd/ab/cdab9791a970a2bb5053a19d26e11a5f27de9166cb41c0912d749f17c09f82cf.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/74/78/7478f2921b1b02936b14b505f26455b60c7818593266b8d79751bd0463c6e095.webp"
                     }
                   ]
                 }
@@ -3411,35 +4615,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Nafisa Akther Bhuiyan, Deputy Secretary, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAABwBACdASoUABMAPzmOuVavKaUjqA1R4CcJQBmaAhpHeSBjss4ZrBbQOo1Z0AD+4y9Xg7ehaFZE6qNPPGRyMUrAgUfJuZOfVc8ufcXOIoDoSI9bt1LTNGU8R2V11ONG0AVIHre2rm1Mk5z0s3lSfT0i3VDq/ksLFmbrvAo58jlQAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAwBACdASoUABgAPzmQvlevKaYzqAqqcCcJYwDDcAxUaGBSDPoF+b3MhgAA/tlYeTYi5Ybo4+LQtppJRreu8IO3zO7Pv6CTxmLNAV9SL5sExRzG/dmtPNMpxAOjNmJOFYtqJgm31tcWVzaSwcEngAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/d9/34/d934aa75b4aca409b464310b0996f7b4c19692027c9ae93c7d42eeb5dfa1210c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/54/ae/54ae72ebefc550f7f2c079fb1efac2734544d9f83cb93c5a4611f8f49bd4e087.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/9c/4a/9c4a64dfce8485f8180d5961a9c7a99c95d31650fe751da4fbda570f2a132c0a.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/34/e1/34e153e355c261743fc44156ac7a1eee9c12cdf8a96d0c3fc971d950bd3d5ade.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/f2/cc/f2cc3602a762f35d6b9c0416036f38bf2a6a6ae13a317bb09642107387242750.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/32/ce/32cee65dfacf8f19a127e34d4dd727ebe1da8875f2339bd72044bc6a18a32645.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/50/1c/501c351c2b9274f61945f6bfa25d3b064a32eca04220f2264848079849cbe86c.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/f7/72/f772c522040e806717bfbe70be73e9467a74c27aa646359616aa8710a5c9eeb8.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/91/87/9187ee4d8f58cc50d4864c85bf8fd2cbf72be73f7516878cc713ba613a0d70a0.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/44/85/448565c9e5f57563804bdf86f8eb10fc0bbfd9be1ade3428873e558526ebf6a6.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/58/94/5894e26bdfe9bc74d9db887fd1d69060b038baa11931acd80f28a76fa9995f97.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/8e/11/8e11e43ce8650f9a263cd00f4617da0cf3b34f2b1fff6713ac16b5a38d00fd50.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/fa/d2/fad27e18a5dfa3d1862eeef45f9bb3b8f1a6f8f151921ad6701e516ac8795c1d.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e6/31/e6313d767080c85824bd894a9f68ea8cf33c5eda6884dfbf932707d36ca45601.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/f4/1f/f41fe3c55b404c9df67e60d374bb26f2269f74a041729e545b10fbb264f02b56.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/54/c0/54c0dd6a7fc5a7ca5653b5c2336e6a379293978138ce2a953d8393beddc34470.webp"
                     }
                   ]
                 }
@@ -3457,35 +4677,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Sabit Hossain, Assistant Secretary, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAQBQCdASoUABMAPzmSwFmvKiajqAgB4CcJZQDG9ywA2zVMYoeQAvEd1Np4w09BFuOkAPkzUfltRS5pU0ek/I3t0Vt07E+bLLXZhym5Yp/DHybtw0CRs8ZDKowRGOTkHU2rie8YJqSf1Z3bSfn88yA85VduloLTxgAAAA==",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAABQBACdASoUABgAPzmQv1evKaazqAqqcCcJZQDMHAyXc7EDJw58SEMd7oIAAP7ZWHk2IuWG6OPi0MPH+4UzyAPsTqAP/ZJF7W+sTkyqGLBQP4nX3X7hg1SZW5+9zLBQDkk9qw33Pc3ZdUC7+Q3Ry2HBg/3JFIB/QAAAAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/9d/e8/9de85ab8f2cf8c6b333a5e8d9a9f2893362d691a8994c60a7e191b7390088697.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/97/f8/97f82f166485e8a7820e89ab3ceb705790bfb8f960c8eb63a6837a03bcd96c3a.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/50/a4/50a4dd7412c3450a94d659033cc5056605201a7b375eb04799ec50edbf269d9c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/2c/22/2c22552e8eb9af96788248bcd4eaa19f21746fac811543607cb6153071ac9366.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/22/a2/22a2ed2f85476cba7729ca2807f33fa175ad68ddc925654bdc8c465eed235146.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e9/a9/e9a9a1a7648b506028a41d7fa8fe3ddf8aff81fe76c552b78633e58e38e1039e.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/92/95/929559199670f890f6f412522f54ccd1a8832a8cd2a3ea5a30b0175128de7467.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/0e/ca/0ecacb47b7f8c8881ee41ac3032e8a16f64d97d6935f06a30d98982ee98b4269.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/59/5f/595fedb612b081ab465ecf915fcba32c82259178ffa7151b9912680ee875c4cf.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/14/b5/14b5b94ac392a0e7908aa49c07b2188ee26539dc002be410783e2de6046c190c.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/b6/2f/b62fcfbdde0b959506714e721cfbe701b662e66f550948e6f48e84843850d84e.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/33/82/338208d47643959a7e3fcbaa11afe0541a9a59a1e162723e70f020fed0927252.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/d7/d0/d7d085735785174bb5379daae75cc445b07deac3d2e27a443fed0db1649d3f85.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/2c/00/2c002a211d6c5f176183ffe5666af7768e5a6eaa6e9189b8357dbfdc75ea9189.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/c6/b4/c6b4a53c9bebbd463761462655114fb48ccfac61743a57df4ad442e0ef16ccec.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/d4/0e/d40e2ae31c2c42d098a2ffe40bcb2ea93afa0c14710a15943cd2de4e160c69fa.webp"
                     }
                   ]
                 }
@@ -3498,35 +4734,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Touhidur Rahman Tonmoy, Assistant Secretary, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAABQBACdASoUABMAPzmUwVmvKicjqAgB4CcJZQAAI6INeqH4SCNnlvt+wpYgAP7QNbK0mh63EQv7HsuE240zWeUBbGLoO3X7C4irpy6reqypgtdsuvUku7bIgjzKXIMCliKUeVHHoo7w1h9bHAIv3VIYAAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwBACdASoUABgAPzmMvVYvKSaysBgIAlAnCWMAxNgMPI+Lvb/f4nkbiTYbwEMr3QAA/tlYeTYi5Ybo4+LQxOZgX2q9cGct2MjeWeM2wFSOLNjmvKsh2dZX2J4wUblOcobEuH0JoI/2JkB+BGu6HsfaI+W8cAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f0/31/f031e8339caaac9fcff67a67db3cd74a3a7feae516dbef15af409d733c2c0b5c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/3b/dd/3bdd28099dca6ea8e1445daad359872f3160d010facbf6445f18f9d676c7dd09.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f4/19/f41965b883eed94cc007bfb18bed1a400ca385a0ea34246b0e7ef146ed540c8c.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/76/33/7633b5006469d618d613cf130dedfe4b58521e7009b27288426fc7e31af830ed.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/6c/77/6c77b6712b6650b2cac03bf52690f1fe1a90f2b8328987cb2cb83057566a61d4.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/0c/75/0c755eea04b6cbabce58edcfbe71fb72c34052984f6fc2efb46fc2928804bdfe.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/25/ca/25cab304d895b7ee1d4e65f0ebf065a32564b86bf50d9a8d10de2368b56efccd.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/ad/7a/ad7a8e1139500ca127c93eeead8914b1415e94cc0fc70b390bb3323ddbd71fd6.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/88/50/8850c3091daa1cc92021d2feca56cae456be4ea0be1dc56764fc767569fc11f3.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/69/e1/69e133f8e63308001c19842f94ee97e3d4f934e9d2f4ba65fa02d9b29bbd3fef.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/10/ac/10ac6a4c516dd6f93a8d5eef92285b99551e1f4035a58cc867fe3890f545a59d.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/23/20/2320c03aa3adf2f93a676ef4f29f74ef111f08988d61d00fe3e449e6dbf52fc0.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/31/79/31793d251623df1b0e5c0862b85a28f556281f337e07134dad8993aa1f9bd7db.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/53/d2/53d2eac1f4792c5407b48a2791ce186e712bd2aa9644013e32a1a407c3181801.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/e1/3c/e13cd1fa820a90a5090cc761af321b637ea14fc963e7aced89e7f7ebd503134f.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/bb/28/bb2814c1cdd98b1073314231cd69a7c2794d12b8902f9e7e6c8d03ad190769c2.webp"
                     }
                   ]
                 }
@@ -3539,35 +4791,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Md. Tasnimul Hassan, Assistant Secretary, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAABwBACdASoUABMAPzmUwVmvKicjqAgB4CcJZQAALaKrVdQa7wSt/21fkIHHAAD+m2W9CXpHfpqvw4zRGBr7H064abkPrdf29FxdRuSZaxG6QkehA14ONAE+93kH41e5xZXpnFuzyInnBTb32C94n3SP5Jg1Yv8QUc8LV4ixu1X3CNrb11sCXxCiyGeLozgA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAQBACdASoUABgAPzmIvVavKKYysBgIAlAnCWUAxNgMOCtKidXT9JRMuAD+2Vh5NiLlhujj4tDcW694GV+gunaLPhUhQTbw46jzws7ZVZJ6jOfqosYvevPWN1HUWeY6YYD+61cgsY8GNsY+/K/tzvV3NAqVRJ9GYPhGpWMmYxigAA==",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/68/d7/68d74e8c161e7bbf9dec8da3cdacd72900a2d27cfdb0558bd5dbb52252cb820e.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/7c/b2/7cb24e6fe2350c4541c8da69f051f630b53cb20b4910bbc46bcec3ada47cbc57.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/d5/27/d527b6a6dda6b3fd3c373444aa26ed57ebf9ffb88c3bc3d5d181a19832e6d04a.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/6b/4a/6b4a0dfa85225c3ed4743a590156b3b7936f3b03c155ca84cc9b7655e958bf8c.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/1e/0c/1e0ca400e4f470d05ae849f8e8988bf12248c47ef6809ae0c1a20ac0fc201480.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/8a/63/8a637ff8adfc7f277a77481bdb6e54b427b4111332bf2e3ff365f51abc5a0b1c.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/5b/a4/5ba47a48e6b19386165d86ea96b310380116aaa051cb89bab31daaafd7252397.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/b0/59/b059051f5631c2eb7d71fa16a79f165a4359d271a22b4a7a8f4e7eaf5998b6c1.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/1f/64/1f647800a1b7e9e2e85285d8494a0624148e82b123cfdb31a328b2a76bf95b88.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/77/27/7727950f68c603aae6c846482b8ec23fdefd3645474de7bb90f7d8eb9ec1d499.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f4/34/f434092632d7d115f21d948ca3c9947a8980fadd46d4177e8a901932315c7a06.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/d2/ec/d2ecff388b3e214e5c089eec809c8b59b0d0f760a333d2f00a1b6e60855db9aa.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/a5/24/a524566c3cd75f399a94408ca9d45fe266c19495b9315514b2ea44b94a07abb6.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/4c/94/4c94953100f605bfb2fae0b465b6776126bd8713ee60e6de934c41e133ddf43a.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/d6/2c/d62cc0ebe79973b8df4f3a72e8d7b044a924b4355e492c295e4f9239ac43edc2.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/1e/f8/1ef8bc3fd366e0628153ed514e4f01103188a1188a236fac0948aca2caab5c97.webp"
                     }
                   ]
                 }
@@ -3585,35 +4853,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Abrar Ibn Zaman, Member, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAABQBACdASoUABMAPzmQvlevKaYjqAqp4CcJZwAALM0PlR9QwHcvKD8ORJqAAPoORInqNYyflVMBpEjddQHIjbCgXaTSuq/XoumQyFjL9r/nDCOhaPfwxhJpwYaGjNE5AruZAAAA",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAwBACdASoUABgAPzmSulivKiU0qAqqkCcJZQDN/AxaWwsKnLEOazd9FwAA/tlYeTYi5Ybo4+LQ1spLvmY57kZI0SmK5tDIvJt5nx6MBAl9t9aLP6ehwXyTE8zSqizCxzDg7vTmXbq3ft+EIIyAAAAA",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/f7/20/f72072a40f3663757756fa2eaee9f7d682c38aca3e33c56f62f136ab16237349.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/78/4d/784d4ef235af743a2f961e1de77816b99a26a0f0bb78ced977c4259bf5c04d19.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/f2/75/f2750259c5797807f1e22e06976fa321cf98774d160582c8667824a30d9eff4f.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/3f/c1/3fc17cc011bc848216565c04bd0b4491247962e6b07b8a7dcdfb4d7f160a9a61.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/48/94/4894a0373c77abede2971a82862db3f1da3ac7391806794d660f723759548611.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/8a/0b/8a0b94b09ee0f7afcd6c95e34b56d1a3fd8c1e97ecb334a5cb75987d1526fa1c.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/37/46/37463b8afa7f8f923eeaceb7905dc6963842a76c636a60647f8abb679a1816fa.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/1a/be/1abe5d6e4fc0d2acdb666719bf21b9061d32631022598ba3db45d5a60566601a.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/ab/02/ab02a73e3cee94d57734fd847ea4b60e7b96bba967b9d79156819d70412d9347.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/ff/15/ff158b96c9df119c491fec532936963d9b5b7c32d7a3ffb7e96a3cbc3b971ae8.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/83/1f/831fb5148b851e582c78ee9759916da047993d9bf8f0c809241a3ef4212a7dbc.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/f9/fd/f9fd69a09da0a1be85fce2ed74018fd4e0e5614b3bf1c69402041a43451b9d4a.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/da/3f/da3f9090c1306624d3b82fa84b1ba157261029802aeb232e2e38e103a5642af5.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/e5/0a/e50afa48ddfcd11d6fe53e860cb31c76b559a4c37effce804ba78444446a1d42.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/90/f6/90f66b0d97793c8921ece8b4d5f10e33ccbc1d1faa123bee2442510b70f31951.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/88/69/88697b7fd75f6e14d452999715ba23b6cc47027fe1482f66a5ede3fd07b2fc9d.webp"
                     }
                   ]
                 }
@@ -3626,35 +4910,51 @@ export const COMMITTEE: Committee = {
                 "batch": null,
                 "portrait": {
                   "alt": "Nurtaz Jahan Nazah, Member, Corporate Relations and Sponsorship Team of the 11th Executive Committee, BUET Robotics Society",
-                  "width": 930,
-                  "height": 895,
-                  "lqip": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAACwBACdASoUABMAPzmUwFmvKiajqAgB4CcJZQDKtBDSIEsIgLnxsE1nLm30dtIAAP6fOE8SWXfpUQkk1UrKucIoPKyGZPFVBDB+FXHV9cL85+faOjFVzPXphU6hoc+5SLzhQn9qpByvJ1TNAKywCCqAVPwv+TuIZDozPlEQsAA=",
+                  "width": 1500,
+                  "height": 1800,
+                  "lqip": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADwAwCdASoUABgAPzmOwlavKaeyqAqqUCcJZQDOdAw3INlWm01OHRwAAP7ZWHk2IuWG6OPi0L7ImosJpptEVds37HsoKatKn+ddOF2sJKHx4GApy4GvA5hcAMRTCXuhgqNB3XeFoKVu5LUAAAA=",
                   "avif": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/13/27/132785c2d1b0e33312eb0b781c83ad7b6b2791a33cb2fffbb7a17ddeaafbc946.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/67/8d/678d2696acd10845f325cb32e77f61c74748f7ea431a67788d5d02cd84a7cd86.avif"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/73/6e/736e5ea3ecd230990619513896ae9831ae4f628e598c5727665ac99a93721700.avif"
+                      "url": "http://localhost:9000/brs-assets/sha256/19/14/191489c366a27ce2920fa8f604ce7b65d60a11fcce2e11b192d120a072725a98.avif"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/ec/40/ec403de358e3b5a082c1dcc61cfcf03a7642a0ce0785ea13641f19c906108ed1.avif"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/2b/44/2b444fe5f17b896aa5dcfca1a6cd9bc83fdff8454e8c200d9c25ea3db120cb19.avif"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/b8/de/b8dee4988e721784852c3592af645dcb32567c221019be97e85289e12b14e975.avif"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/8a/a3/8aa372ab5ce7873b6baf4e0a9690ab4c33230cb76fd4bd1a8fc88d5c391cb5f2.avif"
                     }
                   ],
                   "webp": [
                     {
                       "w": 320,
-                      "url": "http://localhost:9000/brs-assets/sha256/de/5c/de5c49417752feee914e1e5ae21853444bd1e02a08db5ba454022a5d52fd81dd.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/d7/f5/d7f5347be05fc7f25db9ddc6b7ed02cb0e287067ccb072439b2196b1308410f8.webp"
                     },
                     {
                       "w": 640,
-                      "url": "http://localhost:9000/brs-assets/sha256/a2/06/a2061a1592244fd3b52b43d1878e697bab6e15b2d79c5ca43a5d2daf66d48393.webp"
+                      "url": "http://localhost:9000/brs-assets/sha256/bf/12/bf12198df437b02f7f09c886d5232d4e7cbfe11851d1043bfccb2b817208f72e.webp"
                     },
                     {
-                      "w": 930,
-                      "url": "http://localhost:9000/brs-assets/sha256/7b/5f/7b5fefd90d6d3a6f0675f19e6238afd4c032ac4403225540f06a76bb83a0d88a.webp"
+                      "w": 960,
+                      "url": "http://localhost:9000/brs-assets/sha256/29/57/2957814bb33fb53edd1a5353554adce9b566b9e4e900144089bac752a9a209fa.webp"
+                    },
+                    {
+                      "w": 1280,
+                      "url": "http://localhost:9000/brs-assets/sha256/d1/cb/d1cb9a27bdabf2fe26cd01b5b900ce2587e068111b9ffc2a0c602856ffcbd1f5.webp"
+                    },
+                    {
+                      "w": 1500,
+                      "url": "http://localhost:9000/brs-assets/sha256/3a/5b/3a5bc7cbce1cafb94e88b3cea0664579c49095c10c8a207da8fec9e40a7c79ae.webp"
                     }
                   ]
                 }

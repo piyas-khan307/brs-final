@@ -4,16 +4,22 @@
   "private": true,
   "description": "Plane 4 — static delivery frontend. Replaceable without touching Planes 1-3.",
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "node scripts/dev.mjs",
     "build": "next build",
     "start": "npx serve out",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "content": "node --env-file-if-exists=../../.env --import tsx scripts/fetch-content.mts",
-    "content:check": "node --env-file-if-exists=../../.env --import tsx scripts/fetch-content.mts --check"
+    "content:check": "node --env-file-if-exists=../../.env --import tsx scripts/fetch-content.mts --check",
+    "content:watch": "node scripts/watch-content.mjs"
   },
   "dependencies": {
     "@brs/contract": "workspace:*",
+    "@tiptap/extension-text-align": "^3.30.1",
+    "@tiptap/extensions": "^3.30.1",
+    "@tiptap/pm": "^3.30.1",
+    "@tiptap/react": "^3.30.1",
+    "@tiptap/starter-kit": "^3.30.1",
     "gsap": "^3.15.0",
     "lenis": "^1.3.25",
     "next": "^15.5.7",
@@ -27,7 +33,7 @@
     "eslint": "^9.39.5",
     "eslint-plugin-brs": "workspace:*",
     "tailwindcss": "^4.1.16",
-    "typescript": "^5.9.3",
-    "tsx": "^4.20.6"
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }

@@ -193,6 +193,7 @@ app.post("/ingest", async (c) => {
             ? { sourceRef: `admin-upload:${c.get("uploaderId")}` }
             : {}),
         published: String(form.get("published") ?? "") === "true",
+        ...(form.get("category") ? { category: String(form.get("category")) } : {}),
       },
       store,
       client,

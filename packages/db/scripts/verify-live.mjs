@@ -35,7 +35,11 @@ const URL =
 
 const EXPECTED_TABLES = [
   "achievement_assets", "achievements", "asset_derivatives", "assets",
-  "committee_teams", "committees", "event_assets", "event_segments",
+  // committee_groups, not committee_teams. The table was renamed and this
+  // list was not, so the verifier has been reporting a MISSING TABLE on
+  // every run — which is how a safety net stops being one: nobody reads a
+  // check that is always red.
+  "committee_groups", "committees", "event_assets", "event_segments",
   "events", "members", "memberships", "moderators", "partners",
   "posts", "press", "projects", "redirects",
 ];
@@ -112,6 +116,30 @@ const CASES = [
   { name: "events: unlisted category", expect: "reject",
     sql: `INSERT INTO events (slug,title,category,start_date)
           VALUES ('s','T','hackathon','2024-05-01')` },
+  // ── events as posts (0012) and one place for the cover (0013) ──
+  // These govern what the admin panel is allowed to save, so they are the
+  // rules an editor will actually meet.
+  { name: "events: published with no publication date", expect: "reject",
+    sql: `INSERT INTO events (slug,title,category,published)
+          VALUES ('s','T','workshop',true)` },
+  { name: "events: published WITH a publication date", expect: "accept",
+    sql: `INSERT INTO events (slug,title,category,published,published_at)
+          VALUES ('s','T','workshop',true,now())` },
+  { name: "events: a five-character excerpt", expect: "reject",
+    sql: `INSERT INTO events (slug,title,category,excerpt)
+          VALUES ('s','T','workshop','short')` },
+  { name: "events: an excerpt longer than a feed card", expect: "reject",
+    sql: `INSERT INTO events (slug,title,category,excerpt)
+          VALUES ('s','T','workshop',repeat('x',321))` },
+  { name: "events: no excerpt at all (a photographs-only entry)", expect: "accept",
+    sql: `INSERT INTO events (slug,title,category) VALUES ('s','T','workshop')` },
+  { name: "events: no date at all (migration 0010)", expect: "accept",
+    sql: `INSERT INTO events (slug,title,category,start_date)
+          VALUES ('s','T','workshop',NULL)` },
+  { name: "event_assets: the retired 'cover' role", expect: "reject",
+    sql: `INSERT INTO event_assets (event_id,asset_id,role)
+          VALUES (gen_random_uuid(),gen_random_uuid(),'cover')` },
+
   { name: "committees: term_end before term_start", expect: "reject",
     sql: `INSERT INTO committees (ordinal,label,term_start,term_end)
           VALUES (11,'11th',2025,2024)` },

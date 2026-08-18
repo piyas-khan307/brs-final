@@ -179,7 +179,10 @@ type EventRow = {
   id: string;
   slug: string;
   title: string;
-  category: EventDTO["category"];
+  category: string;
+  category_name: string;
+  parent_slug: string | null;
+  parent_name: string | null;
   series: string | null;
   edition: string | null;
   start_date: string;
@@ -190,7 +193,7 @@ type EventRow = {
   presented_by: string | null;
   eligibility: string | null;
   body: string;
-  body_format: "md" | "html";
+  body_format: "md" | "html" | "doc";
   copy_source: EventDTO["copySource"];
   external_album: string | null;
   featured: boolean;
@@ -219,27 +222,46 @@ export type EventQuery = {
  * This is a contract question, not a bug: early committees genuinely have
  * events with no surviving photograph. Making `cover` optional is the
  * honest fix, but it changes a published field's type, so it needs a
- * decision rather than a quiet edit. Costless today — there are 0 events.
+ * decision rather than a quiet edit.
+ *
+ * ── WHERE THE COVER COMES FROM ──
+ * `events.cover_asset_id`, and nowhere else. It used to be read from an
+ * `event_assets` row with role = 'cover', which meant the same fact was
+ * recorded in two places and kept in step only by the one script that
+ * happened to write both. The admin editor sets the column, so a cover
+ * chosen in the panel would never have reached the site. Migration 0013
+ * retires the role and leaves the column as the single answer.
  */
 export async function listEvents(q: EventQuery = {}): Promise<Page<EventDTO>> {
   const limit = clampLimit(q.limit);
   const offset = decodeCursor(q.cursor);
 
-  const where: string[] = ["e.published", "cover.asset_id IS NOT NULL"];
+  const where: string[] = ["e.published", "e.cover_asset_id IS NOT NULL"];
   const params: unknown[] = [];
   const add = (clause: string, value: unknown) => {
     params.push(value);
     where.push(clause.replace("$?", `$${params.length}`));
   };
 
-  if (q.category) add("e.category = $?::event_category", q.category);
+  /* Matches a subcategory by its own slug, and a top-level category by
+     its slug OR by any of its children's — filtering the feed by
+     "Workshop" has to include the events filed under "Basic Workshop",
+     or the parent category appears to contain nothing. */
+  if (q.category) {
+    // Pushed once and referenced twice — `add` only substitutes the
+    // first $?, and a second placeholder here would silently read the
+    // NEXT filter's value.
+    params.push(q.category);
+    where.push(`(c.slug = $${params.length} OR p.slug = $${params.length})`);
+  }
   if (q.series) add("e.series = $?", q.series);
   if (q.year) add("EXTRACT(YEAR FROM e.start_date) = $?", q.year);
   if (q.featured !== undefined) add("e.featured = $?", q.featured);
 
   const from = `
     FROM events e
-    LEFT JOIN event_assets cover ON cover.event_id = e.id AND cover.role = 'cover'
+    JOIN event_categories c ON c.id = e.category_id
+    LEFT JOIN event_categories p ON p.id = c.parent_id
     WHERE ${where.join(" AND ")}
   `;
 
@@ -250,8 +272,8 @@ export async function listEvents(q: EventQuery = {}): Promise<Page<EventDTO>> {
   const total = Number(countRows[0]?.total ?? 0);
 
   const { rows } = await pool.query<EventRow>(
-    `SELECT e.*, cover.asset_id AS cover_asset_id ${from}
-     ORDER BY e.start_date DESC, e.slug
+    `SELECT e.*, ${CATEGORY_COLUMNS} ${from}
+     ORDER BY e.start_date DESC NULLS LAST, e.edition DESC NULLS LAST, e.slug
      LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
     [...params, limit, offset],
   );
@@ -262,9 +284,10 @@ export async function listEvents(q: EventQuery = {}): Promise<Page<EventDTO>> {
 
 export async function eventBySlug(slug: string): Promise<EventDTO | null> {
   const { rows } = await pool.query<EventRow>(
-    `SELECT e.*, cover.asset_id AS cover_asset_id
+    `SELECT e.*, ${CATEGORY_COLUMNS}
      FROM events e
-     LEFT JOIN event_assets cover ON cover.event_id = e.id AND cover.role = 'cover'
+     JOIN event_categories c ON c.id = e.category_id
+     LEFT JOIN event_categories p ON p.id = c.parent_id
      WHERE e.slug = $1 AND e.published`,
     [slug],
   );
@@ -272,6 +295,10 @@ export async function eventBySlug(slug: string): Promise<EventDTO | null> {
   const [event] = await hydrateEvents(rows);
   return event ?? null;
 }
+
+  const CATEGORY_COLUMNS = `
+    c.slug AS category, c.name AS category_name,
+    p.slug AS parent_slug, p.name AS parent_name`;
 
 /** Segments, gallery and cover for a page of events, in three queries
  *  total rather than three per event. */
@@ -285,9 +312,19 @@ async function hydrateEvents(rows: EventRow[]): Promise<EventDTO[]> {
        WHERE event_id = ANY($1::uuid[]) ORDER BY sort_order, name`,
       [ids],
     ),
+    /* The cover is excluded, so a photograph promoted to the top of the
+       article does not also appear halfway down the contact sheet. Doing
+       it here rather than by moving rows around means the admin panel can
+       let somebody pick any attached photograph as the cover without
+       having to keep two lists in agreement. */
     pool.query<{ event_id: string; asset_id: string; plate_no: number | null }>(
-      `SELECT event_id, asset_id, plate_no FROM event_assets
-       WHERE event_id = ANY($1::uuid[]) AND role = 'gallery' ORDER BY sort_order`,
+      `SELECT ea.event_id, ea.asset_id, ea.plate_no
+         FROM event_assets ea
+         JOIN events e ON e.id = ea.event_id
+        WHERE ea.event_id = ANY($1::uuid[])
+          AND ea.role = 'gallery'
+          AND ea.asset_id IS DISTINCT FROM e.cover_asset_id
+        ORDER BY ea.sort_order`,
       [ids],
     ),
   ]);
@@ -318,10 +355,15 @@ async function hydrateEvents(rows: EventRow[]): Promise<EventDTO[]> {
         slug: r.slug,
         title: r.title,
         category: r.category,
+        categoryName: r.category_name,
+        ...(r.parent_slug && r.parent_name
+          ? { categoryParent: { slug: r.parent_slug, name: r.parent_name } }
+          : {}),
         ...(r.series ? { series: r.series } : {}),
         ...(r.edition ? { edition: r.edition } : {}),
         dates: {
-          start: r.start_date,
+          // Omitted rather than null when unrecorded — see EventDTO.
+          ...(r.start_date ? { start: r.start_date } : {}),
           ...(r.end_date ? { end: r.end_date } : {}),
         },
         ...(r.venue ? { venue: r.venue } : {}),
@@ -340,7 +382,11 @@ async function hydrateEvents(rows: EventRow[]): Promise<EventDTO[]> {
         copySource: r.copy_source,
         // Derived, never stored. A stored status is wrong the day after it
         // is written and nobody notices until an old event says "upcoming".
-        status: r.start_date > today ? "upcoming" : "past",
+        // No date means it is in the archive, not in the diary. An
+        // undated event is never "upcoming": that would put a workshop
+        // from 2016 in a "what's on" list because nobody wrote the day
+        // down.
+        status: r.start_date && r.start_date > today ? "upcoming" : "past",
         featured: r.featured,
         updatedAt: r.updated_at.toISOString(),
       },
@@ -689,7 +735,7 @@ type PostRow = {
   title: string;
   excerpt: string;
   body: string;
-  body_format: "md" | "html";
+  body_format: "md" | "html" | "doc";
   author_name: string;
   author_batch: string | null;
   cover_asset_id: string | null;
@@ -1034,9 +1080,8 @@ export async function computeStats(): Promise<StatsDTO> {
 export async function diagnostics() {
   const { rows } = await pool.query<Record<string, string>>(`
     SELECT
-      (SELECT count(*) FROM events e WHERE e.published
-         AND NOT EXISTS (SELECT 1 FROM event_assets ea
-                         WHERE ea.event_id = e.id AND ea.role = 'cover')) AS events_without_cover,
+      (SELECT count(*) FROM events e
+         WHERE e.published AND e.cover_asset_id IS NULL)                   AS events_without_cover,
       (SELECT count(*) FROM assets WHERE NOT published)                   AS unpublished_assets,
       (SELECT count(*) FROM assets)                                       AS assets
   `);

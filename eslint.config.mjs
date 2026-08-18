@@ -134,6 +134,33 @@ export default [
     },
   },
 
+  /* ── Quoted archive copy ───────────────────────────────────────────────
+     brs/no-prohibited-copy exists to stop US writing marketing filler:
+     "cutting-edge", "next generation", "shaping the future". Its error
+     message says to "replace it with a specific, evidenced claim", which
+     is advice that only makes sense to the author of the sentence.
+
+     src/lib/events/*.generated.ts is not our prose. It is the club's own
+     announcement copy, extracted verbatim from BRS/ and quoted. Three
+     archive entries use exactly these phrases. Rewriting a club's own
+     historical words to satisfy our house style would be editing the
+     record, and silently at that.
+
+     So the rule is off for extracted archive copy and ON everywhere else,
+     including every page component that frames it. The phrases are not
+     ignored: extract-events.mjs reports them in content/events.review.md
+     so a human can decide to rewrite an entry — which is a content
+     decision belonging to the club, not a lint failure belonging to us.
+
+     Narrow on purpose: src/lib/events/, and nothing above it. */
+  {
+    files: ["apps/web/src/lib/events/*.generated.ts"],
+    rules: {
+      "brs/no-prohibited-copy": "off",
+      "brs/no-hardcoded-stats": "off",
+    },
+  },
+
   /* ── The motion sheet ──────────────────────────────────────────────────
      ONE rule is relaxed here, in ONE directory, for a stated reason.
 

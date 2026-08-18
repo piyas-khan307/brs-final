@@ -22,18 +22,12 @@ function loadAllowlist(fromFile) {
   let dir = dirname(fromFile);
   for (let i = 0; i < 12; i++) {
     const candidate = join(dir, "config", "client-allowlist.json");
-    if (CACHE.has(candidate)) {
-      const cached = CACHE.get(candidate);
-      if (cached) return { entries: cached, root: dir };
-    } else {
-      try {
-        const parsed = JSON.parse(readFileSync(candidate, "utf8"));
-        const entries = parsed.allow ?? [];
-        CACHE.set(candidate, entries);
-        return { entries, root: dir };
-      } catch {
-        CACHE.set(candidate, null);
-      }
+    try {
+      const parsed = JSON.parse(readFileSync(candidate, "utf8"));
+      const entries = parsed.allow ?? [];
+      return { entries, root: dir };
+    } catch {
+      // Keep searching parent directories
     }
     const parent = dirname(dir);
     if (parent === dir) break;

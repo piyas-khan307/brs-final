@@ -26,18 +26,23 @@ import { useEffect } from "react";
 import { useSession } from "./Session";
 import { Button, Loading } from "./ui";
 
-type Entry = { href: string; label: string; hint: string; adminOnly?: boolean };
+/* The one-line descriptions under each label are GONE. They were there
+   to teach the menu on a first visit, and a menu of nine entries that
+   each carry a second line is a wall of text you re-read every time —
+   the label alone ("Photographs", "Accounts") already says it, so the
+   subtitle was paying rent on nine rows to explain nothing. */
+type Entry = { href: string; label: string; adminOnly?: boolean };
 
 const NAV: Entry[] = [
-  { href: "/admin", label: "Overview", hint: "What needs your attention" },
-  { href: "/admin/posts", label: "Blog posts", hint: "Write and publish articles" },
-  { href: "/admin/photos", label: "Photographs", hint: "Upload and describe images" },
-  { href: "/admin/committee", label: "Committee", hint: "Sections, positions and members", adminOnly: true },
-  { href: "/admin/people", label: "People", hint: "Everyone on record", adminOnly: true },
-  { href: "/admin/events", label: "Events", hint: "Workshops and competitions", adminOnly: true },
-  { href: "/admin/achievements", label: "Achievements", hint: "Competition results", adminOnly: true },
-  { href: "/admin/partners", label: "Partners & press", hint: "Sponsors and coverage", adminOnly: true },
-  { href: "/admin/accounts", label: "Accounts", hint: "Who can sign in", adminOnly: true },
+  { href: "/admin", label: "Overview" },
+  { href: "/admin/posts", label: "Blog posts" },
+  { href: "/admin/photos", label: "Photographs" },
+  { href: "/admin/committee", label: "Committee", adminOnly: true },
+  { href: "/admin/people", label: "People", adminOnly: true },
+  { href: "/admin/events", label: "Events", adminOnly: true },
+  { href: "/admin/achievements", label: "Achievements", adminOnly: true },
+  { href: "/admin/partners", label: "Partners & press", adminOnly: true },
+  { href: "/admin/accounts", label: "Accounts", adminOnly: true },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -51,7 +56,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   // Redirecting while `loading` is true would log everyone out on every
   // page refresh, because the access token starts in memory and empty.
   useEffect(() => {
-    if (!loading && !user && !onLoginPage) router.replace("/admin/login/");
+    if (loading || user || onLoginPage) return;
+    /* Carry where they were, so signing back in after a session times out
+       returns them to the event they had open rather than to the panel's
+       front page. Read from `window` rather than useSearchParams(), which
+       would force a Suspense boundary around every admin page under
+       `output: "export"`. */
+    const here = `${window.location.pathname}${window.location.search}`;
+    router.replace(`/admin/login/?next=${encodeURIComponent(here)}`);
   }, [loading, user, onLoginPage, router]);
 
   if (onLoginPage) return <>{children}</>;
@@ -84,36 +96,39 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const name = [user.first_name, user.last_name].filter(Boolean).join(" ") || user.email;
 
   return (
-    <div className="min-h-screen bg-bg-base">
-      <header className="border-b border-line-hairline bg-bg-raised">
+    <div className="min-h-screen bg-bg-base text-text-primary">
+      <header className="sticky top-0 z-40 border-b border-line-hairline bg-bg-raised">
         <div className="mx-auto flex max-w-shell flex-wrap items-center justify-between gap-4 px-6 py-4">
-          <div className="flex items-baseline gap-3">
+          <div className="flex items-center gap-3">
             <span
-              className="text-heading-m text-text-primary"
+              className="text-heading-m font-bold text-text-primary"
               style={{ fontVariationSettings: "'wght' 700" }}
             >
               BRS
             </span>
-            <span className="font-mono text-micro uppercase text-text-tertiary">Website admin</span>
-          </div>
-          <div className="flex items-center gap-5">
-            <span className="text-body-m text-text-secondary">
-              {name}
-              {/* The role, in the placard voice. It is a fact about the
-                  session rather than part of the person's name, and the
-                  mono register says so without a coloured badge. */}
-              <span className="ml-2 font-mono text-micro uppercase text-text-tertiary">
-                {user.isAdministrator ? "Administrator" : "Member"}
-              </span>
+            <span className="h-4 w-px bg-line-hairline" />
+            <span className="font-mono text-micro uppercase tracking-widest text-text-tertiary">
+              Website Control
             </span>
-            {/* A link out to the real site, because the whole point of
-                editing is to go and look at the result. */}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 border border-line-hairline bg-bg-base px-3 py-1">
+              <span className="h-2 w-2 bg-success" />
+              <span className="text-body-s font-medium text-text-primary">{name}</span>
+              <span className="border border-line-hairline px-1.5 py-0.5 font-mono text-micro uppercase text-accent">
+                {user.isAdministrator ? "Admin" : "Member"}
+              </span>
+            </div>
+
             <Link
               href="/"
+              target="_blank"
               className="text-body-s text-text-secondary underline decoration-line-strong underline-offset-4 hover:text-text-primary"
             >
               View site
             </Link>
+
             <Button
               variant="quiet"
               onClick={async () => {
@@ -127,21 +142,19 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-shell flex-col gap-8 px-6 py-8 md:flex-row md:gap-12 md:py-12">
-        <nav aria-label="Admin sections" className="md:w-64 md:shrink-0">
-          <ul className="flex flex-wrap gap-2 md:flex-col md:gap-1">
+      <div className="mx-auto flex max-w-shell flex-col gap-8 px-6 py-8 md:flex-row md:gap-10 md:py-10">
+        <nav aria-label="Admin sections" className="md:sticky md:top-24 md:w-64 md:shrink-0 md:self-start">
+          <ul className="flex flex-wrap gap-1.5 md:flex-col md:gap-1">
             {visible.map((e) => {
-              // `/admin` would otherwise match every child route.
-              const active = e.href === "/admin" ? pathname === "/admin/" || pathname === "/admin" : pathname?.startsWith(e.href);
+              const active =
+                e.href === "/admin"
+                  ? pathname === "/admin/" || pathname === "/admin"
+                  : pathname?.startsWith(e.href);
               return (
                 <li key={e.href}>
                   <Link
                     href={`${e.href}/`}
                     aria-current={active ? "page" : undefined}
-                    // The left rule is the whole navigation device: it is
-                    // the site's own structural hairline, thickened to 2px
-                    // and coloured oxblood for the page you are on. No
-                    // pill, no fill, no icon set.
                     className={`block border-l-2 px-4 py-2.5 no-underline transition-colors duration-micro ease-out ${
                       active
                         ? "border-accent bg-bg-raised text-text-primary"
@@ -149,12 +162,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                     }`}
                   >
                     <span
-                      className="block text-body-l"
+                      className="block text-body-m font-medium"
                       style={{ fontVariationSettings: active ? "'wght' 620" : "'wght' 500" }}
                     >
                       {e.label}
                     </span>
-                    <span className="mt-0.5 hidden text-body-s text-text-tertiary md:block">{e.hint}</span>
                   </Link>
                 </li>
               );
@@ -166,4 +178,6 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </div>
     </div>
   );
+
 }
+

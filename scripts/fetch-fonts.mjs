@@ -61,30 +61,37 @@ const UA =
 
 const TARGETS = [
   {
-    // ── DISPLAY: SPACE GROTESK ──────────────────────────────────────
-    // Replaces Archivo on client direction: "its look too ordinary".
-    // That was a fair call — Archivo is a well-made neo-grotesque, which
-    // is precisely the problem. At display size it is close enough to
-    // Helvetica that it reads as the absence of a decision.
+    // ── DISPLAY: IBM PLEX SANS ──────────────────────────────────────
+    // Replaces Space Grotesk on client direction: "its look like ai
+    // made". That is an accurate read, and worth recording precisely
+    // rather than treating as taste.
     //
-    // Space Grotesk is drawn from Space Mono, so it keeps a monospace's
-    // squared terminals and flat-sided bowls while spacing proportionally.
-    // Its letterforms are genuinely odd — the single-storey 'g', the
-    // squared 'S', the sheared 't' — which is what stops it reading as a
-    // default.
+    // Space Grotesk is a good face badly positioned. It became the
+    // default display font of every site-generating LLM tool in
+    // 2024-25, so it now carries that association whatever it is set
+    // in — and it arrived here paired with a rose gradient button and
+    // a glass-blur panel, which is the rest of that same house style.
+    // A face that signals "generated" is the wrong face for an archive
+    // whose entire claim is that the material is real.
     //
-    // It also answers to the mark. The "BRS" lettering in the logo is
-    // condensed, squared, and cut at angles; Space Grotesk is the closest
-    // free text face to that construction, so the wordmark and the badge
-    // now look like they were drawn by the same hand.
+    // IBM Plex Sans answers it from inside the system we already have.
+    // We have shipped IBM Plex Mono for labels and figures since Phase
+    // 0; Plex Sans is its sibling, same skeleton and same designer, so
+    // the placards and the prose stop being two unrelated voices and
+    // become one superfamily. It was drawn as IBM's corporate type
+    // from Bauhaus-era engineering lettering — an engineering
+    // institution's face by literal provenance, not by association.
     //
-    // NO wdth AXIS. Archivo's variable width was load-bearing in the old
-    // system and Space Grotesk does not have one — it varies on weight
-    // only, 300-700. Every fontVariationSettings on the site drops its
-    // 'wdth' term accordingly rather than setting an axis that silently
-    // does nothing.
-    css: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap",
-    subsets: { latin: "SpaceGrotesk-variable-latin.woff2" },
+    // It is also distinctive where it counts: the flared 'l' tail, the
+    // angled terminal on 'a', the squared 'g'. Those come from the
+    // mono and are what stop it reading as another neo-grotesque.
+    //
+    // NO wdth AXIS — weight only, 100-700. Same constraint Space
+    // Grotesk had, so no fontVariationSettings on the site changes.
+    // The one exception is any rule asking for wght above 700, which
+    // now clamps; RichText's 750 was lowered to 700 when this landed.
+    css: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100..700&display=swap",
+    subsets: { latin: "IBMPlexSans-variable-latin.woff2" },
     requireVariableWidth: false,
   },
   {
@@ -92,12 +99,78 @@ const TARGETS = [
     subsets: { latin: "IBMPlexMono-400-latin.woff2" },
     requireVariableWidth: false,
   },
+  {
+    // ── EDITORIAL: SOURCE SERIF 4 ───────────────────────────────────
+    // A third family, and the spec says two. The exception is argued
+    // rather than assumed, because it is the kind of decision that
+    // otherwise becomes five families by next year.
+    //
+    // Client direction on the Executive Committee page still stands:
+    // "use different font style. not current simple font style." A
+    // grotesque cannot answer that on its own — asking one to look
+    // unlike a grotesque only ever produces a bigger grotesque. So the
+    // serif stays; what changed is which serif.
+    //
+    // Instrument Serif went out with Space Grotesk and for the same
+    // reason: it is the display serif those same tools reach for, so
+    // it read as generated rather than as chosen.
+    //
+    // Source Serif 4 is Adobe's institutional text serif, drawn after
+    // Fournier. Two things it gives us that Instrument Serif could not:
+    //
+    //   · A REAL WEIGHT AXIS, 200-900. Instrument Serif was 400-only,
+    //     which is why fonts.ts had to forbid ever bolding it and why
+    //     emphasis in that face had to come from size alone. Headings
+    //     can now carry weight.
+    //   · An optical size axis, 8-60 — WHICH WE DO NOT SHIP. See below.
+    //
+    // NO opsz AXIS, AND THAT WAS A BUDGET DECISION. Measured against
+    // the API, latin subset only:
+    //
+    //   Source Serif 4, opsz 8-60 + wght 200-900 ..... 122,360 bytes
+    //   Source Serif 4, wght 200-900, no opsz ........  50,824 bytes
+    //   Source Serif 4, static 400 ...................  20,088 bytes
+    //
+    // The optical size axis costs 70 KB — more than the other two
+    // families put together — and the whole of §4.7 is 110 KB. Shipped
+    // with opsz the three families come to 178.5 KB and the budget gate
+    // fails, which is how this was caught rather than discovered later.
+    // Dropping it keeps the weight axis, which is the one that changes
+    // what the design system can express.
+    //
+    // Consequence to know about: the face no longer redraws itself for
+    // small sizes, so Instrument Serif's "never below about 1rem" rule
+    // still applies here. It is a lower-contrast design than Instrument
+    // Serif, so it degrades more gracefully — but it is a display face
+    // and small text belongs in Plex Sans regardless.
+    //
+    // WHERE IT MAY BE USED is unchanged: display type only — page
+    // titles, section headings, and the member names on
+    // /executive-committee. Body copy stays Plex Sans; labels and
+    // figures stay mono.
+    //
+    // ROMAN ONLY. The italic is another ~40 KB for a cut nothing on
+    // the page currently calls for.
+    css: "https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@200..900&display=swap",
+    subsets: { latin: "SourceSerif4-variable-latin.woff2" },
+    requireVariableWidth: false,
+  },
 ];
 
 const FONT_BUDGET_BYTES = 110 * 1024;
 
 /** Split the CSS into blocks. Google precedes each @font-face with a
- *  comment naming the subset (latin, latin-ext, vietnamese, ...). */
+ *  comment naming the subset (latin, latin-ext, vietnamese, ...).
+ *
+ *  A wdth AXIS is `font-stretch: 62.5% 100%` — two values, a range. A
+ *  face pinned to one width still declares `font-stretch: 100%`, and
+ *  testing merely for the property's PRESENCE calls that variable. IBM
+ *  Plex Sans does exactly this, which is what surfaced the bug: the
+ *  fetch log announced "[variable width]" for a face that has no width
+ *  axis at all. Nothing currently sets requireVariableWidth, so this
+ *  only mislabelled a log line today — but the check exists precisely
+ *  to refuse a static-width substitute, and one that accepts any face
+ *  declaring a default width would have waved that substitute through. */
 function parseFaces(css) {
   const faces = [];
   const re = /\/\*\s*([a-z-]+)\s*\*\/\s*@font-face\s*\{([\s\S]*?)\}/g;
@@ -105,7 +178,7 @@ function parseFaces(css) {
   while ((m = re.exec(css)) !== null) {
     const [, subset, body] = m;
     const url = body.match(/url\((https:\/\/[^)]+\.woff2)\)/)?.[1];
-    const stretch = /font-stretch:/.test(body);
+    const stretch = /font-stretch:\s*[\d.]+%\s+[\d.]+%/.test(body);
     if (url) faces.push({ subset, url, hasStretch: stretch });
   }
   return faces;

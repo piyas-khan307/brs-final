@@ -27,6 +27,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 
 import { PhotoPicker } from "@/components/admin/PhotoPicker";
+import { RichText } from "@/components/admin/RichText";
 import { useSession } from "@/components/admin/Session";
 import {
   Button,
@@ -231,15 +232,28 @@ function PostEditor() {
         <Field
           label="Body"
           required
-          hint="Markdown: **bold**, *italic*, ## a heading, and a blank line between paragraphs."
+          hint="Select words and use the toolbar. Pictures, video and colour are all available — the same editor the event write-ups use."
         >
-          <Textarea
-            rows={18}
-            value={post.body ?? ""}
-            disabled={locked}
-            onChange={(e) => set("body", e.target.value)}
-            className="font-mono text-body-s"
-          />
+          {/* A locked post is one an Administrator is holding. Showing a
+              live editor for something that cannot be saved would invite
+              somebody to type into it and lose the lot, so it goes back to
+              a plain disabled box — visibly not editable. */}
+          {locked ? (
+            <Textarea
+              rows={18}
+              value={post.body ?? ""}
+              disabled
+              className="font-mono text-body-s"
+            />
+          ) : (
+            <RichText
+              value={post.body ?? ""}
+              format={post.body_format ?? "md"}
+              onChange={(next) =>
+                setPost((p) => ({ ...p, body: next.content, body_format: next.format }))
+              }
+            />
+          )}
         </Field>
 
         <Card>

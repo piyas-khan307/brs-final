@@ -1,11 +1,11 @@
 {
   "$comment": [
     "Every file declaring 'use client' MUST appear here. Enforced by lint rule",
-    "brs/client-component-allowlist (implementation_plan.md §13.4 rule 5).",
+    "brs/client-component-allowlist (implementation_plan.md \u00a713.4 rule 5).",
     "",
     "WHY: the Next.js 15 App Router ships a ~110 KB gzip React runtime floor",
     "before a line of our code. The only budget we control is first-party JS,",
-    "capped at 15 KB (§4.7). That budget erodes one convenient 'use client' at",
+    "capped at 15 KB (\u00a74.7). That budget erodes one convenient 'use client' at",
     "a time, so adding an island must be a deliberate, reviewable act.",
     "",
     "Phase L permitted exactly TWO islands, listed first below.",
@@ -27,19 +27,19 @@
     "budget argument does not apply to it: it is authenticated, it is",
     "noindex, no visitor ever loads it, and Next code-splits it away from",
     "every public route. It cannot work without JavaScript, and that is",
-    "stated rather than pretended otherwise — signing in and writing to a",
+    "stated rather than pretended otherwise \u2014 signing in and writing to a",
     "CMS is not a no-JS activity."
   ],
   "allow": [
     {
       "file": "src/components/landing/ZoneRail.tsx",
-      "reason": "Scroll-position observation and aria-current updates on the zone rail. Must remain a real <nav> of anchor links, keyboard traversable (§4.3).",
+      "reason": "Scroll-position observation and aria-current updates on the zone rail. Must remain a real <nav> of anchor links, keyboard traversable (\u00a74.3).",
       "phase": "L",
       "status": "reserved"
     },
     {
       "file": "src/components/landing/ZoneD_RecordStrip.tsx",
-      "reason": "Drag/wheel scrubbing and arrow-key navigation on the 2005-2026 Record axis. Renders as a semantic <ol> and becomes a static list under prefers-reduced-motion (§4.5).",
+      "reason": "Drag/wheel scrubbing and arrow-key navigation on the 2005-2026 Record axis. Renders as a semantic <ol> and becomes a static list under prefers-reduced-motion (\u00a74.5).",
       "phase": "L",
       "status": "reserved"
     },
@@ -57,7 +57,7 @@
     },
     {
       "file": "src/components/showcase/KeyFacts.tsx",
-      "reason": "Scrub-linked un-skew of three figure plates. WITHOUT JS: the three plates are already in their final positions in the DOM and simply render as a static row — the transforms are the entrance, not the layout.",
+      "reason": "Scrub-linked un-skew of three figure plates. WITHOUT JS: the three plates are already in their final positions in the DOM and simply render as a static row \u2014 the transforms are the entrance, not the layout.",
       "phase": "M",
       "status": "built"
     },
@@ -147,7 +147,25 @@
     },
     {
       "file": "src/app/admin/events/page.tsx",
-      "reason": "Events.",
+      "reason": "The list of events, shown as the feed shows them \u2014 cover, name, kind, year, live or draft \u2014 with a search box, because nineteen of them are called some version of \"Basic Workshop\".",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/app/admin/events/edit/page.tsx",
+      "reason": "Create an event: name, cover, summary, the description, and Publish. The archive fields \u2014 category, date, venue \u2014 sit behind one disclosure so the form does not open on a wall of empty boxes.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/CategoryPicker.tsx",
+      "reason": "Choosing what kind of event this is, and adding a kind that does not exist yet. Categories moved out of a Postgres enum into a table in migration 0015, so the club can file an event under something nobody thought of in 2026. Two selects rather than a tree, because the structure is only ever two levels deep. Creating is inline because the alternative — a separate screen — means abandoning a half-written write-up, which in practice means nobody adds a category and everything gets filed under whichever existing one is closest.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/lib/admin/ingest.ts",
+      "reason": "Uploading a photograph through @brs/ingest, so it is resized, re-encoded, EXIF-stripped and content-addressed rather than stored as the original phone file. Shared by the full picker (cover, portraits) and the file-only uploader inside the write-up editor: the two differ in how much they ask the person, and must not differ in what they do with the file.",
       "phase": "Admin",
       "status": "active"
     },
@@ -172,6 +190,66 @@
     {
       "file": "src/components/admin/RecordEditor.tsx",
       "reason": "List/add/edit/delete for the collections with no workflow behind them (events, achievements, partners, press, people). One implementation instead of five near-identical screens.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/committee/LiveCommitteeView.tsx",
+      "reason": "Live client-side data sync for executive committee updates on refresh in local development and production. WITHOUT JS: Falls back to pre-rendered static committee HTML.",
+      "phase": "C",
+      "status": "active"
+    },
+    {
+      "file": "src/app/gallery/page.tsx",
+      "reason": "Interactive public photo archive gallery with search and lightbox preview. Filtered to exclude committee member portraits.",
+      "phase": "G",
+      "status": "active"
+    },
+    {
+      "file": "src/components/events/EventFeed.tsx",
+      "reason": "Category and year filtering on the events feed. WITHOUT JS: every event renders unfiltered in feed order \u2014 only the filters stop working, and on an archive that is the correct failure.",
+      "phase": "C",
+      "status": "active"
+    },
+    {
+      "file": "src/components/events/EventGallery.tsx",
+      "reason": "Enlarged view of an event's photographs, with arrow-key navigation, focus return and scroll lock. WITHOUT JS: the contact sheet renders as a plain grid at full size with descriptions; only the enlargement is lost.",
+      "phase": "C",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/RichText.tsx",
+      "reason": "The write-up editor, shared by events and posts. Tiptap over ProseMirror, replacing a contenteditable driven by the deprecated document.execCommand — which could not express a font, a colour, an alignment, an inline picture or a video. Stores the DOCUMENT TREE as JSON, never HTML: the published page is rendered from that tree at build time by lib/richtext/render.ts, which emits only tags it wrote itself, so author-supplied markup still cannot reach a reader.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/richtext/Toolbar.tsx",
+      "reason": "The formatting bar: paragraph style, six fonts, the size scale, bold/italic/underline/strike/code, ink and highlight swatches, links, alignment, lists, picture, video, rule, clear. Every control maps to something lib/richtext/render.ts can publish.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/richtext/extensions.tsx",
+      "reason": "The three Tiptap pieces that have to know about this site: the style mark (token names, not CSS), the inline picture (an asset id, not a URL, so it keeps its derivatives and EXIF strip) and the video (provider plus id, so no third-party markup is ever stored). Includes their in-editor node views.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/richtext/dialogs.tsx",
+      "reason": "Add-a-link (text to display + address), add-a-picture (multi-select from the library, or upload straight into the writing) and add-a-video (a URL, never an embed code). WITHOUT JS: no admin panel at all, as above.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/richtext/Preview.tsx",
+      "reason": "Runs the same two renderers the content build runs, so Preview is the article rather than an approximation of it.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/richtext/asset-cache.ts",
+      "reason": "One fetch per photograph rather than one per render, so an article with twelve inline pictures does not re-request them on every keystroke.",
       "phase": "Admin",
       "status": "active"
     }

@@ -1,0 +1,994 @@
+"use client";
+
+/**
+ * ══════════════════════════════════════════════════════════════════════
+ * THE THREE THINGS TIPTAP DOES NOT SHIP.
+ *
+ * StarterKit already gives us bold, italic, underline, strike, code,
+ * links, both lists, headings, quote, rule and undo — so those are
+ * configured, not written. What is here is the three pieces that have to
+ * know about THIS site:
+ *
+ *   BrsStyle   font / size / colour / highlight, stored as TOKEN NAMES
+ *              rather than CSS, for the reasons in lib/richtext/palette.ts
+ *   BrsImage   an inline photograph, stored as an ASSET ID so it keeps
+ *              the derivatives, the EXIF strip and the content-addressing
+ *   BrsEmbed   a video, stored as PROVIDER + ID so no third-party markup
+ *              is ever held or trusted
+ *
+ * The common thread: none of them stores a URL or a style, because a URL
+ * bypasses the asset pipeline and a style bypasses the design system.
+ * Each stores the smallest identifier that lets the renderer build the
+ * real thing at publish time.
+ * ══════════════════════════════════════════════════════════════════════
+ */
+
+import TextAlign from "@tiptap/extension-text-align";
+import { Placeholder } from "@tiptap/extensions";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import {
+  Extension,
+  Mark,
+  Node,
+  NodeViewWrapper,
+  ReactNodeViewRenderer,
+  mergeAttributes,
+  type NodeViewProps,
+} from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  embedSrc,
+  imageAspect,
+  imageWidth,
+  isProvider,
+  RICH_ALIGNS,
+  RICH_EMBED_DEFAULT_WIDTH,
+  RICH_IMAGE_ALIGNS,
+  RICH_IMAGE_SIZES,
+  RICH_IMAGE_WIDTH_MAX,
+  RICH_IMAGE_WIDTH_MIN,
+  richLead,
+  richStyleAttrs,
+  type RichImageAlign,
+} from "@/lib/richtext/palette";
+import { assetUrl, type AssetRow } from "../PhotoPicker";
+import { loadAsset, onAssetsChanged, peekAsset } from "./asset-cache";
+
+/* ══ BrsStyle ═════════════════════════════════════════════════════════
+ *
+ * ONE mark carrying four attributes, not four marks.
+ *
+ * Four separate marks would nest four spans around a word that is
+ * serif, 24px, oxblood and highlighted — and, worse, the document tree
+ * would differ depending on which order the buttons were pressed, so two
+ * visually identical paragraphs would store differently. One mark with
+ * four attributes has exactly one representation, and Tiptap's setMark
+ * merges attributes into a mark of the same type already on the range,
+ * so setting the size of already-serif text keeps the serif.
+ *
+ * Both a class AND data attributes are emitted. The class is what styles
+ * it; the data attributes are what parseHTML reads back, which is how
+ * copy-and-paste inside the editor survives. Only the class reaches a
+ * reader — the published page is rendered from JSON by render.ts, which
+ * emits no data attributes at all.
+ */
+export const BrsStyle = Mark.create({
+  name: "brsStyle",
+
+  addAttributes() {
+    const attr = (name: string, parse: (v: string | null) => unknown = (v) => v) => ({
+      default: null as unknown,
+      parseHTML: (el: HTMLElement) => parse(el.getAttribute(`data-rt-${name}`)),
+      // Contribute nothing individually — renderHTML below builds one
+      // class attribute out of all four together.
+      renderHTML: () => ({}),
+    });
+    return {
+      font: attr("font"),
+      size: attr("size", (v) => (v == null ? null : Number(v))),
+      ink: attr("ink"),
+      mark: attr("mark"),
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "span[data-rt-style]" }];
+  },
+
+  renderHTML({ mark, HTMLAttributes }) {
+    const a = mark.attrs as Record<string, unknown>;
+    // The SAME builder the published renderer uses, so a colour looks
+    // identical in the box and on the page rather than being two
+    // implementations that drift.
+    const painted = richStyleAttrs(a);
+    const data: Record<string, string> = { "data-rt-style": "" };
+    for (const k of ["font", "size", "ink", "mark"] as const) {
+      if (a[k] != null) data[`data-rt-${k}`] = String(a[k]);
+    }
+    // An empty class would leave a span doing nothing; keep it anyway so
+    // the mark survives a round trip and can be unset.
+    return ["span", mergeAttributes(HTMLAttributes, data, painted), 0];
+  },
+});
+
+/* ══ KeepPendingMarks ═════════════════════════════════════════════════
+ *
+ * A CLICK THAT DOES NOT MOVE THE CURSOR MUST NOT THROW AWAY A COLOUR.
+ *
+ * Choosing a colour with nothing selected sets a "stored mark": the
+ * next thing typed comes out in that colour. Choosing it also focuses
+ * the editor, so the box lights up and the cursor is already where the
+ * writer left it.
+ *
+ * The trap is what anyone does next. The box has just lit up, so they
+ * click into it before typing — and ProseMirror clears stored marks on
+ * any transaction that sets a selection, INCLUDING one that lands on the
+ * exact position the cursor was already at. So the colour vanished for
+ * clicking on the spot the cursor was already blinking, while typing
+ * straight away worked. Same intent, two outcomes, no way to tell why.
+ *
+ * This restores the pending marks when, and only when, the cursor did
+ * not actually go anywhere. Clicking somewhere ELSE still clears them,
+ * which is correct — moving to different text should adopt that text's
+ * formatting, not carry a colour along.
+ *
+ * It covers bold and italic too, which had the identical fault.
+ */
+export const KeepPendingMarks = Extension.create({
+  name: "keepPendingMarks",
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey("keepPendingMarks"),
+        appendTransaction(transactions, oldState, newState) {
+          const pending = oldState.storedMarks;
+          if (!pending?.length) return null;
+          // Already survived, or something was actually typed.
+          if (newState.storedMarks?.length) return null;
+          if (transactions.some((t) => t.docChanged)) return null;
+          // Only a collapsed cursor that stayed exactly put.
+          if (!oldState.selection.empty || !newState.selection.empty) return null;
+          if (oldState.selection.from !== newState.selection.from) return null;
+          return newState.tr.setStoredMarks(pending);
+        },
+      }),
+    ];
+  },
+});
+
+/* ══ BrsImage ═════════════════════════════════════════════════════════ */
+
+const isAlignValue = (v: unknown): v is RichImageAlign =>
+  typeof v === "string" && (RICH_IMAGE_ALIGNS as readonly string[]).includes(v);
+
+/**
+ * The eight grips of a bounding box, named by compass point.
+ *
+ * Four corners and four edge midpoints, because that is the shape every
+ * program that resizes anything has used for thirty years and nobody has
+ * to be told what they are. The two on the left and right edges do the
+ * same thing as the corners — they exist because that is where the hand
+ * goes when the intention is "narrower".
+ */
+const HANDLES = ["nw", "n", "ne", "e", "se", "s", "sw", "w"] as const;
+type Handle = (typeof HANDLES)[number];
+
+/**
+ * THE NEAREST ANCESTOR THAT ACTUALLY HAS A WIDTH.
+ *
+ * Resizing is expressed as a percentage of the column, so it needs the
+ * column's width in pixels. `parentElement` is not good enough: Tiptap
+ * wraps every React node view in its own element, and that wrapper is
+ * `display: contents` (see globals.css) so that it stops interfering
+ * with the layout. An element with no box reports clientWidth 0, every
+ * drag divided by 1 instead of by ~900, and the width pinned to 100% on
+ * the first pixel of movement — which read as the handles not working
+ * at all.
+ */
+function measurableParent(el: HTMLElement | null): HTMLElement | null {
+  let p = el?.parentElement ?? null;
+  while (p && p.clientWidth === 0) p = p.parentElement;
+  return p;
+}
+
+/**
+ * The picture as it appears WHILE WRITING.
+ *
+ * It resolves its own asset because the document only holds an id. The
+ * controls appear on selection rather than permanently: a column of
+ * photographs each wearing a four-button toolbar is a control panel, not
+ * a draft.
+ */
+function ImageView({ node, updateAttributes, deleteNode, selected, editor, getPos }: NodeViewProps) {
+  const assetId = node.attrs.assetId as string | null;
+  const align = isAlignValue(node.attrs.align) ? node.attrs.align : "center";
+  const alt = (node.attrs.alt as string | null) ?? "";
+  const width = imageWidth(node.attrs.width);
+
+  const crop = imageAspect(node.attrs.crop);
+
+  const frame = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState<"width" | "crop" | null>(null);
+  const [row, setRow] = useState<AssetRow | null>(() =>
+    assetId ? peekAsset(assetId) : null,
+  );
+  const [gone, setGone] = useState(false);
+
+  /**
+   * DRAG A CORNER TO RESIZE.
+   *
+   * Pointer events rather than mouse events, so a pen and a touchscreen
+   * work identically, and `setPointerCapture` so the drag survives the
+   * cursor leaving the handle — without it, moving faster than React
+   * repaints drops the gesture, which feels like the handle "slipping".
+   *
+   * The maths is in PERCENT of the containing column, not pixels: the
+   * measure is fluid, and a picture pinned to 420px is half the column
+   * on a laptop and wider than the screen on a phone.
+   *
+   * Both bottom corners resize; which one you grab only decides whether
+   * the width grows with or against the pointer, so a right-aligned
+   * picture still grows toward the text the way it looks like it should.
+   */
+  const startResize = (e: React.PointerEvent, handle: Handle) => {
+    // Without this the editor takes the pointerdown as a click on the
+    // node and starts a text selection mid-drag.
+    e.preventDefault();
+    e.stopPropagation();
+
+    const box = frame.current;
+    const column = measurableParent(box);
+    if (!box || !column) return;
+
+    const columnWidth = column.clientWidth || 1;
+    const rect = box.getBoundingClientRect();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = rect.width;
+    const startHeight = rect.height;
+
+    /* THREE GESTURES, DECIDED BY WHICH GRIP WAS TAKEN.
+         corner  scale — the whole picture gets bigger or smaller and
+                 keeps its proportions
+         w / e   crop the sides — the frame narrows at the SAME height,
+                 so the photograph is trimmed left and right
+         n / s   crop top and bottom — the frame shortens at the same
+                 width
+       Corners are square and edges are round, so the two behaviours are
+       told apart before they are used rather than after. */
+    const kind: "scale" | "cropX" | "cropY" =
+      handle === "n" || handle === "s"
+        ? "cropY"
+        : handle === "e" || handle === "w"
+          ? "cropX"
+          : "scale";
+
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    setDragging(kind === "scale" ? "width" : "crop");
+
+    const asPercent = (px: number) =>
+      Math.min(
+        RICH_IMAGE_WIDTH_MAX,
+        Math.max(RICH_IMAGE_WIDTH_MIN, Math.round((px / columnWidth) * 100)),
+      );
+
+    const move = (ev: PointerEvent) => {
+      if (kind === "cropY") {
+        const dy = handle === "s" ? ev.clientY - startY : startY - ev.clientY;
+        const height = Math.max(24, startHeight + dy);
+        updateAttributes({ crop: imageAspect(startWidth / height) });
+        return;
+      }
+
+      const dx = handle.includes("e") ? ev.clientX - startX : startX - ev.clientX;
+      const px = Math.max(24, startWidth + dx);
+
+      if (kind === "cropX") {
+        /* Narrowing the frame while HOLDING THE HEIGHT is what makes
+           this a crop of the sides rather than a shrink of the picture.
+           Both numbers have to move together: the frame's height is
+           width ÷ aspect, so keeping the height fixed while the width
+           changes means the aspect must change by the same factor. */
+        updateAttributes({ width: asPercent(px), crop: imageAspect(px / startHeight) });
+        return;
+      }
+
+      updateAttributes({ width: asPercent(px) });
+    };
+    const stop = () => {
+      setDragging(null);
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", stop);
+      document.removeEventListener("pointercancel", stop);
+    };
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", stop);
+    document.addEventListener("pointercancel", stop);
+  };
+
+  useEffect(() => {
+    if (!assetId) return;
+    let live = true;
+    const sync = () => {
+      if (live) setRow(peekAsset(assetId));
+    };
+    const off = onAssetsChanged(sync);
+    void loadAsset(assetId).then((r) => {
+      if (!live) return;
+      if (r) setRow(r);
+      else setGone(true);
+    });
+    return () => {
+      live = false;
+      off();
+    };
+  }, [assetId]);
+
+  const editable = editor.isEditable;
+
+  return (
+    <NodeViewWrapper
+      className={`rt-figure rt-figure-${align} rt-node${selected ? " rt-node-selected" : ""}`}
+      // The same custom property the renderer emits, so the box and the
+      // published page size a picture through identical CSS. A cast
+      // because React's CSSProperties has no room for custom properties.
+      style={
+        {
+          ...(width ? { "--rt-w": `${width}%` } : {}),
+          ...(crop ? { "--rt-ar": String(crop) } : {}),
+        } as React.CSSProperties
+      }
+      data-drag-handle
+    >
+      <div
+        className="rt-frame cursor-pointer"
+        ref={frame}
+        onClick={(e) => {
+          if (!selected && editable) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof getPos === "function") {
+              const pos = getPos();
+              if (typeof pos === "number") {
+                editor.chain().setNodeSelection(pos).run();
+              }
+            }
+          }
+        }}
+      >
+        {gone ? (
+          <p className="border border-dashed border-line-strong bg-bg-inset p-4 text-body-s text-text-secondary">
+            This photograph is no longer in the library — it was probably deleted. It will not
+            appear on the published page.
+          </p>
+        ) : row ? (
+          <img
+            src={assetUrl(row)}
+            alt={alt || row.alt}
+            width={row.width}
+            height={row.height}
+            className="block h-auto w-full"
+            draggable={false}
+          />
+        ) : (
+          <div className="flex min-h-32 items-center justify-center border border-dashed border-line-hairline bg-bg-inset text-body-s text-text-tertiary">
+            Loading the photograph…
+          </div>
+        )}
+
+        {/* The handles live on the picture, not in the toolbar, because
+            that is where the hand already is. Shown only on selection so
+            a column of photographs is not a column of grab dots. */}
+        {editable && selected && row ? (
+          <>
+            {HANDLES.map((h) => (
+              <span
+                key={h}
+                role="presentation"
+                title={
+                  h === "n" || h === "s"
+                    ? "Drag to crop the top and bottom"
+                    : h === "e" || h === "w"
+                      ? "Drag to crop the sides"
+                      : "Drag to resize the whole picture"
+                }
+                className={`rt-handle rt-h-${h}`}
+                onPointerDown={(e) => startResize(e, h)}
+              />
+            ))}
+            {/* The number, while dragging. Resizing by eye is fine until
+                you want the next picture to match this one. */}
+            {dragging ? (
+              <span className="rt-size-badge">
+                {dragging === "width" ? `${width ?? 100}%` : "cropping"}
+              </span>
+            ) : null}
+          </>
+        ) : null}
+      </div>
+
+      {editable && selected ? (
+        <div
+          // rt-toolbar breaks out of the figure's width — at 25% the
+          // controls would otherwise be stacked into a column narrower
+          // than one button.
+          className="rt-toolbar flex flex-wrap items-center gap-2 border border-line-strong bg-bg-raised p-2"
+          contentEditable={false}
+          onMouseDown={(e) => {
+            // Prevent dropping ProseMirror selection when clicking toolbar
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {RICH_IMAGE_ALIGNS.map((a) => (
+            <button
+              key={a}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                updateAttributes({ align: a });
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                updateAttributes({ align: a });
+              }}
+              aria-pressed={align === a}
+              className={`border px-2 py-1 text-micro uppercase transition-colors ${
+                align === a
+                  ? "border-accent text-text-primary"
+                  : "border-line-hairline text-text-secondary hover:text-text-primary"
+              }`}
+            >
+              {a}
+            </button>
+          ))}
+
+          <span aria-hidden="true" className="h-5 w-px bg-line-hairline" />
+
+          {/* Sizes as buttons, not only as drag handles. Matching two
+              photographs by dragging is guesswork; two set to M are
+              identical. */}
+          {RICH_IMAGE_SIZES.map((sz) => {
+            const active = width === sz.pct;
+            return (
+              <button
+                key={sz.id}
+                type="button"
+                title={sz.label}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  updateAttributes({ width: sz.pct });
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  updateAttributes({ width: sz.pct });
+                }}
+                aria-pressed={active}
+                className={`border px-2 py-1 text-micro uppercase transition-colors ${
+                  active
+                    ? "border-accent text-text-primary"
+                    : "border-line-hairline text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                {sz.id}
+              </button>
+            );
+          })}
+
+          {/* Only when there is a crop to undo — dragging the top edge
+              back to exactly the photograph's own height is not a thing
+              anyone can do by hand. */}
+          {crop ? (
+            <button
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                updateAttributes({ crop: null });
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                updateAttributes({ crop: null });
+              }}
+              className="border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-text-primary"
+            >
+              Uncrop
+            </button>
+          ) : null}
+
+          {/* NO DESCRIPTION FIELD HERE, DELIBERATELY.
+              The photograph already carries an alt written once in the
+              library, and that is the one the renderer falls back to
+              (see render.ts). A second box asking for the same sentence
+              on every insertion was a text input sitting in the middle
+              of a row of four-character buttons — it dominated the
+              toolbar and got ignored. Any per-article alt already stored
+              on a node is still honoured; there is just no longer a way
+              to add another one from here. */}
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              deleteNode();
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              deleteNode();
+            }}
+            className="border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-accent"
+          >
+            Remove
+          </button>
+        </div>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsImage = Node.create({
+  name: "brsImage",
+  group: "block",
+  atom: true,
+  draggable: true,
+  selectable: true,
+
+  addAttributes() {
+    return {
+      assetId: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-asset-id"),
+        renderHTML: (a: Record<string, unknown>) =>
+          a.assetId ? { "data-asset-id": String(a.assetId) } : {},
+      },
+      align: {
+        default: "center",
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-align") ?? "center",
+        renderHTML: (a: Record<string, unknown>) => ({ "data-align": String(a.align ?? "center") }),
+      },
+      alt: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-alt"),
+        renderHTML: (a: Record<string, unknown>) => (a.alt ? { "data-alt": String(a.alt) } : {}),
+      },
+      /** Percent of the column. Null means the full width it would take
+       *  anyway, so the commonest case stores nothing. */
+      width: {
+        default: null,
+        parseHTML: (el: HTMLElement) => imageWidth(el.getAttribute("data-width")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const w = imageWidth(a.width);
+          return w ? { "data-width": String(w) } : {};
+        },
+      },
+      /** The frame's aspect ratio when it has been cropped shorter than
+       *  the photograph. Null is "as tall as the picture really is". */
+      crop: {
+        default: null,
+        parseHTML: (el: HTMLElement) => imageAspect(el.getAttribute("data-crop")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const c = imageAspect(a.crop);
+          return c ? { "data-crop": String(c) } : {};
+        },
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "figure[data-asset-id]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["figure", mergeAttributes(HTMLAttributes, { class: "rt-figure" })];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageView);
+  },
+});
+
+/* ══ BrsLead ══════════════════════════════════════════════════════════
+ *
+ * LINE SPACING, PER PARAGRAPH.
+ *
+ * Not a mark and not a node: an attribute added to the paragraph and
+ * heading types that already exist, which is what TextAlign does two
+ * lines below it in RICH_EXTENSIONS and for the same reason. Leading is
+ * a property of a BLOCK — half a paragraph cannot be set at 1.5 — so
+ * storing it on the block is the only shape that cannot express
+ * something the renderer would have to throw away.
+ *
+ * `addGlobalAttributes` rather than re-declaring the nodes: redefining
+ * Paragraph would mean forking StarterKit's copy of it and inheriting
+ * the maintenance of a node we have no other reason to own.
+ *
+ * NO CUSTOM COMMAND COMES WITH IT. A `setLead` was written first and
+ * removed: it did nothing that chaining the built-in `updateAttributes`
+ * over the two types does not do, and declaring it meant augmenting
+ * `@tiptap/core`'s Commands interface — a module this app does not
+ * depend on directly and cannot name in a `declare module` block. The
+ * Toolbar chains the built-in instead. `updateAttributes` only touches
+ * nodes of that type inside the selection, so selecting three
+ * paragraphs and a heading sets all four and the types that are not
+ * there are no-ops.
+ */
+export const BrsLead = Extension.create({
+  name: "brsLead",
+
+  addOptions() {
+    return { types: ["paragraph", "heading"] };
+  },
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: this.options.types as string[],
+        attributes: {
+          lead: {
+            default: null,
+            // richLead snaps to the four offered values, so a document
+            // that has been edited by hand cannot introduce a fifth.
+            parseHTML: (el: HTMLElement) => richLead(el.getAttribute("data-lead")),
+            /* BOTH a data attribute and the custom property, on purpose.
+               `data-lead` is what parseHTML reads back, so copy-paste
+               inside the editor keeps the spacing. `--rt-lh` is what
+               actually does the spacing, and it is the SAME property
+               render.ts writes onto the published paragraph — so one
+               rule in globals.css styles the draft and the page, rather
+               than two rules that drift. */
+            renderHTML: (a: Record<string, unknown>) => {
+              const lead = richLead(a.lead);
+              return lead
+                ? {
+                    "data-lead": String(lead),
+                    // The class is what collapses the 24px gap between
+                    // two paragraphs that both carry a spacing — see
+                    // `.rt-lead + .rt-lead` in globals.css. Without it
+                    // the leading changes and the paragraph gap does
+                    // not, which is how "Single" ended up looking
+                    // looser than the default it replaced.
+                    class: "rt-lead",
+                    style: `--rt-lh:${lead}`,
+                  }
+                : {};
+            },
+          },
+        },
+      },
+    ];
+  },
+
+});
+
+/* ══ BrsEmbed ═════════════════════════════════════════════════════════ */
+
+/**
+ * A VIDEO YOU CAN WATCH WITHOUT LEAVING THE EDITOR.
+ *
+ * This was a description of a video — thumbnail, provider, id — on the
+ * reasoning that an editor only needs to confirm WHICH video they
+ * pasted. That is true right up until somebody wants to check they
+ * pasted the right one, at which point a card that cannot be played is
+ * a card that sends them to YouTube in another tab to find out.
+ *
+ * Pressing play mounts the same iframe, from the same hardcoded origin,
+ * that the published page mounts when a reader presses play there. The
+ * card is the poster; the iframe replaces it in place.
+ *
+ * `contentEditable={false}` on the shell is what makes an iframe safe
+ * inside a contenteditable: without it the browser will happily let a
+ * caret land between the frame and its container, and ProseMirror will
+ * then try to reconcile a DOM it does not own.
+ */
+function EmbedView({
+  node,
+  updateAttributes,
+  deleteNode,
+  selected,
+  editor,
+}: NodeViewProps) {
+  const provider = node.attrs.provider as string;
+  const videoId = node.attrs.videoId as string;
+  const title = (node.attrs.title as string | null) ?? "";
+  const width = imageWidth(node.attrs.width) ?? RICH_EMBED_DEFAULT_WIDTH;
+  const [playing, setPlaying] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const frame = useRef<HTMLDivElement>(null);
+
+  const src = isProvider(provider) ? embedSrc(provider, videoId) : null;
+
+  /**
+   * DRAG A BOTTOM CORNER TO RESIZE — the same gesture, the same maths
+   * and the same handles as a photograph, because to a writer it is the
+   * same act.
+   *
+   * ONE DIFFERENCE, AND IT IS NOT AN OVERSIGHT: a video has no crop.
+   * The picture's edge handles trim the frame and let the photograph
+   * sit behind it at its true proportions; a video is 16:9 and a
+   * letterboxed video in a cropped frame is just a smaller video with
+   * black bars we drew ourselves. So the corners scale and there are no
+   * edge handles.
+   */
+  const startResize = (e: React.PointerEvent, handle: "sw" | "se") => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const box = frame.current;
+    const column = measurableParent(box);
+    if (!box || !column) return;
+
+    const columnWidth = column.clientWidth || 1;
+    const startX = e.clientX;
+    const startWidth = box.getBoundingClientRect().width;
+
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    setDragging(true);
+
+    const move = (ev: PointerEvent) => {
+      const dx = handle === "se" ? ev.clientX - startX : startX - ev.clientX;
+      const px = Math.max(24, startWidth + dx);
+      updateAttributes({
+        width: Math.min(
+          RICH_IMAGE_WIDTH_MAX,
+          Math.max(RICH_IMAGE_WIDTH_MIN, Math.round((px / columnWidth) * 100)),
+        ),
+      });
+    };
+    const stop = () => {
+      setDragging(false);
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", stop);
+      document.removeEventListener("pointercancel", stop);
+    };
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", stop);
+    document.addEventListener("pointercancel", stop);
+  };
+
+  const editable = editor.isEditable;
+  const label = title || (provider === "youtube" ? "YouTube video" : "Vimeo video");
+
+  return (
+    <NodeViewWrapper
+      /* `relative` is load-bearing: .rt-toolbar is positioned at
+         `top: 100%` and anchors to the nearest positioned ancestor.
+         A picture gets that from `.adm-richtext-body .rt-figure`;
+         this node has no such rule, and without it the size buttons
+         fly off to whatever ancestor happens to be positioned. */
+      className="rt-node relative block"
+      // The same custom property the renderer emits, so the box while
+      // writing and the box on the page are sized by identical CSS.
+      style={{ "--rt-w": `${width}%` } as React.CSSProperties}
+      data-drag-handle
+    >
+      {/* THE PUBLISHED CLASSES, NOT A LOOKALIKE. `.rt-embed` and its
+          three children are the same rules globals.css gives the
+          article, so the box being dragged here is the box that
+          publishes — at the same width, the same 16:9, the same poster
+          and the same play button. A separate admin card was what this
+          was before, and it could not answer "how big will this be?"
+          because it was never the same shape as the answer. */}
+      <div
+        ref={frame}
+        contentEditable={false}
+        className={`rt-embed${selected ? " rt-node-selected" : ""}`}
+      >
+        {playing && src ? (
+          <iframe
+            src={`${src}&autoplay=1`}
+            title={label}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        ) : (
+          <button
+            type="button"
+            className="rt-embed-play"
+            onClick={() => setPlaying(true)}
+            disabled={!src}
+            title="Play this video here"
+          >
+            {provider === "youtube" ? (
+              // Admin-only in the sense that matters: the published page
+              // asks for the same file, so this costs the editor nothing
+              // the reader is not already paying.
+              <img
+                className="rt-embed-poster"
+                src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+                alt=""
+                width={480}
+                height={360}
+                referrerPolicy="no-referrer"
+              />
+            ) : null}
+            <span className="rt-embed-icon" aria-hidden="true" />
+            <span className="rt-embed-label">{label}</span>
+          </button>
+        )}
+
+        {/* Both bottom corners, as on a photograph — which one is
+            grabbed only decides whether the width grows with or against
+            the pointer. No edge handles: a video has no crop. */}
+        {editable && selected ? (
+          <>
+            {(["sw", "se"] as const).map((h) => (
+              <span
+                key={h}
+                role="presentation"
+                title="Drag to resize the video"
+                className={`rt-handle rt-h-${h}`}
+                onPointerDown={(e) => startResize(e, h)}
+              />
+            ))}
+            {dragging ? <span className="rt-size-badge">{width}%</span> : null}
+          </>
+        ) : null}
+      </div>
+
+      {editable && selected ? (
+        <div
+          className="rt-toolbar rt-toolbar-center flex flex-wrap items-center gap-2 border border-line-strong bg-bg-raised p-2"
+          contentEditable={false}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {/* The same four sizes a picture gets, and the same reason for
+              having them: two videos in one article cannot be matched by
+              eye, and most of the time the writer wants "small", not a
+              number. */}
+          {RICH_IMAGE_SIZES.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                updateAttributes({ width: s.pct });
+              }}
+              aria-pressed={width === s.pct}
+              title={`${s.label} — ${s.pct}% of the column`}
+              className={`border px-2 py-1 text-micro uppercase transition-colors ${
+                width === s.pct
+                  ? "border-accent text-text-primary"
+                  : "border-line-hairline text-text-secondary hover:border-line-strong hover:text-text-primary"
+              }`}
+            >
+              {s.id}
+            </button>
+          ))}
+
+          <span aria-hidden="true" className="mx-1 h-5 w-px bg-line-hairline" />
+
+          <span className="font-mono text-micro uppercase text-text-tertiary">
+            {width}% · {provider}
+          </span>
+
+          {playing ? (
+            <button
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setPlaying(false);
+              }}
+              className="border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-accent"
+            >
+              Stop
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              deleteNode();
+            }}
+            className="border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-accent"
+          >
+            Remove
+          </button>
+        </div>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsEmbed = Node.create({
+  name: "brsEmbed",
+  group: "block",
+  atom: true,
+  draggable: true,
+  selectable: true,
+
+  addAttributes() {
+    return {
+      provider: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-provider"),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-provider": String(a.provider ?? "") }),
+      },
+      videoId: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-video-id"),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-video-id": String(a.videoId ?? "") }),
+      },
+      title: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-title"),
+        renderHTML: (a: Record<string, unknown>) => (a.title ? { "data-title": String(a.title) } : {}),
+      },
+      /* Percent of the column, exactly as a picture stores it —
+         `imageWidth` clamps both. Null means "the default", which is
+         what an embed made before this attribute existed holds. */
+      width: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-width"),
+        renderHTML: (a: Record<string, unknown>) =>
+          a.width ? { "data-width": String(a.width) } : {},
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-provider][data-video-id]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { class: "rt-embed" })];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(EmbedView);
+  },
+});
+
+/* ══ The assembled set ════════════════════════════════════════════════
+ *
+ * Deliberate omissions, each because render.ts has no way to publish it
+ * and a button that silently does nothing is worse than its absence:
+ *
+ *   codeBlock   the inline `code` mark covers what a club write-up needs
+ *   h1          belongs to the page title; a body starts at h2
+ *   h4-h6       three levels of heading is already more than any of
+ *               these articles has ever used
+ */
+export const RICH_EXTENSIONS = [
+  StarterKit.configure({
+    heading: { levels: [2, 3] },
+    codeBlock: false,
+    link: {
+      openOnClick: false,
+      autolink: true,
+      // The renderer drops anything that is not http(s), mailto or a
+      // site-relative path. Matching that here means the editor cannot
+      // create a link the page will refuse to publish.
+      protocols: ["http", "https", "mailto"],
+      HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
+    },
+  }),
+  TextAlign.configure({
+    types: ["paragraph", "heading"],
+    alignments: [...RICH_ALIGNS],
+  }),
+  Placeholder.configure({
+    // An empty box that says nothing looks broken rather than empty.
+    placeholder: "Write about what happened…",
+  }),
+  KeepPendingMarks,
+  BrsLead,
+  BrsStyle,
+  BrsImage,
+  BrsEmbed,
+];

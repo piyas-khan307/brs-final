@@ -14,6 +14,7 @@
  * ══════════════════════════════════════════════════════════════════════
  */
 
+import * as React from "react";
 import { useEffect, useState } from "react";
 
 /* ── Buttons ──────────────────────────────────────────────────────────── */
@@ -101,9 +102,10 @@ export function Field({
   );
 }
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className={`adm-input ${props.className ?? ""}`} />;
-}
+export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  (props, ref) => <input ref={ref} {...props} className={`adm-input ${props.className ?? ""}`} />
+);
+Input.displayName = "Input";
 
 export function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea {...props} className={`adm-input ${props.className ?? ""}`} />;
@@ -201,7 +203,7 @@ export function PageHeader({
 
 export function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`border border-line-hairline bg-bg-raised p-6 md:p-8 ${className}`}>{children}</div>
+    <div className={`adm-card p-6 md:p-8 ${className}`}>{children}</div>
   );
 }
 
@@ -209,7 +211,7 @@ export function Card({ children, className = "" }: { children: React.ReactNode; 
  *  An empty state that does not say what to do next is a dead end. */
 export function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border border-dashed border-line-strong px-6 py-16 text-center text-body-l text-text-secondary">
+    <div className="border border-dashed border-line-strong px-6 py-16 text-center text-body-l text-text-secondary bg-bg-inset">
       {children}
     </div>
   );
@@ -248,9 +250,6 @@ export function ConfirmButton({
     return () => clearTimeout(t);
   }, [armed]);
 
-  // Quiet until it is armed. A delete button styled as loudly as the
-  // action beside it competes for attention it should not have — and on
-  // this screen the button next to it is "Add a person".
   if (!armed) {
     return (
       <Button variant="quiet" onClick={() => setArmed(true)} {...rest}>
@@ -259,14 +258,70 @@ export function ConfirmButton({
     );
   }
   return (
-    <span className="inline-flex items-center gap-2">
-      <span className="text-body-s text-text-secondary">Delete {what}?</span>
-      <Button variant="danger" onClick={onConfirm}>
-        Yes, delete
-      </Button>
-      <Button variant="quiet" onClick={() => setArmed(false)}>
-        Cancel
-      </Button>
+    <span className="inline-flex flex-col items-end gap-1 text-right">
+      <span className="font-mono text-micro uppercase text-accent">Delete {what}?</span>
+      <div className="flex items-center gap-1">
+        <Button variant="danger" className="text-micro px-2 py-0.5" onClick={onConfirm}>
+          Yes
+        </Button>
+        <Button variant="quiet" className="text-micro px-2 py-0.5" onClick={() => setArmed(false)}>
+          Cancel
+        </Button>
+      </div>
     </span>
   );
 }
+
+/**
+ * Modal Dialog overlay component for editing items in admin screens.
+ */
+export function Modal({
+  title,
+  isOpen,
+  onClose,
+  children,
+}: {
+  title: string;
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+      <div
+        className="w-full max-w-lg border border-line-strong bg-bg-raised p-6 md:p-8"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div className="flex items-center justify-between border-b border-line-hairline pb-4 mb-6">
+          <h2 className="text-heading-m text-text-primary font-semibold">{title}</h2>
+          <button
+            onClick={onClose}
+            className="text-text-tertiary hover:text-text-primary px-2 py-1 text-body-m"
+            aria-label="Close modal"
+          >
+            ✕
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+

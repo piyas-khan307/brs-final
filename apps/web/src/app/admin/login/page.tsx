@@ -14,6 +14,22 @@ import { useSession } from "@/components/admin/Session";
 import { Button, Field, Input, Notice } from "@/components/admin/ui";
 import { AdminError } from "@/lib/admin/client";
 
+/**
+ * Where to go after signing in. The shell appends `?next=` when it bounces
+ * somebody whose session ran out mid-edit.
+ *
+ * It is checked, not trusted: only a path inside this panel is honoured.
+ * An absolute URL — or "//somewhere.else", which is one — would turn the
+ * sign-in page into an open redirect, the classic way to make a phishing
+ * link start on the real site.
+ */
+function returnTo(): string {
+  if (typeof window === "undefined") return "/admin/";
+  const raw = new URLSearchParams(window.location.search).get("next");
+  if (!raw || raw.startsWith("//") || !raw.startsWith("/admin/")) return "/admin/";
+  return raw;
+}
+
 export default function LoginPage() {
   const { user, loading, signIn } = useSession();
   const router = useRouter();
@@ -26,7 +42,7 @@ export default function LoginPage() {
   // Somebody already signed in who navigates here should land on the
   // panel, not stare at a login form asking who they are.
   useEffect(() => {
-    if (!loading && user) router.replace("/admin/");
+    if (!loading && user) router.replace(returnTo());
   }, [loading, user, router]);
 
   async function onSubmit(e: React.FormEvent) {
@@ -35,7 +51,7 @@ export default function LoginPage() {
     setBusy(true);
     try {
       await signIn(email.trim(), password);
-      router.replace("/admin/");
+      router.replace(returnTo());
     } catch (err) {
       // Deliberately does not distinguish "no such account" from "wrong
       // password". Which one it is, is information for somebody guessing.
