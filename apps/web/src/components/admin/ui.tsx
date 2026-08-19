@@ -25,13 +25,65 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 /**
+ * The ripple: a circle that grows from the pixel the pointer landed on
+ * and fades as it reaches the far corner. The look of it is entirely in
+ * `.adm-ripple` in globals.css; what cannot live there is the GEOMETRY,
+ * because CSS has no way to know where a click happened.
+ *
+ * Done imperatively rather than through state on purpose. A ripple is a
+ * transient decoration on one element, and routing it through a render
+ * would re-render the button — and anything it is holding — twice per
+ * press for something React does not otherwise need to know about.
+ */
+function useRipple() {
+  return React.useCallback((event: React.PointerEvent<HTMLButtonElement>) => {
+    const button = event.currentTarget;
+
+    // Asked for by the user, not guessed at by us: someone who has said
+    // "no animation" gets the 1px depress and nothing else.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const box = button.getBoundingClientRect();
+    const x = event.clientX - box.left;
+    const y = event.clientY - box.top;
+
+    // The circle has to reach the corner FURTHEST from the press, or an
+    // off-centre click leaves a wedge of the button untouched at the
+    // moment the wash is meant to have covered it. Both extremes on each
+    // axis are candidates, so take the larger of the two distances.
+    const radius = Math.hypot(Math.max(x, box.width - x), Math.max(y, box.height - y));
+
+    const ripple = document.createElement("span");
+    ripple.className = "adm-ripple";
+    ripple.setAttribute("aria-hidden", "true");
+    ripple.style.width = ripple.style.height = `${radius * 2}px`;
+    ripple.style.left = `${x - radius}px`;
+    ripple.style.top = `${y - radius}px`;
+
+    // Self-removing. Rapid presses stack their own spans and each takes
+    // itself away when its animation ends, so nothing accumulates in the
+    // DOM and no cleanup has to be remembered by the caller.
+    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+    button.appendChild(ripple);
+  }, []);
+}
+
+/**
  * Every state a button has, and none of them invented here — the whole
  * interaction language lives in the `.adm-btn` block in globals.css, so
  * "what does hover do" is one question with one answer in one place.
  *
- * rest → hover → active(depressed 1px) → focus-visible → disabled → busy
+ * rest → hover → active(depressed 1px + ripple) → focus-visible →
+ * disabled → busy
  */
 export function Button({ variant = "secondary", busy, children, className = "", ...rest }: ButtonProps) {
+  const ripple = useRipple();
+
+  // Only the red buttons ripple. Primary and danger are the two that
+  // commit something, and the two whose fill can carry a wash — see the
+  // `.adm-ripple` comment in globals.css for the full reasoning.
+  const ripples = variant === "primary" || variant === "danger";
+
   return (
     <button
       className={`adm-btn adm-btn-${variant} ${className}`}
@@ -40,6 +92,15 @@ export function Button({ variant = "secondary", busy, children, className = "", 
       // working. Without it, a spinner is a purely visual promise.
       aria-busy={busy || undefined}
       {...rest}
+      // After the spread, so a caller passing its own onPointerDown adds
+      // to the ripple rather than silently replacing it.
+      onPointerDown={(event) => {
+        rest.onPointerDown?.(event);
+        // pointerdown fires for right- and middle-clicks too, which do
+        // not activate a button; rippling on them would announce a press
+        // that never happened.
+        if (ripples && event.button === 0) ripple(event);
+      }}
     >
       {busy ? <Spinner /> : null}
       {children}

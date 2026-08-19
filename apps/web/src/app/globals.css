@@ -1791,6 +1791,10 @@
 
     cursor: pointer;
     user-select: none;
+    /* The ripple is a circle drawn INSIDE the control; without this it
+       would spill past the corner radius and turn the key into a
+       rectangle at the moment it is pressed. */
+    overflow: hidden;
     transition:
       background-color var(--duration-micro) var(--ease-out),
       border-color var(--duration-micro) var(--ease-out),
@@ -1817,6 +1821,79 @@
   .adm-btn:focus-visible {
     outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
+  }
+
+  /* ── The ripple ───────────────────────────────────────────────────
+     Material's one genuinely good idea about touch: the press is
+     acknowledged AT THE POINT IT LANDED, so a finger on a 44px target
+     gets told which pixel the machine thinks it hit. The 1px depress
+     above says "received"; this says "received HERE".
+
+     It is fitted to the RED buttons only — primary and danger. Those
+     are the two controls that commit something (publish, delete), and
+     they are the two with a solid enough fill to carry a wash without
+     it reading as a smudge. The secondary and quiet buttons keep the
+     depress alone.
+
+     Colour is currentColor rather than a literal, which is what makes
+     one rule serve both variants across all their states: white on
+     filled primary, oxblood on outlined danger at rest, white again
+     once danger fills under the pointer. A hard-coded white would be
+     invisible on the danger button until it was hovered — and on
+     touch, where there is no hover, invisible for good.
+
+     Geometry comes from the pointer (see useRipple in
+     components/admin/ui.tsx): the span is sized so that its full
+     extent reaches the button's FARTHEST corner, which is why the wash
+     always finishes covering the control instead of stopping short on
+     an off-centre press. */
+  .adm-ripple {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    background-color: currentColor;
+    /* Low enough to be a change in light rather than a second fill.
+       At 0.3 on oxblood it reads as the surface catching the press;
+       past ~0.45 it reads as a white blob travelling across a
+       button. */
+    opacity: 0.3;
+    transform: scale(0);
+
+    /* Deliberately OFF the 120/180/240/400 ladder above, and kept local
+       so it cannot be reached for elsewhere. That ladder describes UI
+       that is getting out of your way — a hover, a panel arriving — and
+       its whole discipline is to be over before you notice it. A ripple
+       is the opposite kind of event: it is the acknowledgement itself,
+       so it has to last long enough to be read as one. At 400ms it was
+       gone before the eye reached the edge of the button. */
+    --adm-ripple-duration: 600ms;
+
+    /* --ease-out is the decelerate curve: fast off the mark, settling
+       at the edge. A linear ripple looks mechanical, and an ease-in
+       one looks like it is being dragged.
+
+       It also front-loads the growth, which is what keeps the slower
+       duration from feeling sluggish: the circle still reaches the far
+       corner quickly and spends the extra time fading, so the press
+       reads as immediate and the wash reads as unhurried. */
+    animation: adm-ripple var(--adm-ripple-duration) var(--ease-out) forwards;
+  }
+
+  @keyframes adm-ripple {
+    to {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* Nothing expands, and the depress carries the whole acknowledgement.
+     Belt and braces: useRipple also refuses to spawn the span at all
+     under this setting, so this rule is here for the case where the
+     preference changes mid-session. */
+  @media (prefers-reduced-motion: reduce) {
+    .adm-ripple {
+      display: none;
+    }
   }
 
   /* ══════════════════════════════════════════════════════════════════
