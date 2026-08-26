@@ -1620,10 +1620,16 @@
      from `--rt-pdf-h`, because a PDF box has pages, not an aspect to
      reflow. The frame is what the iframe fills; the iframe has no border
      of its own so the frame draws the one hairline. */
+  /* THE WIDTH IS THE FIGURE'S, NOT THE FRAME'S. `--rt-w` is already the
+     width of `.rt-figure-*` around this, and a percentage here resolved
+     against THAT — so 50% drew a box a QUARTER of the column wide, and
+     every drag of a side handle moved both edges at once because the
+     frame was still centring itself inside a figure that was shrinking
+     with it. The frame fills the figure and the figure carries the
+     number, in the editor and on the page alike. */
   .rt-pdf-frame {
     position: relative;
-    width: var(--rt-w, 100%);
-    margin-inline: auto;
+    width: 100%;
     border: 1px solid var(--color-line-hairline);
     background: var(--color-bg-inset);
     overflow: hidden;
@@ -3967,7 +3973,7 @@
 
   /* ── THE PDF, IN THE EDITOR ─────────────────────────────────────── */
   .adm-richtext-body .rt-pdf-frame {
-    width: var(--rt-w, 100%);
+    width: 100%;
     height: var(--rt-pdf-h, 560px);
     /* NOT overflow:hidden. The resize handles sit 6px OUTSIDE this box,
        and clipping them does two things at once — hides half of each
