@@ -34,7 +34,7 @@
 
 import TextAlign from "@tiptap/extension-text-align";
 import { Placeholder } from "@tiptap/extensions";
-import { NodeSelection, Plugin, PluginKey, Selection, type EditorState } from "@tiptap/pm/state";
+import { NodeSelection, Plugin, PluginKey, Selection } from "@tiptap/pm/state";
 import type { NodeType } from "@tiptap/pm/model";
 import type { EditorView } from "@tiptap/pm/view";
 import {
@@ -57,14 +57,12 @@ import {
   NodeViewWrapper,
   ReactNodeViewRenderer,
   mergeAttributes,
-  type Editor,
   type NodeViewProps,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useRef, useState } from "react";
 
 import {
-  blockIndent,
   buttonAttrs,
   buttonColour,
   buttonRadius,
@@ -3588,9 +3586,9 @@ export const emptyGrid = () => ({
  * naming `brsCard+` before BrsCard is declared is fine. They are kept
  * adjacent for the reader, not for the parser.
  */
-/* ══ BrsIndent ════════════════════════════════════════════════════════
+/* ══ BrsTab ═══════════════════════════════════════════════════════════
  *
- * TAB MOVES THE PARAGRAPH.
+ * TAB IS A BIG SPACE, PUT WHERE THE CARET IS.
  *
  * Before this, Tab was bound in exactly one place — inside a table, to
  * step to the next cell — and everywhere else the browser took it and
@@ -3598,9 +3596,32 @@ export const emptyGrid = () => ({
  * middle of a sentence threw the writer out of the editor entirely,
  * which is the single most startling thing a writing surface can do.
  *
- * ── WHY A LEVEL AND NOT SPACES ──
- * See RICH_INDENT_MAX in palette.ts. The short version: spaces are
- * characters, and characters cannot be un-indented.
+ * ── WHY A GAP AT THE CARET AND NOT A LEVEL ON THE BLOCK ──
+ * The first answer to that was an indent LEVEL: Tab set a number on the
+ * paragraph and the stylesheet turned it into a left margin. It read
+ * well and it was the wrong thing, in two ways the writer met within a
+ * minute of using it:
+ *
+ *   · A MARGIN IS ALWAYS AT THE FRONT. The caret sits mid-sentence, the
+ *     writer presses Tab expecting a gap THERE, and the whole paragraph
+ *     shifts instead. There is no position at which a block margin can
+ *     be a gap between two words, because it is not in the text.
+ *   · A LEVEL RAN OUT. Six of them, and the margin was additionally
+ *     capped at 45% of the measure so a deep indent could not eat a
+ *     phone's column — so Tab moved the line to about the middle and
+ *     then did nothing at all, however many times it was pressed.
+ *
+ * So a tab is a THING IN THE TEXT now: an inline node, inserted at the
+ * caret, as many as anybody wants, anywhere in the line.
+ *
+ * ── WHY A NODE AND NOT SPACES ──
+ * The width of a run of spaces depends on the font, HTML collapses
+ * them, and Backspace takes them back one at a time — so "how wide is a
+ * tab" would be a different answer in every paragraph and undoing one
+ * would be four presses. An empty node with a width in the stylesheet
+ * is one press to make, one press to delete, the same width everywhere,
+ * and the same width in the editor as on the page because both read the
+ * same rule.
  *
  * ── WHY PRIORITY 90 ──
  * Tiptap offers a key to the highest-priority extension first. Tab
@@ -3611,10 +3632,11 @@ export const emptyGrid = () => ({
  * exactly the presses neither of them wanted.
  *
  * ── WHY IT ALWAYS RETURNS TRUE ──
- * Even at maximum indent, and even at zero for Shift-Tab. Returning
- * false would hand the key back to the browser, and the writer would be
- * thrown out of the editor at level six but not at level five — a
- * keyboard trap is bad, but an intermittent one is worse.
+ * Even where nothing was inserted, and even for a Shift-Tab with no gap
+ * behind it. Returning false would hand the key back to the browser and
+ * the writer would be thrown out of the editor in one paragraph but not
+ * in the next — a keyboard trap is bad, but an intermittent one is
+ * worse.
  *
  * ── SO ESCAPE IS THE WAY OUT, AND IT HAS TO EXIST ──
  * Consuming Tab unconditionally means somebody navigating by keyboard
@@ -3629,77 +3651,59 @@ export const emptyGrid = () => ({
  * while the menu is open, so an Escape meant for the menu never reaches
  * ProseMirror and never reaches this.
  */
+export const BrsTab = Node.create({
+  name: "brsTab",
+  group: "inline",
+  inline: true,
+  /* An atom: it has no content and the caret does not go inside it. It
+     is one object to step over with an arrow key and one object to take
+     back with a Backspace, which is what a tab should be.
 
-/** The blocks a level means anything on. Not list items — those nest,
- *  which is a different and better answer that ListItem already gives.
- *  Not cells, cards or bands: those are boxes, and a box that indents
- *  its own contents is a box with a padding control, not an indent. */
-const INDENTABLE = new Set(["paragraph", "heading"]);
-
-/** True when this block is a list item's own paragraph. ListItem's Tab
- *  runs first and nests the item; when it CANNOT — the first item of a
- *  list has nothing to nest under — the press arrives here, and
- *  indenting the paragraph inside the bullet instead would tear the
- *  text away from its own marker. */
-const inListItem = (state: EditorState, pos: number): boolean => {
-  const name = state.doc.resolve(pos).parent.type.name;
-  return name === "listItem" || name === "taskItem";
-};
-
-const shiftIndent = (editor: Editor, by: number): boolean =>
-  editor.commands.command(({ tr, state, dispatch }) => {
-    const { from, to } = state.selection;
-    let moved = false;
-
-    /* Every indentable block the selection touches, not just the one
-       the caret is in: Tab with three paragraphs selected indents three
-       paragraphs, which is what selecting them was for. Positions stay
-       valid through the walk because setNodeAttribute changes no
-       node's size. */
-    state.doc.nodesBetween(from, to, (node, pos) => {
-      if (!INDENTABLE.has(node.type.name)) return;
-      if (inListItem(state, pos)) return;
-      const now = blockIndent(node.attrs.indent);
-      const next = blockIndent(now + by);
-      if (next === now) return;
-      tr.setNodeAttribute(pos, "indent", next);
-      moved = true;
-    });
-
-    if (moved && dispatch) dispatch(tr);
-    // See the note above: the key is consumed whether or not it moved.
-    return true;
-  });
-
-export const BrsIndent = Extension.create({
-  name: "brsIndent",
+     NOT selectable, because a gap is not a thing to select — clicking
+     one would otherwise put a blue box around a piece of empty space
+     and swallow the click that was meant to place the caret. */
+  atom: true,
+  selectable: false,
   priority: 90,
 
-  addGlobalAttributes() {
-    return [
-      {
-        types: [...INDENTABLE],
-        attributes: {
-          indent: {
-            default: 0,
-            parseHTML: (el: HTMLElement) => blockIndent(el.getAttribute("data-indent")),
-            /* Nothing at all at level zero. An attribute written on
-               every untouched paragraph would churn the generated
-               content files on the first save after this shipped. */
-            renderHTML: (a: Record<string, unknown>) => {
-              const n = blockIndent(a.indent);
-              return n ? { "data-indent": String(n), style: `--rt-indent:${n};` } : {};
-            },
-          },
-        },
-      },
-    ];
+  parseHTML() {
+    return [{ tag: "span[data-rt-tab]" }];
+  },
+
+  renderHTML() {
+    return ["span", { "data-rt-tab": "", class: "rt-tab" }];
   },
 
   addKeyboardShortcuts() {
+    /* Whatever was selected is what a tab replaces, exactly as typing a
+       character over a selection would. */
+    const insert = (): boolean =>
+      this.editor.commands.command(({ tr, state, dispatch }) => {
+        /* The schema is this extension's own, so the lookup cannot
+           miss — but it is typed as "maybe", and a Tab that threw would
+           be a Tab that escaped to the browser. */
+        const tab = state.schema.nodes[this.name];
+        if (tab && dispatch) dispatch(tr.replaceSelectionWith(tab.create()).scrollIntoView());
+        return true;
+      });
+
+    /* THE OPPOSITE OF TAB IS TAKING THE LAST ONE BACK, and only that:
+       Shift-Tab immediately behind a gap removes it, and Shift-Tab
+       anywhere else does nothing rather than deleting whatever letter
+       happens to be there. */
+    const remove = (): boolean =>
+      this.editor.commands.command(({ tr, state, dispatch }) => {
+        const { empty, $from } = state.selection;
+        const before = empty ? $from.nodeBefore : null;
+        if (before?.type.name === "brsTab" && dispatch) {
+          dispatch(tr.delete($from.pos - before.nodeSize, $from.pos).scrollIntoView());
+        }
+        return true;
+      });
+
     return {
-      Tab: () => shiftIndent(this.editor, 1),
-      "Shift-Tab": () => shiftIndent(this.editor, -1),
+      Tab: insert,
+      "Shift-Tab": remove,
       Escape: () => {
         if (!this.editor.isFocused) return false;
         this.editor.commands.blur();
@@ -3755,9 +3759,9 @@ export const RICH_EXTENSIONS = [
   BrsGrid,
   BrsCell,
   /* Last, and neither is a node. The grab handle lets every block ABOVE
-     be picked up and dropped somewhere else; BrsIndent gives Tab a
+     be picked up and dropped somewhere else; BrsTab gives Tab a
      meaning inside the editor so it stops throwing the writer out of
      it. Its priority puts it below the table's Tab and the list's. */
   BrsDragHandle,
-  BrsIndent,
+  BrsTab,
 ];

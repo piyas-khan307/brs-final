@@ -1340,24 +1340,22 @@
     color: var(--color-text-primary);
   }
   /* ── WHAT TAB WRITES ───────────────────────────────────────────────
-     One rule for every level, on both surfaces, because the level rides
-     in as a custom property rather than as a class per step. The
-     attribute is only the hook — `[data-indent]` is absent entirely at
-     level zero, so an untouched paragraph matches nothing and inherits
-     nothing.
+     A gap in the line, where the caret was. ONE rule, read by the
+     editor and by the page, so the width the writer sees while writing
+     is the width the reader gets.
 
-     `margin-inline-start`, not padding: an indent moves the block, and
-     a padded block still draws its background out to the original edge,
-     which is wrong the moment one is inside a callout.
+     `inline-block` with a width and no content is the whole trick: it
+     sits in the text like a letter — it moves when the line rewraps, it
+     can be put between any two words, and there is no cap on how many
+     of them a line may hold, because they are not a margin.
 
-     THE CAP IS THE POINT. Six levels at 2.5rem is 15rem, which inside a
-     phone's column is a paragraph one word wide. min() against 45% of
-     the measure means a deep indent still reads as deep on a laptop and
-     quietly stops mattering on a phone, without a breakpoint deciding
-     it in steps. */
-  .prose [data-indent],
-  .rt-doc [data-indent] {
-    margin-inline-start: min(calc(var(--rt-indent, 0) * 2.5rem), 45%);
+     THE WIDTH IS IN `em`, NOT `rem`. A tab inside a heading should be
+     the heading's kind of gap; a rem would make it the body's, and a
+     one-word heading would come away wearing a body paragraph's
+     indent. */
+  .rt-tab {
+    display: inline-block;
+    width: 2.5em;
   }
 
   .prose h2,

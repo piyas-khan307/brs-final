@@ -34,7 +34,6 @@
  */
 
 import {
-  blockIndent,
   calloutTone,
   cellAlign,
   cellVAlign,
@@ -154,10 +153,6 @@ const attr = (n: PMNode, k: string): unknown =>
 function blockAttrs(n: PMNode): string {
   const a = attr(n, "textAlign");
   const lead = richLead(attr(n, "lead"));
-  // What Tab writes. Like `lead`, it is a number the coercer rounded
-  // and range-checked, so what reaches the style attribute cannot carry
-  // a character an author typed.
-  const indent = blockIndent(attr(n, "indent"));
   const classes = [
     isAlign(a) ? `rt-align-${a}` : "",
     // Paired with `.rt-lead + .rt-lead` in globals.css: a writer who
@@ -165,17 +160,10 @@ function blockAttrs(n: PMNode): string {
     lead ? "rt-lead" : "",
   ].filter(Boolean);
 
-  const style = [lead ? `--rt-lh:${lead};` : "", indent ? `--rt-indent:${indent};` : ""]
-    .filter(Boolean)
-    .join("");
+  const style = lead ? `--rt-lh:${lead};` : "";
 
   return (
     (classes.length ? ` class="${classes.join(" ")}"` : "") +
-    /* The attribute is what the stylesheet hooks on; the custom
-       property carries the level. Neither alone would do — a bare
-       property matches no selector, and a bare attribute would need one
-       rule per level to turn into a margin. */
-    (indent ? ` data-indent="${indent}"` : "") +
     (style ? ` style="${style}"` : "")
   );
 }
@@ -509,6 +497,14 @@ function node(n: PMNode, o: Ctx): string {
 
     case "hardBreak":
       return "<br />";
+
+    /* ── A TAB ─────────────────────────────────────────────────────
+       What Tab writes: a gap in the line, at the point the writer put
+       it. There is nothing of the author's in this tag — not a
+       character, not a number — so it is a literal string, and its
+       width is one rule in the stylesheet that the editor reads too. */
+    case "brsTab":
+      return `<span class="rt-tab"></span>`;
 
     case "brsImage": {
       const assetId = attr(n, "assetId");
@@ -944,7 +940,7 @@ export function richDocToText(doc: unknown): string {
   const parts: string[] = [];
   const walk = (n: PMNode) => {
     if (n.type === "text" && typeof n.text === "string") parts.push(n.text);
-    if (n.type === "hardBreak") parts.push(" ");
+    if (n.type === "hardBreak" || n.type === "brsTab") parts.push(" ");
     const kids = asArray(n.content);
     for (const c of kids) walk(c);
     // Blocks end with a space so two paragraphs do not run together.
