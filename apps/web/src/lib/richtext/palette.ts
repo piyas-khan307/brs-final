@@ -1282,3 +1282,136 @@ export function gridFreeSpot(want: GridBox, taken: GridBox[]): GridBox {
  *  therefore the order the cells are stored in. */
 export const gridReadingOrder = (a: GridBox, b: GridBox): number =>
   a.y - b.y || a.x - b.x;
+
+/* ── MOTION ───────────────────────────────────────────────────────────
+ *
+ * WHAT A BLOCK DOES WHEN THE READER REACHES IT.
+ *
+ * An announcement page is read once, scrolled fast, and often shown on
+ * a projector to a room. Motion is what makes it read as a page someone
+ * built rather than a wall of boxes — so the writer picks an entrance
+ * per block, the same way they pick an alignment.
+ *
+ * ── EVERY ONE OF THESE IS A NAME, NOT A NUMBER ──
+ * The writer chooses from this list and nothing else. No duration, no
+ * distance, no easing: those live in one place in globals.css, so the
+ * whole site's motion can be retuned without touching a stored
+ * document, and so no write-up can carry a two-second bounce because
+ * somebody typed 2000 into a box. It is the same bargain as a colour
+ * token or an icon id.
+ *
+ * ── AND EVERY ONE IS AN ENHANCEMENT, NEVER A REQUIREMENT ──
+ * The start state is applied by CSS that only matches once a script has
+ * marked the document, and the script does not run at all under
+ * prefers-reduced-motion. So a reader with no JavaScript, or one who
+ * has asked their system for less movement, gets the finished page with
+ * everything visible and nothing hidden waiting for an event that will
+ * never come. That is the failure mode this list is designed around.
+ */
+export const RICH_ANIMS: Option[] = [
+  { id: "fade", label: "Fade in" },
+  { id: "rise", label: "Rise up" },
+  { id: "sink", label: "Drop down" },
+  { id: "left", label: "In from the left" },
+  { id: "right", label: "In from the right" },
+  { id: "zoom", label: "Zoom in" },
+  { id: "shrink", label: "Zoom out" },
+  { id: "pop", label: "Pop" },
+  { id: "blur", label: "Focus in" },
+  { id: "tilt", label: "Tilt up" },
+  { id: "sweep", label: "Wipe across" },
+];
+
+/**
+ * WHAT A CARD OR A BUTTON DOES UNDER THE POINTER.
+ *
+ * Separate from the entrance list because it is a different event and a
+ * different failure: an entrance happens once and a hover happens every
+ * time the pointer crosses, so these are smaller by design. On a
+ * touchscreen there is no hover and nothing here fires, which is
+ * correct rather than a gap — a card must never NEED one of these to
+ * look finished.
+ */
+export const RICH_HOVERS: Option[] = [
+  { id: "lift", label: "Lift" },
+  { id: "glow", label: "Glow" },
+  { id: "grow", label: "Grow" },
+  { id: "sink", label: "Press in" },
+];
+
+const ANIM_IDS = ids(RICH_ANIMS);
+const HOVER_IDS = ids(RICH_HOVERS);
+
+/** The entrance, or null for "just be there" — which is the default and
+ *  stores nothing, so a document written before this existed does not
+ *  grow an attribute on every block the day it shipped. */
+export const richAnim = (v: unknown): string | null =>
+  typeof v === "string" && ANIM_IDS.has(v) ? v : null;
+
+/** The hover, or null for none. */
+export const richHover = (v: unknown): string | null =>
+  typeof v === "string" && HOVER_IDS.has(v) ? v : null;
+
+/**
+ * HOW FAR APART THE CHILDREN OF A ROW ARRIVE.
+ *
+ * Set on the container — a grid, a row of cards, a band — rather than
+ * on each child, because the writer's intention is about the ROW ("these
+ * six arrive one after another") and because setting it per child would
+ * mean renumbering by hand after every reorder.
+ *
+ * A count of steps rather than milliseconds, for the reason the
+ * entrance names are names: the step is 70ms in the stylesheet, and six
+ * cards at 70ms is a fifth of a second across the whole row, which
+ * reads as one movement rather than six.
+ *
+ * CAPPED AT TWELVE. The thirteenth child and everything after it shares
+ * the twelfth's delay: past that the last card is arriving nearly a
+ * second after the first, which stops looking deliberate and starts
+ * looking slow. The cap lives in the stylesheet too — this is only the
+ * switch.
+ */
+export const richStagger = (v: unknown): boolean => v === true || v === "true" || v === "";
+
+/* ── A NUMBER THAT COUNTS UP, AND A CLOCK THAT COUNTS DOWN ────────────
+ *
+ * The two things every event page has and no rich-text editor has: "250
+ * PARTICIPANTS" arriving from zero, and "3 days to go".
+ *
+ * WHAT IS STORED IS THE FACT, NOT THE ANIMATION. The counter stores the
+ * final number and the countdown stores the target instant; the running
+ * is done by the page. That matters for more than tidiness — a reader
+ * with no JavaScript sees the finished number and the target date
+ * rendered as plain text by the build, which is the honest fallback,
+ * and a crawler indexes "250" rather than "0".
+ */
+
+/** The final value. Whole numbers only, and bounded — a counter is a
+ *  headline figure, and a headline figure with nine digits is a bug in
+ *  whatever produced it. */
+export const RICH_COUNT_MAX = 1_000_000;
+
+export const countTo = (v: unknown): number => {
+  const n = typeof v === "number" ? v : typeof v === "string" ? Number(v) : NaN;
+  if (!Number.isFinite(n)) return 0;
+  return Math.min(RICH_COUNT_MAX, Math.max(0, Math.round(n)));
+};
+
+/** A short label beside the number, or an empty string. Length-capped
+ *  here rather than in the node view so the renderer cannot be handed a
+ *  paragraph pretending to be a caption. */
+export const countText = (v: unknown, max = 48): string =>
+  typeof v === "string" ? v.trim().slice(0, max) : "";
+
+/**
+ * THE INSTANT A COUNTDOWN IS COUNTING TO.
+ *
+ * Stored as the exact ISO string the browser produced, and validated by
+ * round-tripping it through Date: anything that does not parse becomes
+ * null and the block renders nothing rather than "NaN days".
+ */
+export const countdownAt = (v: unknown): string | null => {
+  if (typeof v !== "string" || !v.trim()) return null;
+  const t = new Date(v);
+  return Number.isNaN(t.getTime()) ? null : t.toISOString();
+};

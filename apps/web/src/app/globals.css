@@ -1339,6 +1339,268 @@
     line-height: var(--rt-lh, 1.7);
     color: var(--color-text-primary);
   }
+  /* ══ MOTION ═════════════════════════════════════════════════════════
+     WHAT A BLOCK DOES WHEN THE READER REACHES IT.
+
+     Every distance, duration and easing in the whole feature is in this
+     one block. A stored write-up carries a NAME — data-rt-anim="rise" —
+     and nothing else, so retuning the site's motion is editing here and
+     republishing, never rewriting documents.
+
+     ── THE GUARD IS THE WHOLE DESIGN ──
+     Read `.rt-motion` on the html element as "a script is running and
+     the reader has not asked for less movement". Every start state below
+     is behind it. Nothing is hidden by default, so:
+
+       no JavaScript          the page is finished and complete, because
+                              the start states never match
+       prefers-reduced-motion the script does not mark the document, so
+                              the same thing happens
+       script fails to run    likewise — the failure mode of this entire
+                              feature is "the animation does not play",
+                              never "the content is invisible"
+
+     That is the opposite of the usual reveal-on-scroll implementation,
+     which hides everything in CSS and depends on JS arriving to show it
+     again. On an archive that would be one bad deploy away from a blank
+     page. ── */
+
+  /* The vocabulary, in one place. Restrained on purpose: 24px of travel
+     over 500ms reads as polish rather than as a slideshow transition,
+     and a page of six segment cards is not six announcements. */
+  :root {
+    --rt-anim-travel: 24px;
+    --rt-anim-duration: 500ms;
+    --rt-anim-ease: cubic-bezier(0.2, 0, 0, 1);
+    /* The overshoot, for `pop` only. */
+    --rt-anim-ease-pop: cubic-bezier(0.34, 1.4, 0.64, 1);
+    --rt-anim-step: 70ms;
+  }
+
+  /* THE RESTING STATE, which is also the no-JavaScript state: visible,
+     in place, untransformed. Everything below moves TOWARD this. */
+  .rt-motion [data-rt-anim] {
+    transition:
+      opacity var(--rt-anim-duration) var(--rt-anim-ease),
+      transform var(--rt-anim-duration) var(--rt-anim-ease),
+      filter var(--rt-anim-duration) var(--rt-anim-ease),
+      clip-path var(--rt-anim-duration) var(--rt-anim-ease);
+    /* A block that travels must not widen the page while it is off to
+       one side, and a transform on an inline box does nothing at all. */
+    will-change: opacity, transform;
+  }
+
+  /* THE START STATES. `:not(.rt-in)` rather than a separate class on
+     entry, so the element is written once and the script's only job is
+     to add one class. */
+  .rt-motion [data-rt-anim]:not(.rt-in) {
+    opacity: 0;
+  }
+  .rt-motion [data-rt-anim="rise"]:not(.rt-in) {
+    transform: translateY(var(--rt-anim-travel));
+  }
+  .rt-motion [data-rt-anim="sink"]:not(.rt-in) {
+    transform: translateY(calc(var(--rt-anim-travel) * -1));
+  }
+  .rt-motion [data-rt-anim="left"]:not(.rt-in) {
+    transform: translateX(calc(var(--rt-anim-travel) * -1.5));
+  }
+  .rt-motion [data-rt-anim="right"]:not(.rt-in) {
+    transform: translateX(calc(var(--rt-anim-travel) * 1.5));
+  }
+  .rt-motion [data-rt-anim="zoom"]:not(.rt-in) {
+    transform: scale(0.94);
+  }
+  .rt-motion [data-rt-anim="shrink"]:not(.rt-in) {
+    transform: scale(1.06);
+  }
+  .rt-motion [data-rt-anim="pop"]:not(.rt-in) {
+    transform: scale(0.8);
+  }
+  /* The one entrance with its own easing: a pop that eases out like the
+     others is just a small zoom. The overshoot IS the effect. */
+  .rt-motion [data-rt-anim="pop"] {
+    transition-timing-function: var(--rt-anim-ease-pop);
+  }
+  .rt-motion [data-rt-anim="blur"]:not(.rt-in) {
+    filter: blur(8px);
+  }
+  /* Perspective on the element itself rather than a shared one on the
+     container: these are separate blocks arriving, not plates in one
+     room, and a shared vanishing point would tilt the ones at the edge
+     of the column away from the reader. */
+  .rt-motion [data-rt-anim="tilt"] {
+    transform-origin: 50% 100%;
+  }
+  .rt-motion [data-rt-anim="tilt"]:not(.rt-in) {
+    transform: perspective(800px) rotateX(12deg);
+  }
+  /* A wipe, not a slide: the box does not move, the reveal travels
+     across it. `inset()` from the right edge means the first thing to
+     appear is the first thing read. */
+  .rt-motion [data-rt-anim="sweep"] {
+    clip-path: inset(0 0 0 0);
+  }
+  .rt-motion [data-rt-anim="sweep"]:not(.rt-in) {
+    clip-path: inset(0 100% 0 0);
+    /* Opacity stays at 1 for this one — a wipe that also fades reads as
+       a fade with a strange edge. */
+    opacity: 1;
+  }
+
+  /* ── STAGGER ───────────────────────────────────────────────────────
+     Set on the CONTAINER, applied through nth-child, so it costs no
+     script and survives a reorder — the delay follows a child's
+     POSITION in the row rather than an index written into the document
+     that would have to be renumbered by hand after every drag.
+
+     A DESCENDANT SELECTOR, NOT `> *`, for a structural reason: a grid
+     renders its cells inside a stage element and a band renders its
+     blocks inside an inner wrapper, so the direct child of the thing
+     carrying the attribute is usually that wrapper rather than the
+     cards. Matching `[data-rt-anim]` at any depth reaches them, and
+     nth-child still counts within each child's own parent, which is the
+     row the reader sees.
+
+     It also means the delay only ever lands on something that actually
+     has an entrance — which is the only case where a delay means
+     anything at all.
+
+     TWELVE STEPS AND THEN IT STOPS. Past that the last card arrives
+     nearly a second after the first, which stops reading as one
+     movement and starts reading as a slow page. The thirteenth and
+     everything after it simply have no rule, so they arrive with the
+     container. ── */
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(1) { transition-delay: calc(0 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(2) { transition-delay: calc(1 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(3) { transition-delay: calc(2 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(4) { transition-delay: calc(3 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(5) { transition-delay: calc(4 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(6) { transition-delay: calc(5 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(7) { transition-delay: calc(6 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(8) { transition-delay: calc(7 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(9) { transition-delay: calc(8 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(10) { transition-delay: calc(9 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(11) { transition-delay: calc(10 * var(--rt-anim-step)); }
+  .rt-motion [data-rt-stagger] [data-rt-anim]:nth-child(12) { transition-delay: calc(11 * var(--rt-anim-step)); }
+
+  /* ── HOVER ─────────────────────────────────────────────────────────
+     A different event from an entrance, so a smaller movement: an
+     entrance happens once and this happens every time the pointer
+     crosses the box.
+
+     `@media (hover: hover)` and not a bare :hover — on a touchscreen
+     :hover latches after a tap and stays until the next one somewhere
+     else, so a card would be left lifted for no reason the reader can
+     see. These are also NOT behind `.rt-motion`: hover is a pointer
+     event rather than something that happens at the reader, so it works
+     with no script at all. ── */
+  @media (hover: hover) {
+    [data-rt-hover] {
+      transition:
+        transform var(--duration-base) var(--ease-out),
+        box-shadow var(--duration-base) var(--ease-out),
+        border-color var(--duration-base) var(--ease-out);
+    }
+    [data-rt-hover="lift"]:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px -12px color-mix(in srgb, var(--color-mount) 45%, transparent);
+    }
+    [data-rt-hover="glow"]:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 1px var(--color-accent);
+    }
+    [data-rt-hover="grow"]:hover {
+      transform: scale(1.03);
+    }
+    [data-rt-hover="sink"]:hover {
+      transform: translateY(2px) scale(0.99);
+    }
+  }
+
+  /* The belt to the script's braces. The script already refuses to mark
+     the document when this is set, so nothing below should ever match —
+     it is here for the reader who changes the preference with the page
+     already open, whose animations are mid-flight. */
+  @media (prefers-reduced-motion: reduce) {
+    .rt-motion [data-rt-anim],
+    .rt-motion [data-rt-anim]:not(.rt-in) {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      clip-path: none;
+      transition: none;
+    }
+    [data-rt-hover]:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  /* ── A NUMBER THAT COUNTS, AND A CLOCK THAT COUNTS DOWN ────────────
+     Both render their finished value at build time and are animated in
+     place, so the page is correct before a line of script runs. The
+     tabular figures are not decoration: without them the digits change
+     width as they climb and the whole row jitters. ── */
+  .rt-count {
+    display: block;
+    text-align: center;
+    margin-block: var(--spacing-6);
+  }
+  .rt-count-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-display-m);
+    line-height: 1.05;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .rt-count-label {
+    display: block;
+    margin-top: var(--spacing-2);
+    font-size: var(--text-body-s);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+  .rt-countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-block: var(--spacing-6);
+  }
+  .rt-countdown-cell {
+    min-width: 4.5rem;
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-line-hairline);
+    background: var(--color-bg-inset);
+    text-align: center;
+  }
+  .rt-countdown-n {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-heading-m);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+  }
+  .rt-countdown-u {
+    display: block;
+    margin-top: var(--spacing-1);
+    font-size: var(--text-micro);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+  /* What the build writes and the script replaces. Visible, and a real
+     sentence, because for a reader without JavaScript it is the whole
+     block: "Until 14 March 2026" rather than four boxes of zeroes. */
+  .rt-countdown-date {
+    font-size: var(--text-body-s);
+    color: var(--color-text-secondary);
+  }
+
   /* ── WHAT TAB WRITES ───────────────────────────────────────────────
      A gap in the line, where the caret was. ONE rule, read by the
      editor and by the page, so the width the writer sees while writing

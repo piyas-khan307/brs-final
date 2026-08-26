@@ -37,6 +37,7 @@
  * ══════════════════════════════════════════════════════════════════════
  */
 
+import { Selection } from "@tiptap/pm/state";
 import type { Editor } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -69,9 +70,27 @@ const ITEMS = (dialogs: {
   pdf: () => void;
   button: () => void;
 }): Item[] => {
-  /** Replace the "/query" with a block, in one undoable step. */
+  /** Replace the "/query" with a block, in one undoable step, and leave
+   *  the caret past it rather than on it — see insertBlock in
+   *  Toolbar.tsx for what selecting the new block instead costs. */
   const insert = (content: unknown) => (editor: Editor, range: Range) => {
-    editor.chain().focus().deleteRange(range).insertContent(content as never).run();
+    editor
+      .chain()
+      .focus()
+      .deleteRange(range)
+      .insertContent(content as never)
+      .command(({ tr, dispatch }) => {
+        if (!dispatch) return true;
+        const $to = tr.doc.resolve(tr.selection.to);
+        const after = $to.depth > 0 ? $to.after(1) : tr.selection.to;
+        if (!tr.doc.nodeAt(after)?.isTextblock) {
+          const paragraph = tr.doc.type.schema.nodes.paragraph;
+          if (paragraph) tr.insert(after, paragraph.create());
+        }
+        tr.setSelection(Selection.near(tr.doc.resolve(after + 1), 1));
+        return true;
+      })
+      .run();
   };
   /** Clear the "/query" and hand over to a dialog. */
   const ask = (open: () => void) => (editor: Editor, range: Range) => {
@@ -216,6 +235,20 @@ const ITEMS = (dialogs: {
       hint: "A deliberate gap",
       keywords: "gap space spacer padding air",
       apply: insert({ type: "brsSpacer" }),
+    },
+    {
+      id: "count",
+      label: "Counting number",
+      hint: "A figure that climbs from zero when it is reached",
+      keywords: "count counter number statistic figure participants total",
+      apply: insert({ type: "brsCount", attrs: { to: 100 } }),
+    },
+    {
+      id: "countdown",
+      label: "Countdown to a date",
+      hint: "Days, hours and minutes until the thing happens",
+      keywords: "countdown timer clock deadline until date",
+      apply: insert({ type: "brsCountdown" }),
     },
   ];
 };

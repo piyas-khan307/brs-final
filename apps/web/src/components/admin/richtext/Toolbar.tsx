@@ -22,7 +22,7 @@
  * ══════════════════════════════════════════════════════════════════════
  */
 
-import { NodeSelection } from "@tiptap/pm/state";
+import { NodeSelection, Selection } from "@tiptap/pm/state";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -34,13 +34,23 @@ import {
   RICH_MARKS,
   RICH_SIZES,
   RICH_SIZE_DEFAULT,
+  RICH_ANIMS,
+  RICH_HOVERS,
+  richAnim,
+  richHover,
   richLead,
+  richStagger,
 } from "@/lib/richtext/palette";
 import {
+  ANIMATABLE,
+  HOVERABLE,
+  STAGGERABLE,
   emptyGrid,
   emptyDetails,
   emptySection,
   emptyTable,
+  motionAttr,
+  setMotionAttr,
   TABLE_ACTIONS,
 } from "./extensions";
 
@@ -316,6 +326,20 @@ function ColourControl({
 
 /* ── The bar ──────────────────────────────────────────────────────── */
 
+/** What the Insert menu can make. A table rather than a chain of `else
+ *  if`, so adding a block is one line and the menu and the handler
+ *  cannot drift apart. */
+const BLOCKS: Record<string, () => unknown> = {
+  callout: () => ({ type: "brsCallout", content: [{ type: "paragraph" }] }),
+  details: () => emptyDetails(),
+  table: () => emptyTable(),
+  band: () => emptySection(),
+  grid: () => emptyGrid(),
+  spacer: () => ({ type: "brsSpacer" }),
+  count: () => ({ type: "brsCount", attrs: { to: 100 } }),
+  countdown: () => ({ type: "brsCountdown" }),
+};
+
 export function Toolbar({
   editor,
   onAddLink,
@@ -368,6 +392,19 @@ export function Toolbar({
         // eight controls in everybody's way for the 99% of write-ups
         // that have no table in them.
         inTable: e.isActive("table"),
+        /* ── THE MOTION READOUT ──────────────────────────────────────
+           Three separate questions, because they are about three
+           different scopes: the entrance belongs to the innermost block
+           the cursor is in, the stagger to the nearest container around
+           it, and the hover to the nearest card, button or picture.
+           Each control disappears rather than lying when there is
+           nothing for it to act on. */
+        anim: richAnim(motionAttr(e.state, ANIMATABLE, "anim")),
+        canAnimate: motionAttr(e.state, ANIMATABLE, "anim") !== undefined,
+        stagger: richStagger(motionAttr(e.state, STAGGERABLE, "stagger")),
+        canStagger: motionAttr(e.state, STAGGERABLE, "stagger") !== undefined,
+        hover: richHover(motionAttr(e.state, HOVERABLE, "hover")),
+        canHover: motionAttr(e.state, HOVERABLE, "hover") !== undefined,
         /* The line spacing of the block the cursor is in. Read from
            whichever of the two types is active, because the attribute
            lives on the block rather than on a mark. */
@@ -391,6 +428,57 @@ export function Toolbar({
   if (!s) return null;
 
   const chain = () => editor.chain().focus();
+
+  /**
+   * INSERT A BLOCK, AND LEAVE A PLACE TO STAND AFTER IT.
+   *
+   * `insertContent` replaces the selection, and after inserting a block
+   * the selection IS that block — so choosing two things from this menu
+   * in a row put the second one where the first had just been, and the
+   * first was gone. Reproduced before fixing: spacer then spacer left
+   * ONE spacer; table then spacer left one spacer and no table. It was
+   * never specific to the two blocks added with the animations; every
+   * entry on this menu has behaved that way.
+   *
+   * Moving the caret to the next valid position is not enough on its
+   * own — "next valid position" descends INTO whatever follows, so
+   * inserting a spacer above a row of cards left the caret inside the
+   * first card, and the following insert either landed in the card or
+   * was refused by the schema and did nothing at all. Measured, not
+   * guessed: the caret came to rest at `doc > brsColumns > brsCard >
+   * heading`.
+   *
+   * So: if the thing after the new block is not something you can type
+   * in, put an empty paragraph there and stand in it. That is also what
+   * the writer needs for the ordinary reason — a table at the end of a
+   * document with nothing after it is a document you cannot add to.
+   * Inserting twice in a row does not accumulate blank lines, because
+   * the second insert replaces the empty paragraph the first left.
+   */
+  const insertBlock = (content: unknown) => {
+    chain()
+      .insertContent(content as never)
+      .command(({ tr, dispatch }) => {
+        if (!dispatch) return true;
+        const $to = tr.doc.resolve(tr.selection.to);
+        // DEPTH 1: the position after the TOP-LEVEL block the insert
+        // landed in, not after the innermost node containing the
+        // caret. A table puts the caret in its first cell, and
+        // standing after that cell's paragraph leaves the next insert
+        // inside the table, where the schema refuses most blocks and
+        // the menu silently does nothing. Measured the same way as
+        // the note above: table, then spacer, produced no spacer.
+        const after = $to.depth > 0 ? $to.after(1) : tr.selection.to;
+        const next = tr.doc.nodeAt(after);
+        if (!next?.isTextblock) {
+          const paragraph = tr.doc.type.schema.nodes.paragraph;
+          if (paragraph) tr.insert(after, paragraph.create());
+        }
+        tr.setSelection(Selection.near(tr.doc.resolve(after + 1), 1));
+        return true;
+      })
+      .run();
+  };
 
   /**
    * Set one attribute of the single style mark, leaving the other three
@@ -714,6 +802,70 @@ export function Toolbar({
         <Icon d={PATHS.button} />
       </Tool>
 
+      <Gap />
+
+      {/* ── MOTION ───────────────────────────────────────────────────
+          What the block does when the reader reaches it, what its
+          children do after it, and what it does under the pointer.
+
+          Selects rather than a row of icons: there are eleven
+          entrances, and eleven more glyphs on a bar that already has
+          twenty-two would be a wall. A select also states the current
+          value, which an icon row can only do by highlighting one of
+          eleven look-alike buttons.
+
+          The entrance control is always here, because there is always a
+          block; the other two appear only when the cursor is somewhere
+          they mean something. */}
+      <select
+        aria-label="Entrance animation"
+        title="How this block arrives when the reader scrolls to it"
+        value={s.anim ?? ""}
+        disabled={!s.canAnimate}
+        onChange={(e) =>
+          setMotionAttr(editor, ANIMATABLE, "anim", richAnim(e.target.value))
+        }
+        className="adm-input w-auto py-1 text-body-s"
+      >
+        <option value="">No animation</option>
+        {RICH_ANIMS.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.label}
+          </option>
+        ))}
+      </select>
+
+      {s.canStagger ? (
+        <Tool
+          title="Bring the things inside this one in one after another"
+          active={s.stagger}
+          onClick={() => setMotionAttr(editor, STAGGERABLE, "stagger", !s.stagger)}
+        >
+          <span className="text-micro uppercase">Stagger</span>
+        </Tool>
+      ) : null}
+
+      {s.canHover ? (
+        <select
+          aria-label="Hover effect"
+          title="What this does when the pointer is over it"
+          value={s.hover ?? ""}
+          onChange={(e) =>
+            setMotionAttr(editor, HOVERABLE, "hover", richHover(e.target.value))
+          }
+          className="adm-input w-auto py-1 text-body-s"
+        >
+          <option value="">No hover effect</option>
+          {RICH_HOVERS.map((h) => (
+            <option key={h.id} value={h.id}>
+              {h.label}
+            </option>
+          ))}
+        </select>
+      ) : null}
+
+      <Gap />
+
       {/* ── THE REST OF THE BLOCKS, AS ONE MENU ──────────────────────
           A button each would be five more icons on a bar that already
           has twenty-two, and the five below are reached once a page
@@ -734,21 +886,8 @@ export function Toolbar({
         onChange={(e) => {
           const what = e.target.value;
           e.target.value = "";
-          if (what === "callout") {
-            chain()
-              .insertContent({ type: "brsCallout", content: [{ type: "paragraph" }] })
-              .run();
-          } else if (what === "details") {
-            chain().insertContent(emptyDetails()).run();
-          } else if (what === "table") {
-            chain().insertContent(emptyTable()).run();
-          } else if (what === "band") {
-            chain().insertContent(emptySection()).run();
-          } else if (what === "grid") {
-            chain().insertContent(emptyGrid()).run();
-          } else if (what === "spacer") {
-            chain().insertContent({ type: "brsSpacer" }).run();
-          }
+          const block = BLOCKS[what];
+          if (block) insertBlock(block());
         }}
         className="adm-input w-auto py-1 text-body-s"
       >
@@ -763,6 +902,10 @@ export function Toolbar({
             went, because a grid cannot overlap and cannot break. */}
         <option value="grid">Layout area — drag things into place</option>
         <option value="spacer">Blank space</option>
+        {/* The two blocks an announcement has and an archive entry does
+            not: a headline figure that climbs, and a clock. */}
+        <option value="count">Counting number</option>
+        <option value="countdown">Countdown to a date</option>
       </select>
 
       {/* ── ONLY INSIDE A TABLE ──────────────────────────────────────
