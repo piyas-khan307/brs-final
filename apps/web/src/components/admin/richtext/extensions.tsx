@@ -3768,6 +3768,17 @@ export const ANIMATABLE = [
   "brsCell",
   "brsCount",
   "brsCountdown",
+  /* Inline, and animated all the same: `.rt-btn-wrap` is an
+     inline-block, so a transform on it does what a transform on a bare
+     <span> would not. "Make the Register button pop" is one of the
+     things anybody asks for first. */
+  "brsButton",
+  /* A gap with an entrance is a strange thing to want, and it is here
+     for a plainer reason: a document whose first block is a spacer
+     opens with that spacer SELECTED, and a control that has nothing to
+     act on has to grey itself out. One dead control on open is worth
+     more confusion than one pointless option in a list. */
+  "brsSpacer",
 ];
 
 /** Containers whose children can arrive one after another. */
@@ -3840,6 +3851,30 @@ export function motionTarget(
       if (ok.has(parent.type.name)) return { pos: $from.before(d - 1), node: parent };
     }
     return { pos: $from.before(d), node };
+  }
+
+  /* ── A SELECTION WITH NO ANCESTORS AT ALL ──────────────────────────
+     Two of these, and they were found the hard way: a control greyed
+     out on open with no way to know why.
+
+       · A GAP CURSOR, the caret between two blocks. Its depth is 0, so
+         the walk above never runs a single iteration.
+       · A WHOLE NODE SELECTED that this control does not apply to.
+         Same depth, same result.
+
+     A document whose first block is a picture or a spacer OPENS in the
+     second state, because ProseMirror's start-of-document selection
+     lands on the node rather than in it. So the first thing the writer
+     saw was a dead control.
+
+     The block on either side of that position is what they mean —
+     forward first, because a caret between two blocks belongs to the
+     one it is in front of, the same way pressing Enter there does. ── */
+  const after = $from.nodeAfter;
+  if (after && ok.has(after.type.name)) return { pos: $from.pos, node: after };
+  const before = $from.nodeBefore;
+  if (before && ok.has(before.type.name)) {
+    return { pos: $from.pos - before.nodeSize, node: before };
   }
   return null;
 }
