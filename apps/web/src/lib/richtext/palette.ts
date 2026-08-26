@@ -144,35 +144,19 @@ export const RICH_MARKS: Option[] = [
 /** Paragraph and heading alignment. */
 export const RICH_ALIGNS = ["left", "center", "right", "justify"] as const;
 
-/**
- * ── INDENT ───────────────────────────────────────────────────────────
+/* ── WHERE THE INDENT WENT ────────────────────────────────────────────
  *
- * What Tab does outside a list and outside a table: it moves the BLOCK,
- * not the caret.
+ * There was a RICH_INDENT_MAX here, and a level Tab wrote onto the
+ * paragraph for the renderer to turn into a left margin. It is gone,
+ * because a margin cannot be what Tab is actually used for: a gap
+ * BETWEEN TWO WORDS, at the caret, in the middle of a line. A block
+ * margin is always at the front of the block, and the cap that kept a
+ * deep level from eating a phone's column also stopped the line moving
+ * at all after about half the measure.
  *
- * The alternative — inserting a run of hard spaces where the caret is —
- * was rejected for the reason every stored-presentation shortcut in
- * this file is rejected. Spaces are characters: they sit in the text,
- * they do not move when the line rewraps, they are read aloud by a
- * screen reader, and Shift-Tab cannot take them back without guessing
- * how many of them were a tab. A level is a number the renderer turns
- * into a margin at publish time, which is the same bargain as a colour
- * token or an asset id.
- *
- * SIX, not unlimited. Seven levels of indent inside a 65-character
- * column is a paragraph one word wide; the cap is what stops a held
- * Tab key from producing one.
- */
-export const RICH_INDENT_MAX = 6;
-
-/** Coerces to a whole number of levels inside the range. Anything
- *  unreadable becomes 0 — no indent is always a safe answer, which is
- *  not true of alignment or a button variant. */
-export const blockIndent = (v: unknown): number => {
-  const n = typeof v === "number" ? v : typeof v === "string" ? Number(v) : NaN;
-  if (!Number.isFinite(n)) return 0;
-  return Math.min(RICH_INDENT_MAX, Math.max(0, Math.round(n)));
-};
+ * A tab is now a node in the text — BrsTab in richtext/extensions.tsx —
+ * with its width in one stylesheet rule the editor and the page share.
+ * There is no number to store and nothing here to coerce. ── */
 
 /**
  * ── LINE SPACING ─────────────────────────────────────────────────────
