@@ -3987,6 +3987,21 @@
     width: 100%;
     height: 100%;
     border: 0;
+  }
+  /* ── DEAF ONLY WHILE IT IS A NODE IN THE EDITOR ─────────────────────
+     An unselected PDF has to ignore the pointer so the cover above it
+     can take the click as "select me" — otherwise the iframe swallows
+     it and the block can never be picked up. That is a fact about the
+     EDITOR, so it is scoped to `.rt-node`, the class the node view puts
+     on itself.
+
+     `.adm-richtext-body` alone was not that scope. The Preview tab
+     carries the same class on purpose — it is the article in the same
+     frame, styled by the same rules — but it renders the PUBLISHED
+     markup, which has no node view and so can never be "selected". The
+     preview's PDF was therefore permanently deaf: not just its toolbar,
+     the whole viewer, scrolling included. ── */
+  .adm-richtext-body .rt-node .rt-pdf-iframe {
     pointer-events: none;
   }
   .adm-richtext-body .rt-node-selected .rt-pdf-iframe {

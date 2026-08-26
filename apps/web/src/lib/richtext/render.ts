@@ -583,15 +583,38 @@ function node(n: PMNode, o: Ctx): string {
       const w = imageWidth(attr(n, "width"));
       const h = pdfHeight(attr(n, "height"));
       const vars = (w ? `--rt-w:${w}%;` : "") + `--rt-pdf-h:${h}px;`;
-      /* `sandbox` with no allow-* flags would strip the viewer's own
-         scripts and leave a blank frame; the viewer is the browser's,
-         run against an opaque-origin data URL that can reach nothing of
-         ours, so allow-scripts is the viewer's and nobody else's. */
+      /* ── NO `sandbox`, AND THAT IS MEASURED RATHER THAN ASSUMED ──
+         It used to carry sandbox="allow-scripts", on the reasoning that
+         the viewer needs its own scripts and nothing else. The reasoning
+         was sound and the result was not: Chrome refuses to hand a
+         `data:` PDF to its viewer through a sandboxed frame AT ALL, with
+         ANY value of the attribute — allow-scripts, allow-same-origin,
+         both together, the lot. Checked one combination at a time in
+         Chromium: every one drew the grey broken-document icon, and only
+         the frame with no attribute showed the document. So the choice
+         was never "sandboxed viewer or open viewer", it was "no document
+         or a document".
+
+         WHAT STILL HOLDS IT SHUT is the MIME, not the attribute. The src
+         passed isPdfDataUrl, so it is `data:application/pdf;base64,` —
+         and a `data:` document has an opaque origin no attribute can
+         widen, so it cannot read this page, its cookies or its storage.
+         Bytes of HTML uploaded under that MIME do not become a page
+         either: the browser hands them to the PDF viewer, which fails to
+         parse them. Verified the same way — a data:application/pdf frame
+         whose payload was <script> and an onerror handler executed
+         nothing, messaged nothing, and navigated nothing, with no
+         sandbox attribute present.
+
+         What the attribute did buy, and what a PDF from the library can
+         now do, is a link the reader clicks and a form the reader
+         submits. The file is uploaded by a signed-in editor, which is
+         the same trust as every other thing on this page. */
       return (
         `<figure class="rt-figure rt-pdf rt-figure-${align}" style="${vars}">` +
         `<div class="rt-pdf-frame">` +
         `<iframe class="rt-pdf-iframe" src="${escape(src)}#toolbar=1&navpanes=0&view=FitH"` +
-        ` title="${escape(name)}" loading="lazy" sandbox="allow-scripts"></iframe>` +
+        ` title="${escape(name)}" loading="lazy"></iframe>` +
         `</div></figure>`
       );
     }
