@@ -34,8 +34,8 @@
 
 import TextAlign from "@tiptap/extension-text-align";
 import { Placeholder } from "@tiptap/extensions";
-import { NodeSelection, Plugin, PluginKey, Selection } from "@tiptap/pm/state";
-import type { NodeType } from "@tiptap/pm/model";
+import { NodeSelection, Plugin, PluginKey, Selection, type EditorState } from "@tiptap/pm/state";
+import type { Node as PMNodeType, NodeType } from "@tiptap/pm/model";
 import type { EditorView } from "@tiptap/pm/view";
 import {
   addColumnAfter,
@@ -57,6 +57,7 @@ import {
   NodeViewWrapper,
   ReactNodeViewRenderer,
   mergeAttributes,
+  type Editor,
   type NodeViewProps,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -65,6 +66,12 @@ import { useEffect, useRef, useState } from "react";
 import {
   buttonAttrs,
   buttonColour,
+  countdownAt,
+  countText,
+  countTo,
+  richAnim,
+  richHover,
+  richStagger,
   buttonRadius,
   buttonWeight,
   buttonSize,
@@ -3713,6 +3720,519 @@ export const BrsTab = Node.create({
   },
 });
 
+/* ══ BrsMotion ════════════════════════════════════════════════════════
+ *
+ * THE ENTRANCE, THE STAGGER AND THE HOVER, AS ATTRIBUTES ON BLOCKS THAT
+ * ALREADY EXIST.
+ *
+ * Not a wrapper node. The obvious build of "animate this block" is a
+ * node that contains the thing being animated, and it is wrong here for
+ * three reasons this schema has already paid for elsewhere: it changes
+ * the document's shape, so every renderer and every walker learns a new
+ * container; it puts a box between a card and the row that positions
+ * it, which breaks the grid; and a writer who wants to change the
+ * effect has to select the right one of two nested things. An attribute
+ * changes nothing structural — a paragraph with an entrance is still a
+ * paragraph, and richDocToText, the grid and the renderer are all
+ * untouched.
+ *
+ * ── WHAT CARRIES WHAT ──
+ * ANIMATED is nearly everything, because the writer's instinct ("that
+ * one should arrive") does not care what kind of block it is.
+ * STAGGERED is only containers, because it is a statement about a row.
+ * HOVERED is only the things a pointer has a reason to be over: a card,
+ * a button, a picture.
+ *
+ * Nothing is animated by default, and `null` writes no attribute at
+ * all, so nothing in the archive changed the day this shipped.
+ */
+
+/** Blocks that can be given an entrance. */
+export const ANIMATABLE = [
+  "paragraph",
+  "heading",
+  "blockquote",
+  "bulletList",
+  "orderedList",
+  "horizontalRule",
+  "table",
+  "brsImage",
+  "brsEmbed",
+  "brsPdf",
+  "brsCard",
+  "brsColumns",
+  "brsCallout",
+  "brsDetails",
+  "brsSection",
+  "brsGrid",
+  "brsCell",
+  "brsCount",
+  "brsCountdown",
+];
+
+/** Containers whose children can arrive one after another. */
+export const STAGGERABLE = ["brsColumns", "brsGrid", "brsSection", "bulletList", "orderedList"];
+
+/** Things a pointer has a reason to be over. */
+export const HOVERABLE = ["brsCard", "brsButton", "brsImage", "brsCell"];
+
+/** The blocks that are made OF text rather than of other blocks. */
+const TEXT_BLOCKS = new Set([
+  "paragraph",
+  "heading",
+  "blockquote",
+  "bulletList",
+  "orderedList",
+  "horizontalRule",
+]);
+
+/** The two containers that are one THING to a reader rather than a
+ *  region of the page. See the note in motionTarget. */
+const ONE_THING = new Set(["brsCard", "brsCell"]);
+
+/**
+ * THE BLOCK A MOTION CONTROL IS ABOUT.
+ *
+ * "Apply this to the current block" is ambiguous in a document where
+ * blocks nest: a cursor in a heading, inside a card, inside a row of
+ * three, is inside three animatable things at once. Innermost wins,
+ * because that is the one the writer is looking at — with ONE exception,
+ * which was found by using it:
+ *
+ * ── A CARD ARRIVES AS A CARD ──
+ * Click a segment card's title, choose "Rise up", and what the writer
+ * means is that the CARD rises. Innermost-wins gave it to the heading,
+ * so the bordered box sat still while the words inside it slid about —
+ * which does not read as an entrance, it reads as a bug. So a text
+ * block inside a card or a grid cell yields to the box it is in.
+ *
+ * The regions do NOT capture it that way: a band, a grid and a row of
+ * columns are page furniture holding many blocks, and a writer who
+ * animates one paragraph inside a band means that paragraph. Those are
+ * also exactly the containers that carry the STAGGER, which only means
+ * anything when their children animate one at a time — so capturing
+ * would have broken the feature they exist for. Selecting the region
+ * itself still animates the whole region.
+ *
+ * A whole node selected — a picture, a PDF, a counter — is the
+ * unambiguous case and is checked first.
+ */
+export function motionTarget(
+  state: EditorState,
+  allowed: readonly string[],
+): { pos: number; node: PMNodeType } | null {
+  const ok = new Set(allowed);
+  const sel = state.selection;
+
+  if (sel instanceof NodeSelection && ok.has(sel.node.type.name)) {
+    return { pos: sel.from, node: sel.node };
+  }
+
+  const $from = sel.$from;
+  for (let d = $from.depth; d > 0; d--) {
+    const node = $from.node(d);
+    if (!ok.has(node.type.name)) continue;
+
+    const parent = d > 1 ? $from.node(d - 1) : null;
+    if (TEXT_BLOCKS.has(node.type.name) && parent && ONE_THING.has(parent.type.name)) {
+      // The box, not the words in it — and only when the box is
+      // something this control can actually be set on.
+      if (ok.has(parent.type.name)) return { pos: $from.before(d - 1), node: parent };
+    }
+    return { pos: $from.before(d), node };
+  }
+  return null;
+}
+
+/** Read one motion attribute off whichever block owns it. */
+export function motionAttr(
+  state: EditorState,
+  allowed: readonly string[],
+  key: string,
+): unknown {
+  return motionTarget(state, allowed)?.node.attrs[key];
+}
+
+/** Write one, as a single undo step. Returns false when the cursor is
+ *  not in anything that carries it, so the toolbar can grey out. */
+export function setMotionAttr(
+  editor: Editor,
+  allowed: readonly string[],
+  key: string,
+  value: unknown,
+): boolean {
+  return editor
+    .chain()
+    .focus()
+    .command(({ tr, state, dispatch }) => {
+      const target = motionTarget(state, allowed);
+      if (!target) return false;
+      if (dispatch) tr.setNodeAttribute(target.pos, key, value);
+      return true;
+    })
+    .run();
+}
+
+export const BrsMotion = Extension.create({
+  name: "brsMotion",
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: ANIMATABLE,
+        attributes: {
+          anim: {
+            default: null,
+            parseHTML: (el: HTMLElement) => richAnim(el.getAttribute("data-rt-anim")),
+            renderHTML: (a: Record<string, unknown>) => {
+              const v = richAnim(a.anim);
+              return v ? { "data-rt-anim": v } : {};
+            },
+          },
+        },
+      },
+      {
+        types: STAGGERABLE,
+        attributes: {
+          stagger: {
+            default: false,
+            parseHTML: (el: HTMLElement) => el.hasAttribute("data-rt-stagger"),
+            renderHTML: (a: Record<string, unknown>) =>
+              richStagger(a.stagger) ? { "data-rt-stagger": "" } : {},
+          },
+        },
+      },
+      {
+        types: HOVERABLE,
+        attributes: {
+          hover: {
+            default: null,
+            parseHTML: (el: HTMLElement) => richHover(el.getAttribute("data-rt-hover")),
+            renderHTML: (a: Record<string, unknown>) => {
+              const v = richHover(a.hover);
+              return v ? { "data-rt-hover": v } : {};
+            },
+          },
+        },
+      },
+    ];
+  },
+});
+
+/* ══ BrsCount ═════════════════════════════════════════════════════════
+ *
+ * A HEADLINE FIGURE THAT ARRIVES FROM ZERO.
+ *
+ * WHAT IS STORED IS THE NUMBER, AND THE PAGE IS CORRECT BEFORE ANY
+ * SCRIPT RUNS. The build writes 250; the script sets it to 0 and climbs
+ * back to 250 when the reader reaches it. So a reader with no
+ * JavaScript sees 250, a crawler indexes 250, and a print stylesheet
+ * gets 250 — none of which is true of the usual build, where the markup
+ * says 0 and the real number exists only in a data attribute.
+ *
+ * The prefix and suffix are separate fields rather than part of the
+ * label because they belong to the NUMBER: "৳50,000" and "12+" have to
+ * climb with it and stay glued to it, and a label sits underneath in
+ * different type.
+ */
+function CountView({ node, updateAttributes, deleteNode, selected, editor }: NodeViewProps) {
+  const to = countTo(node.attrs.to);
+  const prefix = countText(node.attrs.prefix, 8);
+  const suffix = countText(node.attrs.suffix, 8);
+  const label = countText(node.attrs.label);
+  const editable = editor.isEditable;
+
+  return (
+    <NodeViewWrapper
+      className={`rt-node${selected ? " rt-node-selected" : ""}`}
+      data-drag-handle
+    >
+      {/* The number as the reader will see it when it has finished
+          climbing. The editor never animates: a page of counters all
+          running while somebody is trying to type a label is a
+          fairground, and Preview is where motion belongs. */}
+      <span className="rt-count">
+        <span className="rt-count-value">
+          {prefix}
+          {to.toLocaleString("en-GB")}
+          {suffix}
+        </span>
+        {label ? <span className="rt-count-label">{label}</span> : null}
+      </span>
+
+      {editable && selected ? (
+        <div
+          className="rt-toolbar flex flex-wrap items-center gap-2 border border-line-strong bg-bg-raised p-2"
+          contentEditable={false}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <label className="text-micro uppercase text-text-secondary">
+            Counts to
+            <input
+              type="number"
+              min={0}
+              value={to}
+              onChange={(e) => updateAttributes({ to: countTo(e.target.value) })}
+              className="adm-input ml-2 w-28 py-1 text-body-s"
+            />
+          </label>
+          <label className="text-micro uppercase text-text-secondary">
+            Before
+            <input
+              value={prefix}
+              placeholder="৳"
+              onChange={(e) => updateAttributes({ prefix: countText(e.target.value, 8) })}
+              className="adm-input ml-2 w-16 py-1 text-body-s"
+            />
+          </label>
+          <label className="text-micro uppercase text-text-secondary">
+            After
+            <input
+              value={suffix}
+              placeholder="+"
+              onChange={(e) => updateAttributes({ suffix: countText(e.target.value, 8) })}
+              className="adm-input ml-2 w-16 py-1 text-body-s"
+            />
+          </label>
+          <label className="text-micro uppercase text-text-secondary">
+            Label
+            <input
+              value={label}
+              placeholder="Participants"
+              onChange={(e) => updateAttributes({ label: countText(e.target.value) })}
+              className="adm-input ml-2 w-40 py-1 text-body-s"
+            />
+          </label>
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              deleteNode();
+            }}
+            className="ml-auto border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-text-primary"
+          >
+            Remove
+          </button>
+        </div>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsCount = Node.create({
+  name: "brsCount",
+  group: "block",
+  atom: true,
+  draggable: true,
+  selectable: true,
+
+  addAttributes() {
+    return {
+      to: {
+        default: 0,
+        parseHTML: (el: HTMLElement) => countTo(el.getAttribute("data-to")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-to": String(countTo(a.to)) }),
+      },
+      prefix: {
+        default: "",
+        parseHTML: (el: HTMLElement) => countText(el.getAttribute("data-prefix"), 8),
+        renderHTML: (a: Record<string, unknown>) => {
+          const v = countText(a.prefix, 8);
+          return v ? { "data-prefix": v } : {};
+        },
+      },
+      suffix: {
+        default: "",
+        parseHTML: (el: HTMLElement) => countText(el.getAttribute("data-suffix"), 8),
+        renderHTML: (a: Record<string, unknown>) => {
+          const v = countText(a.suffix, 8);
+          return v ? { "data-suffix": v } : {};
+        },
+      },
+      label: {
+        default: "",
+        parseHTML: (el: HTMLElement) => countText(el.getAttribute("data-label")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const v = countText(a.label);
+          return v ? { "data-label": v } : {};
+        },
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "span[data-rt-count]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["span", mergeAttributes(HTMLAttributes, { "data-rt-count": "", class: "rt-count" })];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(CountView);
+  },
+});
+
+/* ══ BrsCountdown ═════════════════════════════════════════════════════
+ *
+ * DAYS, HOURS, MINUTES AND SECONDS UNTIL THE THING HAPPENS.
+ *
+ * ── WHAT THE BUILD WRITES IS A SENTENCE, NOT FOUR ZEROES ──
+ * A countdown is the one block whose correct value cannot be baked: it
+ * is different every second, and a static site is built once. The usual
+ * answer is to ship four boxes reading 00 and let the script fill them
+ * in, which means a reader without JavaScript is told the event is
+ * happening right now.
+ *
+ * So the build writes the fact it actually knows — "Until 14 March 2026,
+ * 9:00 am" — and the script REPLACES that sentence with the ticking
+ * cells. Same shape as the video facade on the event page: the markup
+ * without script is a true, useful thing rather than a broken version
+ * of the real one.
+ *
+ * ── AND IT STOPS ──
+ * A countdown past its date counts UP forever if nobody thought about
+ * it, which is how you get "-412 days" on a society's homepage. Past
+ * the instant, the script writes the finished line instead.
+ */
+function CountdownView({ node, updateAttributes, deleteNode, selected, editor }: NodeViewProps) {
+  const to = countdownAt(node.attrs.to);
+  const label = countText(node.attrs.label);
+  const editable = editor.isEditable;
+
+  /* `datetime-local` wants "YYYY-MM-DDTHH:mm" in LOCAL time, and the
+     document stores UTC — so the box is filled from the local reading of
+     the instant, and what the box gives back is turned into an instant
+     again on the way in. Storing the local string would make the
+     countdown mean a different moment in every timezone that opened it. */
+  const localValue = (() => {
+    if (!to) return "";
+    const d = new Date(to);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  })();
+
+  const pretty = to
+    ? new Date(to).toLocaleString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      })
+    : null;
+
+  return (
+    <NodeViewWrapper
+      className={`rt-node${selected ? " rt-node-selected" : ""}`}
+      data-drag-handle
+    >
+      <div className="rt-countdown">
+        {to ? (
+          (["Days", "Hours", "Minutes", "Seconds"] as const).map((unit) => (
+            <span key={unit} className="rt-countdown-cell">
+              <span className="rt-countdown-n">00</span>
+              <span className="rt-countdown-u">{unit}</span>
+            </span>
+          ))
+        ) : (
+          <span className="rt-countdown-date">
+            No date set — this will not publish until one is chosen.
+          </span>
+        )}
+      </div>
+      {label ? <p className="rt-count-label">{label}</p> : null}
+
+      {editable && selected ? (
+        <div
+          className="rt-toolbar flex flex-wrap items-center gap-2 border border-line-strong bg-bg-raised p-2"
+          contentEditable={false}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <label className="text-micro uppercase text-text-secondary">
+            Counts down to
+            <input
+              type="datetime-local"
+              value={localValue}
+              onChange={(e) => {
+                const raw = e.target.value;
+                updateAttributes({ to: raw ? countdownAt(new Date(raw).toISOString()) : null });
+              }}
+              className="adm-input ml-2 w-56 py-1 text-body-s"
+            />
+          </label>
+          <label className="text-micro uppercase text-text-secondary">
+            Label
+            <input
+              value={label}
+              placeholder="Until registration closes"
+              onChange={(e) => updateAttributes({ label: countText(e.target.value) })}
+              className="adm-input ml-2 w-56 py-1 text-body-s"
+            />
+          </label>
+          {pretty ? (
+            <span className="font-mono text-micro text-text-tertiary">{pretty}</span>
+          ) : null}
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              deleteNode();
+            }}
+            className="ml-auto border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-text-primary"
+          >
+            Remove
+          </button>
+        </div>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsCountdown = Node.create({
+  name: "brsCountdown",
+  group: "block",
+  atom: true,
+  draggable: true,
+  selectable: true,
+
+  addAttributes() {
+    return {
+      to: {
+        default: null,
+        parseHTML: (el: HTMLElement) => countdownAt(el.getAttribute("data-to")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const v = countdownAt(a.to);
+          return v ? { "data-to": v } : {};
+        },
+      },
+      label: {
+        default: "",
+        parseHTML: (el: HTMLElement) => countText(el.getAttribute("data-label")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const v = countText(a.label);
+          return v ? { "data-label": v } : {};
+        },
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-rt-countdown]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      "div",
+      mergeAttributes(HTMLAttributes, { "data-rt-countdown": "", class: "rt-countdown" }),
+    ];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(CountdownView);
+  },
+});
+
 export const RICH_EXTENSIONS = [
   StarterKit.configure({
     heading: { levels: [...RICH_HEADING_LEVELS] },
@@ -3762,6 +4282,13 @@ export const RICH_EXTENSIONS = [
      be picked up and dropped somewhere else; BrsTab gives Tab a
      meaning inside the editor so it stops throwing the writer out of
      it. Its priority puts it below the table's Tab and the list's. */
+  BrsCount,
+  BrsCountdown,
   BrsDragHandle,
   BrsTab,
+  /* LAST, and the only one that is not a node or a mark: it adds the
+     entrance, the stagger and the hover to blocks declared above it.
+     Global attributes are collected after every extension is read, so
+     its position here is for the reader rather than the parser. */
+  BrsMotion,
 ];

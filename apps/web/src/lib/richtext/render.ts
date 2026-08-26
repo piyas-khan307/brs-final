@@ -36,6 +36,12 @@
 import {
   calloutTone,
   cellAlign,
+  countdownAt,
+  countText,
+  countTo,
+  richAnim,
+  richHover,
+  richStagger,
   cellVAlign,
   gridDensity,
   gridRowRem,
@@ -447,7 +453,51 @@ function children(n: PMNode, o: Ctx): string {
     .join("");
 }
 
+/**
+ * ── MOTION, ADDED IN ONE PLACE ────────────────────────────────────────
+ *
+ * The entrance, the stagger and the hover are attributes on blocks that
+ * already exist (see BrsMotion in richtext/extensions.tsx), so the
+ * alternative to this was three lines added to each of fifteen `case`
+ * branches — and a sixteenth block added next year that silently could
+ * not be animated because somebody forgot the sixteenth copy.
+ *
+ * So the dispatcher does it instead: whatever a branch returns, its
+ * OPENING TAG gets the attributes. That tag is always the node's own
+ * box, because every branch below writes it first.
+ *
+ * ── WHY THIS CANNOT CARRY AN AUTHOR'S BYTES ──
+ * Nothing here is interpolated from the document. richAnim and
+ * richHover return a member of a fixed list in palette.ts or null, and
+ * richStagger returns a boolean — so the three strings that can be
+ * written are the only three this build knows how to write. The regular
+ * expression matches a tag name this file produced a line earlier, not
+ * anything parsed from input.
+ */
+function withMotion(html: string, n: PMNode): string {
+  // A node that rendered to nothing — an emptied card, a deleted
+  // picture — has no tag to hang anything on, and is not on the page.
+  if (!html) return html;
+
+  const anim = richAnim(attr(n, "anim"));
+  const hover = richHover(attr(n, "hover"));
+  const stagger = richStagger(attr(n, "stagger"));
+  const bits =
+    (anim ? ` data-rt-anim="${anim}"` : "") +
+    (stagger ? ` data-rt-stagger=""` : "") +
+    (hover ? ` data-rt-hover="${hover}"` : "");
+  if (!bits) return html;
+
+  const open = /^<([a-z]+[1-6]?)(?=[\s/>])/.exec(html);
+  if (!open) return html;
+  return html.slice(0, open[0].length) + bits + html.slice(open[0].length);
+}
+
 function node(n: PMNode, o: Ctx): string {
+  return withMotion(nodeHtml(n, o), n);
+}
+
+function nodeHtml(n: PMNode, o: Ctx): string {
   const type = typeof n.type === "string" ? n.type : "";
 
   switch (type) {
@@ -505,6 +555,54 @@ function node(n: PMNode, o: Ctx): string {
        width is one rule in the stylesheet that the editor reads too. */
     case "brsTab":
       return `<span class="rt-tab"></span>`;
+
+    /* ── A NUMBER THAT COUNTS UP ───────────────────────────────────
+       THE FINISHED NUMBER IS WHAT IS WRITTEN. The script sets it back
+       to zero and climbs when the reader arrives; without a script the
+       page simply states the figure, which is the true thing and the
+       one a crawler should index. Every character here is either from
+       countTo — a bounded integer — or escaped. */
+    case "brsCount": {
+      const to = countTo(attr(n, "to"));
+      const prefix = countText(attr(n, "prefix"), 8);
+      const suffix = countText(attr(n, "suffix"), 8);
+      const label = countText(attr(n, "label"));
+      const shown = `${prefix}${to.toLocaleString("en-GB")}${suffix}`;
+      return (
+        `<span class="rt-count" data-rt-count data-to="${to}"` +
+        (prefix ? ` data-prefix="${escape(prefix)}"` : "") +
+        (suffix ? ` data-suffix="${escape(suffix)}"` : "") +
+        `><span class="rt-count-value">${escape(shown)}</span>` +
+        (label ? `<span class="rt-count-label">${escape(label)}</span>` : "") +
+        `</span>`
+      );
+    }
+
+    /* ── A CLOCK COUNTING DOWN ─────────────────────────────────────
+       What the build knows is the DATE, so the date is what it writes,
+       as a sentence. The script replaces that sentence with ticking
+       cells; a reader without one is told when the thing happens,
+       which is the useful half of a countdown anyway.
+
+       A countdown with no date renders nothing at all rather than a row
+       of zeroes — the same answer a picture with no asset gets. */
+    case "brsCountdown": {
+      const to = countdownAt(attr(n, "to"));
+      if (!to) return "";
+      const label = countText(attr(n, "label"));
+      const when = new Date(to).toLocaleString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
+      return (
+        `<div class="rt-countdown" data-rt-countdown data-to="${escape(to)}">` +
+        `<span class="rt-countdown-date">Until ${escape(when)}</span></div>` +
+        (label ? `<p class="rt-count-label">${escape(label)}</p>` : "")
+      );
+    }
 
     case "brsImage": {
       const assetId = attr(n, "assetId");
@@ -941,6 +1039,13 @@ export function richDocToText(doc: unknown): string {
   const walk = (n: PMNode) => {
     if (n.type === "text" && typeof n.text === "string") parts.push(n.text);
     if (n.type === "hardBreak" || n.type === "brsTab") parts.push(" ");
+    /* A counter is an atom, so its number is an attribute rather than a
+       child — and "250 participants" is exactly the kind of sentence a
+       meta description wants. Without this a page whose whole body is
+       counters would describe itself with nothing. */
+    if (n.type === "brsCount") {
+      parts.push(` ${countTo(attr(n, "to"))} ${countText(attr(n, "label"))} `);
+    }
     const kids = asArray(n.content);
     for (const c of kids) walk(c);
     // Blocks end with a space so two paragraphs do not run together.
