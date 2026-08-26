@@ -28,6 +28,7 @@ import { useEffect, useRef, useState } from "react";
 
 import {
   RICH_FONTS,
+  RICH_FONT_GROUPS,
   RICH_INKS,
   RICH_LEADS,
   RICH_MARKS,
@@ -35,6 +36,13 @@ import {
   RICH_SIZE_DEFAULT,
   richLead,
 } from "@/lib/richtext/palette";
+import {
+  emptyGrid,
+  emptyDetails,
+  emptySection,
+  emptyTable,
+  TABLE_ACTIONS,
+} from "./extensions";
 
 /* ── Icons ────────────────────────────────────────────────────────────
  * Drawn, not typed, for the reason the previous editor gave and which
@@ -71,7 +79,12 @@ const PATHS = {
   alignJustify: "M3 6h18M3 12h18M3 18h18",
   image: "M3 5h18v14H3zM3 16l5-5 4 4 3-3 5 5M8.5 9.5h.01",
   video: "M4 5h16v14H4zM10 9l5 3-5 3z",
+  pdf: "M6 2h8l4 4v16H6zM14 2v4h4M9 13h1.5a1.5 1.5 0 0 1 0 3H9zM9 13v6",
   hr: "M3 12h18",
+  /* A control you press, and a page split into columns. Both drawn as
+     the outline of the thing itself rather than as a metaphor — an
+     editor's toolbar has no room for a metaphor. */
+  button: "M4 8h16a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zM8.5 12h7",
   clear: "M4 7h16M9 7l1 12M15 7l-1 12M5 4l14 14",
   /* The two colour controls. An "A" for the letterform whose colour is
      being set, and a marker for the thing you paint over it — the pair
@@ -308,11 +321,15 @@ export function Toolbar({
   onAddLink,
   onAddImage,
   onAddVideo,
+  onAddPdf,
+  onAddButton,
 }: {
   editor: Editor;
   onAddLink: () => void;
   onAddImage: () => void;
   onAddVideo: () => void;
+  onAddPdf: () => void;
+  onAddButton: () => void;
 }) {
   const s = useEditorState({
     editor,
@@ -338,6 +355,7 @@ export function Toolbar({
         blockquote: e.isActive("blockquote"),
         h2: e.isActive("heading", { level: 2 }),
         h3: e.isActive("heading", { level: 3 }),
+        h4: e.isActive("heading", { level: 4 }),
         isImageSelected,
         alignLeft: isImageSelected ? imageAlign === "left" : e.isActive({ textAlign: "left" }),
         alignCenter: isImageSelected ? imageAlign === "center" : e.isActive({ textAlign: "center" }),
@@ -345,6 +363,11 @@ export function Toolbar({
         alignJustify: isImageSelected ? false : e.isActive({ textAlign: "justify" }),
         canUndo: e.can().undo(),
         canRedo: e.can().redo(),
+        // The table group is the only part of this bar that appears and
+        // disappears. Eight controls that do nothing outside a table is
+        // eight controls in everybody's way for the 99% of write-ups
+        // that have no table in them.
+        inTable: e.isActive("table"),
         /* The line spacing of the block the cursor is in. Read from
            whichever of the two types is active, because the attribute
            lives on the block rather than on a mark. */
@@ -399,7 +422,7 @@ export function Toolbar({
   const style = (attrs: Record<string, unknown>) =>
     chain().setMark("brsStyle", attrs).run();
 
-  const block = s.h2 ? "h2" : s.h3 ? "h3" : s.blockquote ? "quote" : "p";
+  const block = s.h2 ? "h2" : s.h3 ? "h3" : s.h4 ? "h4" : s.blockquote ? "quote" : "p";
 
   const setBlock = (value: string) => {
     const c = chain();
@@ -408,6 +431,7 @@ export function Toolbar({
     if (s.blockquote && value !== "quote") c.lift("blockquote");
     if (value === "h2") c.setNode("heading", { level: 2 });
     else if (value === "h3") c.setNode("heading", { level: 3 });
+    else if (value === "h4") c.setNode("heading", { level: 4 });
     else if (value === "quote") c.setNode("paragraph").wrapIn("blockquote");
     else c.setNode("paragraph");
     c.run();
@@ -449,6 +473,10 @@ export function Toolbar({
         <option value="p">Normal text</option>
         <option value="h2">Heading</option>
         <option value="h3">Subheading</option>
+        {/* h4 and NOT h1 — the event page already owns the page's only
+            <h1>, and "make it bigger" is what the size control is for.
+            See RICH_HEADING_LEVELS. */}
+        <option value="h4">Small heading</option>
         <option value="quote">Quote</option>
       </select>
 
@@ -458,10 +486,18 @@ export function Toolbar({
         onChange={(e) => style({ font: e.target.value === "body" ? null : e.target.value })}
         className="adm-input w-auto py-1 text-body-s"
       >
-        {RICH_FONTS.map((f) => (
-          <option key={f.id} value={f.id}>
-            {f.label}
-          </option>
+        {/* GROUPED, because twenty-five families in one flat list is a
+            scroll rather than a choice. The groups come from the entries
+            themselves — see RICH_FONT_GROUPS — so a family added to the
+            palette cannot land in a heading this never renders. */}
+        {RICH_FONT_GROUPS.map((g) => (
+          <optgroup key={g} label={g}>
+            {RICH_FONTS.filter((f) => f.group === g).map((f) => (
+              <option key={f.id} value={f.id} style={{ fontFamily: "inherit" }}>
+                {f.label}
+              </option>
+            ))}
+          </optgroup>
         ))}
       </select>
 
@@ -596,11 +632,11 @@ export function Toolbar({
 
       {/* THE GAP BETWEEN THE LINES, per paragraph.
           A select rather than buttons for the same reason the paragraph
-          style is one: a block has exactly one line spacing, and four
+          style is one: a block has exactly one line spacing, and five
           toggles that are secretly a radio group is the control people
-          press twice. The numbers are the ones every word processor
-          shows, and "Single" is the site's own leading rather than 1.0
-          — see RICH_LEADS. */}
+          press twice. The numbers are the multipliers every word
+          processor shows, and 1 is the site's own leading rather than a
+          literal 1.0 — see RICH_LEADS. */}
       <select
         aria-label="Line spacing"
         title="Line spacing"
@@ -652,9 +688,118 @@ export function Toolbar({
       <Tool title="Add a video" onClick={onAddVideo}>
         <Icon d={PATHS.video} />
       </Tool>
+      {/* And a PDF, the third thing that is not writing — a rulebook, a
+          schedule, a brief, shown whole rather than linked. */}
+      <Tool title="Add a PDF" onClick={onAddPdf}>
+        <Icon d={PATHS.pdf} />
+      </Tool>
       <Tool title="Horizontal line" onClick={() => chain().setHorizontalRule().run()}>
         <Icon d={PATHS.hr} />
       </Tool>
+
+      <Gap />
+
+      {/* ── THE PAGE FURNITURE ──────────────────────────────────────
+          Its own group, after the media, because this is the control
+          that is not about the writing at all — it is about what an
+          announcement needs and an account does not.
+
+          A row of columns used to sit beside it and was removed: the
+          layout area does the same job better, and offering both was
+          two gestures for one result. The node itself is still in the
+          schema, so a document that already holds one opens and
+          publishes unchanged — there is just no longer a way to make a
+          new one. */}
+      <Tool title="Add a button" onClick={onAddButton}>
+        <Icon d={PATHS.button} />
+      </Tool>
+
+      {/* ── THE REST OF THE BLOCKS, AS ONE MENU ──────────────────────
+          A button each would be five more icons on a bar that already
+          has twenty-two, and the five below are reached once a page
+          rather than once a paragraph. They are all on the slash menu
+          too — this is the half of the pair that can be FOUND without
+          knowing it exists.
+
+          A <select> and not a popover: it is a list of one-shot
+          actions, the native control already handles its own keyboard,
+          its own escape key and its own scrolling on a phone, and the
+          three selects to the left of it set the precedent. It snaps
+          back to the placeholder after firing, because it reports
+          nothing — nothing here is a state the document is IN. */}
+      <select
+        aria-label="Insert a block"
+        title="Insert a block"
+        value=""
+        onChange={(e) => {
+          const what = e.target.value;
+          e.target.value = "";
+          if (what === "callout") {
+            chain()
+              .insertContent({ type: "brsCallout", content: [{ type: "paragraph" }] })
+              .run();
+          } else if (what === "details") {
+            chain().insertContent(emptyDetails()).run();
+          } else if (what === "table") {
+            chain().insertContent(emptyTable()).run();
+          } else if (what === "band") {
+            chain().insertContent(emptySection()).run();
+          } else if (what === "grid") {
+            chain().insertContent(emptyGrid()).run();
+          } else if (what === "spacer") {
+            chain().insertContent({ type: "brsSpacer" }).run();
+          }
+        }}
+        className="adm-input w-auto py-1 text-body-s"
+      >
+        <option value="">Insert…</option>
+        <option value="callout">Callout box</option>
+        <option value="details">Collapsible section</option>
+        <option value="table">Table</option>
+        <option value="band">Full-width band</option>
+        {/* THE ONE PLACE THINGS ARE PLACED BY HAND. There were two for
+            a while — this and a free canvas that stored exact points —
+            and two tools for one job is worse than either. The canvas
+            went, because a grid cannot overlap and cannot break. */}
+        <option value="grid">Layout area — drag things into place</option>
+        <option value="spacer">Blank space</option>
+      </select>
+
+      {/* ── ONLY INSIDE A TABLE ──────────────────────────────────────
+          Every one of these is a raw prosemirror-tables command, run
+          through Tiptap's `command` so the chain still owns the
+          transaction and undo still sees one step. */}
+      {s.inTable ? (
+        <>
+          <Gap />
+          {(
+            [
+              ["Row +", "Add a row below", TABLE_ACTIONS.addRow],
+              ["Row −", "Delete this row", TABLE_ACTIONS.deleteRow],
+              ["Col +", "Add a column to the right", TABLE_ACTIONS.addColumn],
+              ["Col −", "Delete this column", TABLE_ACTIONS.deleteColumn],
+              ["Head", "Turn the top row into headings", TABLE_ACTIONS.toggleHeaderRow],
+              ["Merge", "Merge the selected cells", TABLE_ACTIONS.mergeCells],
+              ["Split", "Split this cell", TABLE_ACTIONS.splitCell],
+              ["Delete", "Delete the whole table", TABLE_ACTIONS.deleteTable],
+            ] as const
+          ).map(([label, title, run]) => (
+            <Tool
+              key={label}
+              title={title}
+              onClick={() =>
+                editor
+                  .chain()
+                  .focus()
+                  .command(({ state, dispatch }) => run(state, dispatch))
+                  .run()
+              }
+            >
+              <span className="text-micro uppercase">{label}</span>
+            </Tool>
+          ))}
+        </>
+      ) : null}
 
       <Gap />
 

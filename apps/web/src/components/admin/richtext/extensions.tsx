@@ -2,59 +2,144 @@
 
 /**
  * ══════════════════════════════════════════════════════════════════════
- * THE THREE THINGS TIPTAP DOES NOT SHIP.
+ * WHAT TIPTAP DOES NOT SHIP.
  *
  * StarterKit already gives us bold, italic, underline, strike, code,
  * links, both lists, headings, quote, rule and undo — so those are
- * configured, not written. What is here is the three pieces that have to
- * know about THIS site:
+ * configured, not written. What is here is the pieces that have to know
+ * about THIS site.
  *
+ * ── THE WRITE-UP: formatting an account of something that happened ──
  *   BrsStyle   font / size / colour / highlight, stored as TOKEN NAMES
  *              rather than CSS, for the reasons in lib/richtext/palette.ts
+ *   BrsLead    line spacing, as an attribute on the block that has it
  *   BrsImage   an inline photograph, stored as an ASSET ID so it keeps
  *              the derivatives, the EXIF strip and the content-addressing
  *   BrsEmbed   a video, stored as PROVIDER + ID so no third-party markup
  *              is ever held or trusted
  *
- * The common thread: none of them stores a URL or a style, because a URL
- * bypasses the asset pipeline and a style bypasses the design system.
- * Each stores the smallest identifier that lets the renderer build the
- * real thing at publish time.
+ * ── THE ANNOUNCEMENT: laying out a page for something that has not ──
+ *   BrsButton  a call to action, stored as LABEL + HREF + a variant NAME
+ *   BrsColumns a row of two, three or four, stored as a COUNT
+ *   BrsCard    one cell of that row, holding real blocks rather than
+ *              a title-and-body pair of strings
+ *
+ * The common thread across all seven: none of them stores a URL where an
+ * id would do, or a style where a name would do. A URL bypasses the asset
+ * pipeline, a style bypasses the design system, and both bypass the theme
+ * flip. Each stores the smallest identifier that lets the renderer build
+ * the real thing at publish time.
  * ══════════════════════════════════════════════════════════════════════
  */
 
 import TextAlign from "@tiptap/extension-text-align";
 import { Placeholder } from "@tiptap/extensions";
-import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { NodeSelection, Plugin, PluginKey, Selection, type EditorState } from "@tiptap/pm/state";
+import type { NodeType } from "@tiptap/pm/model";
+import type { EditorView } from "@tiptap/pm/view";
+import {
+  addColumnAfter,
+  addRowAfter,
+  deleteColumn,
+  deleteRow,
+  deleteTable,
+  goToNextCell,
+  mergeCells,
+  splitCell,
+  tableEditing,
+  toggleHeaderRow,
+} from "@tiptap/pm/tables";
 import {
   Extension,
   Mark,
   Node,
+  NodeViewContent,
   NodeViewWrapper,
   ReactNodeViewRenderer,
   mergeAttributes,
+  type Editor,
   type NodeViewProps,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useRef, useState } from "react";
 
 import {
+  blockIndent,
+  buttonAttrs,
+  buttonColour,
+  buttonRadius,
+  buttonWeight,
+  buttonSize,
+  buttonVariant,
+  buttonVars,
+  calloutTone,
+  cellAlign,
+  cellVAlign,
+  gridDensity,
+  gridFreeSpot,
+  gridH,
+  gridReadingOrder,
+  gridRowRem,
+  gridW,
+  gridWAt,
+  gridX,
+  gridY,
+  type GridBox,
+  cardAlign,
+  cardVariant,
+  columnCount,
   embedSrc,
   imageAspect,
   imageWidth,
+  isPdfDataUrl,
+  pdfHeight,
   isProvider,
   RICH_ALIGNS,
+  RICH_BUTTON_RADIUS_DEFAULT,
+  RICH_BUTTON_WEIGHT_DEFAULT,
+  RICH_BUTTON_SIZE_DEFAULT,
+  RICH_BUTTON_VARIANT_DEFAULT,
+  RICH_CALLOUT_TONES,
+  RICH_CALLOUT_TONE_DEFAULT,
+  RICH_CELL_ALIGNS,
+  RICH_CELL_ALIGN_DEFAULT,
+  RICH_CELL_VALIGNS,
+  RICH_CELL_VALIGN_DEFAULT,
+  RICH_GRID_COLS,
+  RICH_GRID_DENSITIES,
+  RICH_GRID_DENSITY_DEFAULT,
+  RICH_GRID_ROWS_MAX,
+  RICH_CARD_ALIGNS,
+  RICH_CARD_ALIGN_DEFAULT,
+  RICH_CARD_VARIANTS,
+  RICH_CARD_VARIANT_DEFAULT,
+  RICH_COLUMN_COUNTS,
+  RICH_COLUMN_COUNT_DEFAULT,
   RICH_EMBED_DEFAULT_WIDTH,
+  RICH_HEADING_LEVELS,
+  RICH_ICONS,
   RICH_IMAGE_ALIGNS,
   RICH_IMAGE_SIZES,
   RICH_IMAGE_WIDTH_MAX,
+  RICH_PDF_HEIGHT_DEFAULT,
   RICH_IMAGE_WIDTH_MIN,
+  RICH_SECTION_SCRIMS,
+  RICH_SECTION_SCRIM_DEFAULT,
+  RICH_SECTION_TONES,
+  RICH_SECTION_TONE_DEFAULT,
+  RICH_SPACER_SIZES,
+  RICH_SPACER_SIZE_DEFAULT,
+  richIconSvg,
   richLead,
   richStyleAttrs,
+  sectionScrim,
+  sectionTone,
+  spacerSize,
   type RichImageAlign,
 } from "@/lib/richtext/palette";
 import { assetUrl, type AssetRow } from "../PhotoPicker";
 import { loadAsset, onAssetsChanged, peekAsset } from "./asset-cache";
+import { BrsDragHandle } from "./drag-handle";
 
 /* ══ BrsStyle ═════════════════════════════════════════════════════════
  *
@@ -954,6 +1039,2471 @@ export const BrsEmbed = Node.create({
   },
 });
 
+/* ══ BrsPdf ═══════════════════════════════════════════════════════════
+ *
+ * THE DOCUMENT ITSELF, NOT ITS NAME.
+ *
+ * A brief for a workshop, a rulebook for a contest, a schedule — the
+ * writer uploads the PDF and the reader sees it, in the browser's own
+ * viewer, without leaving the page. Resized by dragging a corner, the
+ * same gesture a picture already answers to.
+ *
+ * ── WHY AN OVERLAY SITS ON THE VIEWER ──
+ * The viewer is an <iframe>, and an iframe swallows every pointer event
+ * that lands on it — so a click meant to SELECT the block would scroll
+ * the PDF instead, and the node could never be picked up to move or
+ * resize. The overlay is the fix: while the block is unselected it
+ * covers the viewer and takes the click as "select me"; once selected it
+ * turns to `pointer-events:none` so the reader can actually use the PDF.
+ * One click to select, then it behaves like a PDF.
+ */
+function PdfView({ node, updateAttributes, deleteNode, selected, editor, getPos }: NodeViewProps) {
+  const src = typeof node.attrs.src === "string" ? node.attrs.src : "";
+  const name = typeof node.attrs.name === "string" ? node.attrs.name : "";
+  const align = isAlignValue(node.attrs.align) ? node.attrs.align : "center";
+  const width = imageWidth(node.attrs.width);
+  const height = pdfHeight(node.attrs.height);
+  const valid = isPdfDataUrl(src);
+
+  const [marginOverride, setMarginOverride] = useState<React.CSSProperties | null>(null);
+  const frame = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState<false | "width" | "height">(false);
+  const editable = editor.isEditable;
+
+  const select = () => {
+    if (typeof getPos !== "function") return;
+    const pos = getPos();
+    if (typeof pos === "number") editor.chain().setNodeSelection(pos).run();
+  };
+
+  const startHandleResize = (e: React.PointerEvent, handle: Handle) => {
+    if (!editable || e.button !== 0) return;
+    const box = frame.current;
+    const column = measurableParent(box);
+    if (!box || !column) return;
+    const rect = box.getBoundingClientRect();
+    const columnRect = column.getBoundingClientRect();
+    const isHeight = handle === "n" || handle === "s";
+    const zone = isHeight ? "height" : "width";
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const columnWidth = column.clientWidth || 1;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = rect.width;
+    const startHeight = rect.height;
+
+    if (handle === "e") {
+      const leftPx = Math.max(0, rect.left - columnRect.left);
+      setMarginOverride({ marginLeft: `${leftPx}px`, marginRight: "auto" });
+    } else if (handle === "w") {
+      const rightPx = Math.max(0, columnRect.right - rect.right);
+      setMarginOverride({ marginRight: `${rightPx}px`, marginLeft: "auto" });
+    }
+
+    setDragging(zone);
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+
+    const shield = document.createElement("div");
+    shield.style.cssText =
+      "position:fixed;inset:0;z-index:2147483647;cursor:" +
+      (zone === "height" ? "ns-resize" : "ew-resize");
+    document.body.appendChild(shield);
+
+    const asPercent = (px: number) =>
+      Math.min(
+        RICH_IMAGE_WIDTH_MAX,
+        Math.max(RICH_IMAGE_WIDTH_MIN, Math.round((px / columnWidth) * 100)),
+      );
+
+    let lastY = startY;
+    let currentHeight = startHeight;
+
+    const move = (ev: PointerEvent) => {
+      if (handle === "s") {
+        const dy = ev.clientY - startY;
+        updateAttributes({ height: pdfHeight(startHeight + dy) });
+        return;
+      }
+
+      if (handle === "n") {
+        const stepY = ev.clientY - lastY;
+        if (stepY === 0) return;
+        lastY = ev.clientY;
+        const newHeight = pdfHeight(currentHeight - stepY);
+        const heightDiff = newHeight - currentHeight;
+        if (heightDiff !== 0) {
+          currentHeight = newHeight;
+          updateAttributes({ height: newHeight });
+          window.scrollBy(0, -heightDiff);
+        }
+        return;
+      }
+
+      if (handle === "e") {
+        const newWidthPx = Math.max(48, ev.clientX - rect.left);
+        updateAttributes({ width: asPercent(newWidthPx) });
+        return;
+      }
+
+      if (handle === "w") {
+        const newWidthPx = Math.max(48, rect.right - ev.clientX);
+        updateAttributes({ width: asPercent(newWidthPx) });
+        return;
+      }
+    };
+
+    const stop = () => {
+      setDragging(false);
+      shield.remove();
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", stop);
+      window.removeEventListener("pointercancel", stop);
+    };
+
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
+  };
+
+  return (
+    <NodeViewWrapper
+      className={`rt-figure rt-figure-${align} rt-node${selected ? " rt-node-selected" : ""}`}
+      style={
+        {
+          ...(width ? { "--rt-w": `${width}%` } : {}),
+          "--rt-pdf-h": `${height}px`,
+          ...(marginOverride || {}),
+        } as React.CSSProperties
+      }
+      data-drag-handle
+    >
+      <div className="rt-frame rt-pdf-frame" ref={frame}>
+        {valid ? (
+          <iframe
+            src={`${src}#toolbar=1&navpanes=0&view=FitH`}
+            title={name || "PDF document"}
+            className="rt-pdf-iframe"
+          />
+        ) : (
+          <div className="flex min-h-32 items-center justify-center border border-dashed border-line-strong bg-bg-inset p-4 text-body-s text-text-secondary">
+            This PDF could not be read. Remove it and upload the file again.
+          </div>
+        )}
+
+        {/* When unselected, a cover layer catches the click to select the node */}
+        {editable && !selected ? (
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Select this PDF"
+            className="rt-pdf-cover"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              select();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                select();
+              }
+            }}
+          />
+        ) : null}
+
+        {/* When selected, interactive resize handles on 4 sides: upper middle (n), lower middle (s), left middle (w), right middle (e) */}
+        {editable && selected && valid ? (
+          <>
+            {(["n", "s", "w", "e"] as Handle[]).map((h) => (
+              <span
+                key={h}
+                role="presentation"
+                className={`rt-handle rt-h-${h}`}
+                onPointerDown={(e) => startHandleResize(e, h)}
+              />
+            ))}
+            {dragging ? (
+              <span className="rt-size-badge">
+                {dragging === "width" ? `${width ?? 100}%` : `${height}px`}
+              </span>
+            ) : null}
+          </>
+        ) : null}
+      </div>
+
+      {editable && selected ? (
+        <div
+          className="rt-toolbar flex flex-wrap items-center gap-2 border border-line-strong bg-bg-raised p-2"
+          contentEditable={false}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {RICH_IMAGE_ALIGNS.map((a) => (
+            <button
+              key={a}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setMarginOverride(null);
+                updateAttributes({ align: a });
+              }}
+              aria-pressed={align === a}
+              className={`border px-2 py-1 text-micro uppercase transition-colors ${
+                align === a
+                  ? "border-accent text-text-primary"
+                  : "border-line-hairline text-text-secondary hover:text-text-primary"
+              }`}
+            >
+              {a}
+            </button>
+          ))}
+
+          <span aria-hidden="true" className="h-5 w-px bg-line-hairline" />
+
+          {name ? (
+            <span className="max-w-48 truncate font-mono text-micro text-text-tertiary" title={name}>
+              {name}
+            </span>
+          ) : null}
+
+          <button
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              deleteNode();
+            }}
+            className="ml-auto border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-text-primary"
+          >
+            Remove
+          </button>
+        </div>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsPdf = Node.create({
+  name: "brsPdf",
+  group: "block",
+  atom: true,
+  draggable: true,
+  selectable: true,
+
+  addAttributes() {
+    return {
+      /* The data URL. parseHTML re-validates on the way in, so a
+         document hand-edited to carry a data:text/html here loses it at
+         parse time rather than reaching the iframe. */
+      src: {
+        default: null,
+        parseHTML: (el: HTMLElement) => {
+          const v = el.getAttribute("data-src");
+          return isPdfDataUrl(v) ? v : null;
+        },
+        renderHTML: (a: Record<string, unknown>) =>
+          isPdfDataUrl(a.src) ? { "data-src": a.src } : {},
+      },
+      name: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-name"),
+        renderHTML: (a: Record<string, unknown>) => (a.name ? { "data-name": String(a.name) } : {}),
+      },
+      align: {
+        default: "center",
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-align") ?? "center",
+        renderHTML: (a: Record<string, unknown>) => ({ "data-align": String(a.align ?? "center") }),
+      },
+      width: {
+        default: null,
+        parseHTML: (el: HTMLElement) => imageWidth(el.getAttribute("data-width")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const w = imageWidth(a.width);
+          return w ? { "data-width": String(w) } : {};
+        },
+      },
+      height: {
+        default: RICH_PDF_HEIGHT_DEFAULT,
+        parseHTML: (el: HTMLElement) => pdfHeight(el.getAttribute("data-height")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-height": String(pdfHeight(a.height)) }),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "figure[data-rt-pdf]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["figure", mergeAttributes(HTMLAttributes, { "data-rt-pdf": "", class: "rt-figure rt-pdf" })];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(PdfView);
+  },
+});
+
+
+/* ══ PAGE FURNITURE ═══════════════════════════════════════════════════
+ *
+ * A button, a row of columns, and a card to put in one.
+ *
+ * These exist because an event ANNOUNCEMENT is not a write-up. The
+ * archive's older entries are accounts of things that already happened —
+ * paragraphs and photographs, which is what everything above this line
+ * serves. A page for something that has NOT happened yet has a different
+ * job: it has to say where to sign up, and it has to lay six segments
+ * out as six boxes rather than as six paragraphs.
+ *
+ * The three of them compose rather than each being its own layout: a
+ * fact strip is a row of plain cards, a segment grid is a row of
+ * bordered cards with icons, a sponsor row is a row of cards holding
+ * pictures. One node, three pages, instead of three nodes that each do
+ * one page.
+ */
+
+/** A chip in one of the strips below. Mousedown rather than click for
+ *  the reason the toolbar's own buttons give: clicking blurs the editor
+ *  and collapses the selection before the command can act on it. */
+function Chip({
+  active,
+  title,
+  onPress,
+  children,
+}: {
+  active?: boolean;
+  title: string;
+  onPress: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      aria-pressed={active}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onPress();
+      }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      className={`border px-2 py-1 text-micro uppercase transition-colors ${
+        active
+          ? "border-accent text-text-primary"
+          : "border-line-hairline text-text-secondary hover:border-accent hover:text-text-primary"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** The strip itself. `contentEditable={false}` is what stops the caret
+ *  landing between two controls — a cursor inside a toolbar is a cursor
+ *  ProseMirror will try to map back into the document and fail. */
+function Tools({
+  children,
+  handle,
+  /** "span" for a strip belonging to an INLINE node. A <div> inside the
+   *  <p> ProseMirror drew is invalid nesting, and React says so on every
+   *  render; the strip is a flex box either way, so the tag costs
+   *  nothing to get right. */
+  as: As = "div",
+}: {
+  children: React.ReactNode;
+  handle?: boolean;
+  as?: "div" | "span";
+}) {
+  return (
+    <As
+      className="rt-tools flex flex-wrap items-center gap-2 border border-line-strong bg-bg-raised p-2"
+      contentEditable={false}
+      {...(handle ? { "data-drag-handle": "" } : {})}
+      onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
+    >
+      {children}
+    </As>
+  );
+}
+
+/** A `<select>` sized for a strip. Native, deliberately: a custom
+ *  dropdown inside a contenteditable has to manage its own focus and
+ *  its own escape key, and the toolbar above already proved the native
+ *  one is fine. */
+function Picker({
+  label,
+  value,
+  onChange,
+  children,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <select
+      aria-label={label}
+      title={label}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onMouseDown={(e) => e.stopPropagation()}
+      className="adm-input w-auto py-1 text-body-s"
+    >
+      {children}
+    </select>
+  );
+}
+
+/* ══ BrsButton ════════════════════════════════════════════════════════
+ *
+ * THE THING THAT IS NOT A LINK.
+ *
+ * Its label and address are edited in a dialog rather than typed into
+ * the page, which is the opposite of the choice the card below makes,
+ * and the difference is worth stating: a button holds four words and an
+ * address, and a caret inside a 44px-tall coloured rectangle in the
+ * middle of a contenteditable is a caret in a place with no line to sit
+ * on. A card holds a heading and a sentence and wants the whole toolbar.
+ *
+ * So this is an ATOM — the editor draws it, and double-clicking it (or
+ * the pencil in its strip) opens the same dialog the toolbar opens.
+ */
+
+/** Fired at the editor's own DOM node, caught by RichText, which owns
+ *  the dialogs. A custom event rather than a prop threaded through
+ *  ReactNodeViewRenderer: node views are constructed by ProseMirror
+ *  rather than by React, so there is no parent to pass a callback down
+ *  from without putting mutable state on the extension. */
+export const RT_EDIT_BUTTON_EVENT = "brs-rt-edit-button";
+
+/* ── MOVING A BUTTON ──────────────────────────────────────────────────
+ *
+ * A button is an INLINE ATOM — a word made of metal. That one fact
+ * settles most of what a writer asks of it. It is inserted where the
+ * caret is, because that is where a word goes. Text flows past it on
+ * both sides, so the space beside one is not a gap in a layout, it is
+ * the paragraph — which is why clicking there starts typing there. A
+ * line holds as many as fit, for the same reason a line holds as many
+ * words as fit.
+ *
+ * So "drop it anywhere" means anywhere a WORD can go, and the gesture
+ * answers with the only thing a word-sized target can honestly promise:
+ * a caret showing which side of which word it will land on.
+ *
+ * The alternative — absolute coordinates, a button parked over the
+ * text — was not built, and the reason is the one the layout area in
+ * this same file already learned: a position measured in pixels against
+ * a column whose width changes with the screen is a position that is
+ * right on the machine it was set on and wrong everywhere else. The
+ * grid exists for writers who want to place things; a button in a
+ * paragraph belongs to the paragraph.
+ *
+ * ── WHY POINTER EVENTS AND NOT HTML5 DRAG ──
+ * `draggable` + dragstart is what ProseMirror uses natively, and on
+ * Android it does not fire at all. Writing `touchstart` beside it would
+ * mean maintaining the same gesture twice and having it drift. Pointer
+ * events cover a mouse, a finger and a stylus in one handler, and
+ * pointer CAPTURE keeps the gesture reporting after the pointer leaves
+ * the target — which, on a phone, happens in the first few pixels.
+ *
+ * ── WHY THE DRAG DOES NOT BEGIN ON PRESS ──
+ * The same press has three other jobs: select the button, open the
+ * dialog on a double-click, and — on a phone — do nothing whatsoever if
+ * the finger was actually trying to scroll the page. Nothing is
+ * committed and no default is prevented until the pointer has travelled
+ * far enough that it cannot have been any of those.
+ */
+
+/** Far enough that a shaky press is not read as a drag, near enough
+ *  that a deliberate one starts without a wait. A finger is shakier
+ *  than a mouse and gets more room. */
+const dragSlop = (pointerType: string) => (pointerType === "mouse" ? 4 : 9);
+
+/** How close to the edge of the scrolling area the pointer must come
+ *  before the page starts following it, and how fast it then goes. */
+const EDGE_BAND = 64;
+const EDGE_SPEED = 14;
+
+/** The nearest ancestor that actually scrolls; null means the window
+ *  does. Found by asking rather than assumed, because the editor sits
+ *  inside an admin shell whose scroll container has moved twice. */
+function scrollBoxOf(el: HTMLElement | null): HTMLElement | null {
+  let p = el?.parentElement ?? null;
+  while (p) {
+    const flow = getComputedStyle(p).overflowY;
+    if ((flow === "auto" || flow === "scroll") && p.scrollHeight > p.clientHeight + 1) return p;
+    p = p.parentElement;
+  }
+  return null;
+}
+
+/**
+ * Where a release at this point would put the button, as a document
+ * position — or null when the answer is "nowhere it is allowed to go".
+ *
+ * Three things can go wrong with a raw `posAtCoords`, and all three
+ * happen constantly during a real drag: the point lands in the gap
+ * between two blocks, or on a picture, or inside the button being
+ * dragged. Selection.near answers the first two by walking to the
+ * closest place a caret can sit; the schema check answers "may an
+ * inline node go here at all", which is not the same question and is
+ * false inside a table cell's header row or an empty layout box.
+ */
+function dropAt(
+  view: EditorView,
+  x: number,
+  y: number,
+  type: NodeType,
+  from: number,
+  to: number,
+): number | null {
+  const found = view.posAtCoords({ left: x, top: y });
+  if (!found) return null;
+
+  const at = Selection.near(view.state.doc.resolve(found.pos), 1).from;
+  // Inside the node being dragged is not a move, it is a no-op that
+  // would delete and reinsert at a position the delete just removed.
+  if (at > from && at < to) return null;
+
+  const $at = view.state.doc.resolve(at);
+  if (!$at.parent.inlineContent) return null;
+  if (!$at.parent.canReplaceWith($at.index(), $at.index(), type)) return null;
+  return at;
+}
+
+type DragHandoff = {
+  event: React.PointerEvent<HTMLElement>;
+  editor: NodeViewProps["editor"];
+  getPos: NodeViewProps["getPos"];
+  node: NodeViewProps["node"];
+  label: string;
+  onLive: (live: boolean) => void;
+};
+
+function startButtonDrag({ event, editor, getPos, node, label, onLive }: DragHandoff) {
+  const view = editor.view;
+  const grip = event.currentTarget;
+  const pointerId = event.pointerId;
+  const slop = dragSlop(event.pointerType);
+  const startX = event.clientX;
+  const startY = event.clientY;
+
+  const from = getPos();
+  if (typeof from !== "number") return;
+  const to = from + node.nodeSize;
+
+  const scroller = scrollBoxOf(view.dom);
+
+  let live = false;
+  let target: number | null = null;
+  let ghost: HTMLElement | null = null;
+  let caret: HTMLElement | null = null;
+  let edge = 0;
+  let frame = 0;
+  let lastX = startX;
+  let lastY = startY;
+
+  /* THE FEEDBACK IS MOST OF THE GESTURE. A label under the pointer says
+     WHAT is moving, which matters on a phone because the finger is
+     covering the original. A caret in the text says WHERE it lands, and
+     it is deliberately the same caret the writer already reads to know
+     where the next character will go. */
+  const arm = () => {
+    live = true;
+    onLive(true);
+    document.body.classList.add("rt-btn-dragging");
+
+    ghost = document.createElement("div");
+    ghost.className = "rt-drag-ghost";
+    ghost.textContent = label || "Button";
+    document.body.appendChild(ghost);
+
+    caret = document.createElement("div");
+    caret.className = "rt-drop-caret";
+    document.body.appendChild(caret);
+
+    try {
+      grip.setPointerCapture(pointerId);
+    } catch {
+      /* A browser may refuse capture on an element it has already let
+         go of. The window listeners carry the gesture either way, so
+         this is a downgrade rather than a failure. */
+    }
+    frame = requestAnimationFrame(tick);
+  };
+
+  const paint = () => {
+    if (ghost) {
+      ghost.style.left = `${Math.round(lastX)}px`;
+      ghost.style.top = `${Math.round(lastY)}px`;
+    }
+    if (!caret) return;
+    if (target === null) {
+      caret.classList.remove("is-on");
+      return;
+    }
+    const at = view.coordsAtPos(target);
+    caret.style.left = `${Math.round(at.left)}px`;
+    caret.style.top = `${Math.round(at.top)}px`;
+    caret.style.height = `${Math.max(16, Math.round(at.bottom - at.top))}px`;
+    caret.classList.add("is-on");
+  };
+
+  const aim = () => {
+    target = dropAt(view, lastX, lastY, node.type, from, to);
+    paint();
+  };
+
+  /* Dragging to a paragraph that is off the bottom of a phone screen is
+     the ordinary case, not the exotic one — there is no second hand to
+     scroll with. Holding near the edge scrolls, and the drop position
+     is recomputed as the text moves under a stationary finger. */
+  const tick = () => {
+    if (!live) return;
+    if (edge !== 0) {
+      if (scroller) scroller.scrollTop += edge * EDGE_SPEED;
+      else window.scrollBy(0, edge * EDGE_SPEED);
+      aim();
+    }
+    frame = requestAnimationFrame(tick);
+  };
+
+  const onMove = (ev: PointerEvent) => {
+    if (ev.pointerId !== pointerId) return;
+    lastX = ev.clientX;
+    lastY = ev.clientY;
+
+    if (!live) {
+      if (Math.abs(lastX - startX) < slop && Math.abs(lastY - startY) < slop) return;
+      arm();
+    }
+
+    /* Only once the drag is real. preventDefault here is what stops a
+       finger from scrolling the page and a mouse from painting a text
+       selection across the document — and doing it here rather than on
+       the press is what leaves an ordinary click and an ordinary
+       double-click completely alone. */
+    ev.preventDefault();
+
+    const bounds = scroller
+      ? scroller.getBoundingClientRect()
+      : { top: 0, bottom: window.innerHeight };
+    edge = lastY < bounds.top + EDGE_BAND ? -1 : lastY > bounds.bottom - EDGE_BAND ? 1 : 0;
+
+    aim();
+  };
+
+  /**
+   * ONE TRANSACTION, NOT TWO COMMANDS.
+   *
+   * Delete-then-insert as a chain of two is how this was wrong before:
+   * the second command's position was measured against the document the
+   * first one had already shortened, so every drop below the button
+   * landed `nodeSize` characters past where the writer pointed. Inside
+   * one transaction the mapping is the transaction's own, and the
+   * position follows the edit that moved it.
+   */
+  const commit = () => {
+    if (target === null) return;
+    const at = getPos();
+    if (typeof at !== "number") return;
+    const end = at + node.nodeSize;
+    if (target >= at && target <= end) return;
+
+    const tr = view.state.tr;
+    tr.delete(at, end);
+    const landed = tr.mapping.map(target, -1);
+    tr.insert(landed, node.type.create(node.attrs, null, node.marks));
+    tr.setSelection(NodeSelection.create(tr.doc, landed));
+    view.dispatch(tr.scrollIntoView());
+    view.focus();
+  };
+
+  const finish = (keep: boolean) => {
+    cancelAnimationFrame(frame);
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("pointercancel", onCancel);
+    ghost?.remove();
+    caret?.remove();
+    document.body.classList.remove("rt-btn-dragging");
+    try {
+      grip.releasePointerCapture(pointerId);
+    } catch {
+      /* Already released — see setPointerCapture above. */
+    }
+    if (!live) return;
+    live = false;
+    onLive(false);
+    if (keep) commit();
+  };
+
+  const onUp = (ev: PointerEvent) => {
+    if (ev.pointerId !== pointerId) return;
+    finish(true);
+  };
+  const onCancel = (ev: PointerEvent) => {
+    if (ev.pointerId !== pointerId) return;
+    finish(false);
+  };
+
+  // `passive: false` is not decoration: without it the browser ignores
+  // the preventDefault above and the page scrolls under the finger.
+  window.addEventListener("pointermove", onMove, { passive: false });
+  window.addEventListener("pointerup", onUp);
+  window.addEventListener("pointercancel", onCancel);
+}
+
+
+function ButtonView({ node, deleteNode, selected, editor, getPos }: NodeViewProps) {
+  const label = typeof node.attrs.label === "string" ? node.attrs.label : "";
+  const href = typeof node.attrs.href === "string" ? node.attrs.href : "";
+  const look = buttonAttrs(node.attrs);
+  const editable = editor.isEditable;
+  const [dragging, setDragging] = useState(false);
+
+  const select = () => {
+    const pos = getPos();
+    if (typeof pos === "number") editor.chain().focus().setNodeSelection(pos).run();
+  };
+
+  const edit = () => {
+    select();
+    editor.view.dom.dispatchEvent(new CustomEvent(RT_EDIT_BUTTON_EVENT, { bubbles: true }));
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLSpanElement>) => {
+    if (!editable) return;
+    // Secondary buttons belong to the context menu. The click COUNT is
+    // deliberately not consulted: guarding on it meant the press right
+    // after a double-click was thrown away, so editing a button and
+    // then moving it did nothing at all until you clicked elsewhere
+    // first. A stationary double-click cannot arm a drag anyway — it
+    // never travels past the slop below.
+    if (e.button !== 0) return;
+    select();
+    startButtonDrag({ event: e, editor, getPos, node, label, onLive: setDragging });
+  };
+
+  /**
+   * WHY THE PRESS IS TAKEN AWAY FROM PROSEMIRROR.
+   *
+   * Without this, clicking a button selected nothing: `setNodeSelection`
+   * above ran, and then ProseMirror's own mousedown handler — listening
+   * on the editor element this span sits inside — reached the same press
+   * a moment later and replaced the node selection with a text cursor.
+   * The strip never appeared, so there was no sign the button could be
+   * picked up at all.
+   *
+   * stopPropagation, not preventDefault alone: the default is the
+   * browser's (focus, and starting a text-selection drag), and it is the
+   * one this also has to stop. But the SELECTION is ProseMirror's, and
+   * the only way to keep it is for the press not to reach it. Both are
+   * needed and they stop different things.
+   *
+   * Click counting is unaffected — dblclick is dispatched from the same
+   * element and still opens the dialog.
+   */
+  const onMouseDown = (e: React.MouseEvent) => {
+    if (!editable || e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  return (
+    <NodeViewWrapper
+      as="span"
+      className={`rt-btn-wrap${selected ? " rt-node-selected" : ""}${dragging ? " is-dragging" : ""}`}
+    >
+      <span
+        /* Class AND style from the same builder the renderer uses, so
+           the draft is the published button rather than a likeness of
+           it. `rt-btn-grab` is the only thing added here, because it is
+           the only thing that is true of the draft and not the page. */
+        className={`${look.class}${editable ? " rt-btn-grab" : ""}`}
+        style={buttonVars(node.attrs) as React.CSSProperties}
+        contentEditable={false}
+        draggable={false}
+        title={
+          editable
+            ? `${href || "No link yet"} — drag to move it, double-click to edit`
+            : undefined
+        }
+        onPointerDown={onPointerDown}
+        onMouseDown={onMouseDown}
+        onDoubleClick={editable ? edit : undefined}
+      >
+        {label || "Button"}
+      </span>
+
+      {/* ABSOLUTELY POSITIONED, and that is the whole point: a strip in
+          the flow would be a block sitting in the middle of a line of
+          text, which is exactly the thing that stopped words from
+          running past the button in the first place. Out of flow, the
+          line is a line and the controls hang below it.
+
+          TWO CONTROLS, NOT SEVENTEEN. It used to carry every variant,
+          every size and three alignments as chips — a control panel
+          hanging under a word, wider than the button by a factor of
+          six, covering the paragraph beneath it. Every one of those
+          settings now lives in the dialog, where they can be seen
+          together against a preview instead of guessed at one chip at a
+          time. What is left is the two things you cannot do in a
+          dialog: open it, and get rid of the button. */}
+      {editable && selected && !dragging ? (
+        <span className="rt-btn-tools">
+          <Tools as="span">
+            <Chip title="Change the words, the link or the look" onPress={edit}>
+              Edit
+            </Chip>
+            <Chip title="Remove this button" onPress={deleteNode}>
+              Remove
+            </Chip>
+          </Tools>
+        </span>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsButton = Node.create({
+  name: "brsButton",
+  group: "inline",
+  inline: true,
+  atom: true,
+  draggable: true,
+  selectable: true,
+
+  addAttributes() {
+    return {
+      label: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-label") ?? el.textContent,
+        renderHTML: (a: Record<string, unknown>) =>
+          a.label ? { "data-label": String(a.label) } : {},
+      },
+      href: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("href"),
+        renderHTML: (a: Record<string, unknown>) => (a.href ? { href: String(a.href) } : {}),
+      },
+      variant: {
+        default: RICH_BUTTON_VARIANT_DEFAULT,
+        parseHTML: (el: HTMLElement) => buttonVariant(el.getAttribute("data-variant")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-variant": buttonVariant(a.variant) }),
+      },
+      size: {
+        default: RICH_BUTTON_SIZE_DEFAULT,
+        parseHTML: (el: HTMLElement) => buttonSize(el.getAttribute("data-size")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-size": buttonSize(a.size) }),
+      },
+      radius: {
+        default: RICH_BUTTON_RADIUS_DEFAULT,
+        parseHTML: (el: HTMLElement) => buttonRadius(el.getAttribute("data-radius")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-radius": buttonRadius(a.radius) }),
+      },
+      weight: {
+        default: RICH_BUTTON_WEIGHT_DEFAULT,
+        parseHTML: (el: HTMLElement) => buttonWeight(el.getAttribute("data-weight")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-weight": buttonWeight(a.weight) }),
+      },
+      /* The three switches. `false` writes nothing, for the reason the
+         colours give: the common button has none of them set and should
+         carry no attribute saying so. */
+      italic: {
+        default: false,
+        parseHTML: (el: HTMLElement) => el.hasAttribute("data-italic"),
+        renderHTML: (a: Record<string, unknown>) => (a.italic ? { "data-italic": "" } : {}),
+      },
+      underline: {
+        default: false,
+        parseHTML: (el: HTMLElement) => el.hasAttribute("data-underline"),
+        renderHTML: (a: Record<string, unknown>) => (a.underline ? { "data-underline": "" } : {}),
+      },
+      caps: {
+        default: false,
+        parseHTML: (el: HTMLElement) => el.hasAttribute("data-caps"),
+        renderHTML: (a: Record<string, unknown>) => (a.caps ? { "data-caps": "" } : {}),
+      },
+      /* The two exact colours. Null — the usual answer — writes nothing
+         at all, so a button that takes its style's colours stores no
+         colour, and the generated content file does not grow an
+         attribute on every button the day this shipped. */
+      bg: {
+        default: null,
+        parseHTML: (el: HTMLElement) => buttonColour(el.getAttribute("data-bg")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const c = buttonColour(a.bg);
+          return c ? { "data-bg": c } : {};
+        },
+      },
+      fg: {
+        default: null,
+        parseHTML: (el: HTMLElement) => buttonColour(el.getAttribute("data-fg")),
+        renderHTML: (a: Record<string, unknown>) => {
+          const c = buttonColour(a.fg);
+          return c ? { "data-fg": c } : {};
+        },
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "a[data-rt-button]" }];
+  },
+
+  renderHTML({ HTMLAttributes, node }) {
+    return [
+      "a",
+      mergeAttributes(HTMLAttributes, { "data-rt-button": "" }, buttonAttrs(node.attrs)),
+    ];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(ButtonView);
+  },
+});
+
+/* ══ BrsCard ══════════════════════════════════════════════════════════
+ *
+ * ONE CELL, HOLDING REAL BLOCKS.
+ *
+ * `content: "block+"` and NOT a title/body pair of string attributes —
+ * the argument is written out in palette.ts under RICH_CARD_VARIANTS,
+ * and the short version is that the toolbar already knows how to format
+ * a heading and richDocToText() already knows how to read one.
+ *
+ * NO `group`, deliberately. The document's own content expression is
+ * `block+`, so a node that is not in that group cannot be typed into the
+ * top level of a write-up — a card exists only inside a row, and the
+ * schema is what says so rather than a check somewhere in the toolbar.
+ *
+ * `isolating` is what makes Backspace at the top of a card stop there
+ * instead of pulling the card into the one before it, which is the same
+ * reason a table cell sets it.
+ */
+function CardView({ node, updateAttributes, editor, getPos }: NodeViewProps) {
+  const variant = cardVariant(node.attrs.variant);
+  const align = cardAlign(node.attrs.align);
+  const icon = typeof node.attrs.icon === "string" ? node.attrs.icon : "";
+  const svg = richIconSvg(icon);
+  const href = typeof node.attrs.href === "string" ? node.attrs.href : "";
+  const editable = editor.isEditable;
+
+  /* The link box is local until it is committed, so every keystroke is
+     not a document transaction — and so an address that will not
+     publish can be visibly rejected rather than silently stored. */
+  const [link, setLink] = useState(href);
+  useEffect(() => setLink(href), [href]);
+
+  const commitLink = () => {
+    const v = link.trim();
+    if (!v) {
+      updateAttributes({ href: null });
+      return;
+    }
+    // The same three shapes render.ts's safeHref keeps. Anything else
+    // snaps back to what is stored, so the field shows the truth.
+    if (/^(https?:\/\/|mailto:|\/)/i.test(v)) updateAttributes({ href: v });
+    else setLink(href);
+  };
+
+  const remove = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+    const $pos = editor.state.doc.resolve(pos);
+    /* THE LAST CARD TAKES THE ROW WITH IT. A brsColumns whose content
+       expression is `brsCard+` cannot hold zero cards, and leaving
+       ProseMirror to repair that produces an empty row that renders as
+       nothing and therefore cannot be clicked in order to be deleted. */
+    if ($pos.parent.type.name === "brsColumns" && $pos.parent.childCount <= 1) {
+      editor.chain().focus().deleteRange({ from: $pos.before(), to: $pos.after() }).run();
+      return;
+    }
+    editor.chain().focus().deleteRange({ from: pos, to: pos + node.nodeSize }).run();
+  };
+
+  return (
+    <NodeViewWrapper className={`rt-card rt-card-${variant} rt-card-${align} rt-card-shell`}>
+      {svg ? (
+        <span
+          className="rt-card-icon"
+          contentEditable={false}
+          /* Every byte of this came out of the table in palette.ts, which
+             is a literal in that file — see the note on richIconSvg. No
+             author input reaches it, as a path or as anything else. */
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+      ) : null}
+
+      <NodeViewContent className="rt-card-body" />
+
+      {editable ? (
+        <Tools>
+          <Picker label="Icon" value={icon} onChange={(v) => updateAttributes({ icon: v || null })}>
+            <option value="">No icon</option>
+            {RICH_ICONS.map((i) => (
+              <option key={i.id} value={i.id}>
+                {i.label}
+              </option>
+            ))}
+          </Picker>
+
+          <Picker label="Card style" value={variant} onChange={(v) => updateAttributes({ variant: v })}>
+            {RICH_CARD_VARIANTS.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.label}
+              </option>
+            ))}
+          </Picker>
+
+          {RICH_CARD_ALIGNS.map((a) => (
+            <Chip
+              key={a}
+              title={`Align ${a}`}
+              active={align === a}
+              onPress={() => updateAttributes({ align: a })}
+            >
+              {a}
+            </Chip>
+          ))}
+
+          <input
+            type="text"
+            aria-label="Link the whole card"
+            title="Where the whole card goes. https:// , mailto: or / for a page on this site."
+            placeholder="Link the card (optional)"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            onBlur={commitLink}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                commitLink();
+              }
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="adm-input w-44 py-1 text-body-s"
+          />
+
+          <Chip title="Remove this card" onPress={remove}>
+            Remove
+          </Chip>
+        </Tools>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsCard = Node.create({
+  name: "brsCard",
+  content: "block+",
+  isolating: true,
+  defining: true,
+  selectable: false,
+
+  addAttributes() {
+    return {
+      icon: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-icon"),
+        renderHTML: (a: Record<string, unknown>) => (a.icon ? { "data-icon": String(a.icon) } : {}),
+      },
+      variant: {
+        default: RICH_CARD_VARIANT_DEFAULT,
+        parseHTML: (el: HTMLElement) => cardVariant(el.getAttribute("data-variant")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-variant": cardVariant(a.variant) }),
+      },
+      align: {
+        default: RICH_CARD_ALIGN_DEFAULT,
+        parseHTML: (el: HTMLElement) => cardAlign(el.getAttribute("data-align")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-align": cardAlign(a.align) }),
+      },
+      href: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-href"),
+        renderHTML: (a: Record<string, unknown>) => (a.href ? { "data-href": String(a.href) } : {}),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-rt-card]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { "data-rt-card": "", class: "rt-card" }), 0];
+  },
+
+  /* Same mount as a cell has, for a smaller reason: `min-width: 0` has
+     to sit on the GRID ITEM to stop one long word setting the column's
+     minimum and pushing the whole row wider than the page. On the
+     published card it already does; in the editor the item is the
+     mount, so the mount needs it too. */
+  addNodeView() {
+    return ReactNodeViewRenderer(CardView, { className: "rt-card-mount" });
+  },
+});
+
+/* ══ BrsColumns ═══════════════════════════════════════════════════════
+ *
+ * THE ROW. Two, three or four equal cards — see RICH_COLUMN_COUNTS for
+ * why the count is closed and why nothing per-breakpoint is stored.
+ */
+
+/** What a new cell starts as: a place for a title and a place for a
+ *  sentence, both empty. NOT filled with "Title" and "Description",
+ *  because placeholder prose that nobody edits is placeholder prose
+ *  that publishes. */
+const emptyCard = () => ({
+  type: "brsCard",
+  content: [{ type: "heading", attrs: { level: 3 } }, { type: "paragraph" }],
+});
+
+/** A whole row, as the toolbar inserts it. */
+export const emptyColumns = (cols: number) => ({
+  type: "brsColumns",
+  attrs: { cols },
+  content: Array.from({ length: cols }, emptyCard),
+});
+
+function ColumnsView({ node, updateAttributes, deleteNode, editor, getPos }: NodeViewProps) {
+  const cols = columnCount(node.attrs.cols);
+  const editable = editor.isEditable;
+
+  const addCard = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+    /* One before the row's own closing token, which is where "after the
+       last card" is. Appending at `pos + nodeSize` would put the card
+       after the ROW, where the schema does not allow one at all. */
+    editor
+      .chain()
+      .focus()
+      .insertContentAt(pos + node.nodeSize - 1, emptyCard())
+      .run();
+  };
+
+  return (
+    <NodeViewWrapper className="rt-shell rt-cols-shell">
+      <NodeViewContent className={`rt-cols rt-cols-${cols}`} />
+
+      {editable ? (
+        <Tools handle>
+          <span className="text-micro uppercase text-text-tertiary">Columns</span>
+          {RICH_COLUMN_COUNTS.map((n) => (
+            <Chip
+              key={n}
+              title={`${n} across`}
+              active={cols === n}
+              onPress={() => updateAttributes({ cols: n })}
+            >
+              {n}
+            </Chip>
+          ))}
+
+          <span aria-hidden="true" className="h-5 w-px bg-line-hairline" />
+
+          {/* The count and the card count are SEPARATE on purpose: six
+              segments in a three-across row is two rows of three, which
+              is exactly the layout the client's page has. Forcing them
+              equal would make that impossible to express. */}
+          <Chip title="Add another card to this row" onPress={addCard}>
+            + Card
+          </Chip>
+          <Chip title="Remove the whole row" onPress={deleteNode}>
+            Remove row
+          </Chip>
+        </Tools>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsColumns = Node.create({
+  name: "brsColumns",
+  group: "block",
+  content: "brsCard+",
+  isolating: true,
+  draggable: true,
+
+  addAttributes() {
+    return {
+      cols: {
+        default: RICH_COLUMN_COUNT_DEFAULT,
+        parseHTML: (el: HTMLElement) => columnCount(el.getAttribute("data-cols")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-cols": String(columnCount(a.cols)) }),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-rt-cols]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { "data-rt-cols": "", class: "rt-cols" }), 0];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(ColumnsView);
+  },
+});
+
+/* ══ BrsCallout ═══════════════════════════════════════════════════════
+ *
+ * THE SENTENCE A READER MUST NOT MISS.
+ *
+ * Content, not attributes, for the third time in this file and for the
+ * same reason each time: a deadline notice wants a bold date and a link
+ * to the form, and the toolbar already knows how to make both.
+ */
+function CalloutView({ node, updateAttributes, deleteNode, editor }: NodeViewProps) {
+  const tone = calloutTone(node.attrs.tone);
+  const icon = typeof node.attrs.icon === "string" ? node.attrs.icon : "";
+  const svg = richIconSvg(icon);
+
+  return (
+    <NodeViewWrapper className={`rt-callout rt-callout-${tone} rt-callout-shell`}>
+      {svg ? (
+        <span
+          className="rt-callout-icon"
+          contentEditable={false}
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+      ) : null}
+
+      <NodeViewContent className="rt-callout-body" />
+
+      {editor.isEditable ? (
+        <Tools>
+          <Picker label="Tone" value={tone} onChange={(v) => updateAttributes({ tone: v })}>
+            {RICH_CALLOUT_TONES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.label}
+              </option>
+            ))}
+          </Picker>
+          <Picker label="Icon" value={icon} onChange={(v) => updateAttributes({ icon: v || null })}>
+            <option value="">No icon</option>
+            {RICH_ICONS.map((i) => (
+              <option key={i.id} value={i.id}>
+                {i.label}
+              </option>
+            ))}
+          </Picker>
+          <Chip title="Remove this callout" onPress={deleteNode}>
+            Remove
+          </Chip>
+        </Tools>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsCallout = Node.create({
+  name: "brsCallout",
+  group: "block",
+  content: "block+",
+  defining: true,
+
+  addAttributes() {
+    return {
+      tone: {
+        default: RICH_CALLOUT_TONE_DEFAULT,
+        parseHTML: (el: HTMLElement) => calloutTone(el.getAttribute("data-tone")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-tone": calloutTone(a.tone) }),
+      },
+      icon: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-icon"),
+        renderHTML: (a: Record<string, unknown>) => (a.icon ? { "data-icon": String(a.icon) } : {}),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-rt-callout]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { "data-rt-callout": "", class: "rt-callout" }), 0];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(CalloutView);
+  },
+});
+
+/* ══ BrsSpacer ════════════════════════════════════════════════════════
+ *
+ * A BLOCK WHOSE JOB IS TO BE NOTHING.
+ *
+ * Four presses of Enter store four empty paragraphs, and four empty
+ * paragraphs are four things that the next change to the document's
+ * leading quietly resizes. This is one node that says 48px, on purpose,
+ * and still says it next year — see RICH_SPACER_SIZES.
+ */
+function SpacerView({ node, updateAttributes, deleteNode, selected, editor }: NodeViewProps) {
+  const size = spacerSize(node.attrs.size);
+
+  return (
+    <NodeViewWrapper
+      className={`rt-shell rt-spacer-shell${selected ? " rt-node-selected" : ""}`}
+      data-drag-handle
+    >
+      {/* Invisible on the page; here it needs an edge, or a writer
+          cannot see the thing they are about to resize. */}
+      <div className={`rt-spacer rt-spacer-${size}`} contentEditable={false}>
+        <span className="rt-spacer-mark" aria-hidden="true" />
+      </div>
+
+      {editor.isEditable && selected ? (
+        <Tools>
+          {RICH_SPACER_SIZES.map((z) => (
+            <Chip
+              key={z.id}
+              title={z.label}
+              active={size === z.id}
+              onPress={() => updateAttributes({ size: z.id })}
+            >
+              {z.id}
+            </Chip>
+          ))}
+          <Chip title="Remove this space" onPress={deleteNode}>
+            Remove
+          </Chip>
+        </Tools>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsSpacer = Node.create({
+  name: "brsSpacer",
+  group: "block",
+  atom: true,
+  draggable: true,
+  selectable: true,
+
+  addAttributes() {
+    return {
+      size: {
+        default: RICH_SPACER_SIZE_DEFAULT,
+        parseHTML: (el: HTMLElement) => spacerSize(el.getAttribute("data-size")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-size": spacerSize(a.size) }),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-rt-spacer]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { "data-rt-spacer": "", class: "rt-spacer" })];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(SpacerView);
+  },
+});
+
+/* ══ BrsDetails / BrsSummary ══════════════════════════════════════════
+ *
+ * AN ACCORDION, AND IT IS THE BROWSER'S OWN.
+ *
+ * The renderer emits <details>/<summary>, which opens with no
+ * JavaScript, is already in the tab order, already announces its open
+ * state to a screen reader, and is already opened by Ctrl+F when the
+ * text a reader is searching for is inside it. A <div> with a click
+ * handler would have been none of those four things, and a rulebook
+ * that Ctrl+F cannot find is a rulebook nobody can use.
+ *
+ * TWO NODES, NOT A `summary` STRING ATTRIBUTE. Same argument as the
+ * card: the summary is a line of writing, it wants the toolbar, and
+ * richDocToText() has to be able to see it or "Rules for the line
+ * follower" is invisible to the page's own description.
+ */
+export const BrsSummary = Node.create({
+  name: "brsSummary",
+  content: "inline*",
+  defining: true,
+  selectable: false,
+
+  parseHTML() {
+    return [{ tag: "summary" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["summary", mergeAttributes(HTMLAttributes, { class: "rt-summary" }), 0];
+  },
+});
+
+function DetailsView({ node, updateAttributes, deleteNode, editor }: NodeViewProps) {
+  const open = node.attrs.open === true;
+
+  return (
+    <NodeViewWrapper className="rt-details rt-details-shell">
+      {/* ALWAYS EXPANDED IN THE EDITOR, whatever `open` says.
+          A closed accordion in a writing surface is content that cannot
+          be edited without first being opened, and a writer who cannot
+          see a paragraph cannot fix it. `open` is what the READER gets;
+          the chip below sets it. */}
+      <NodeViewContent className="rt-details-inner" />
+
+      {editor.isEditable ? (
+        <Tools>
+          <Chip
+            title="Whether it starts open for a reader"
+            active={open}
+            onPress={() => updateAttributes({ open: !open })}
+          >
+            {open ? "Starts open" : "Starts closed"}
+          </Chip>
+          <Chip title="Remove this section" onPress={deleteNode}>
+            Remove
+          </Chip>
+        </Tools>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsDetails = Node.create({
+  name: "brsDetails",
+  group: "block",
+  /* The summary is REQUIRED and comes first. Expressing it in the schema
+     rather than checking for it means a document without one cannot
+     exist — including one that has been edited by hand. */
+  content: "brsSummary block+",
+  defining: true,
+  isolating: true,
+
+  addAttributes() {
+    return {
+      open: {
+        default: false,
+        parseHTML: (el: HTMLElement) => el.hasAttribute("open"),
+        renderHTML: (a: Record<string, unknown>) => (a.open ? { open: "" } : {}),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "details" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["details", mergeAttributes(HTMLAttributes, { class: "rt-details" }), 0];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(DetailsView);
+  },
+});
+
+/** What the toolbar and the slash menu insert. */
+export const emptyDetails = () => ({
+  type: "brsDetails",
+  content: [{ type: "brsSummary" }, { type: "paragraph" }],
+});
+
+/* ══ BrsSection ═══════════════════════════════════════════════════════
+ *
+ * THE BAND — the one block that leaves the article's measure.
+ *
+ * See RICH_SECTION_TONES in palette.ts for the mechanics and for why a
+ * background photograph is stored as an ASSET ID and rendered as an
+ * <img> rather than as a CSS url().
+ */
+
+/** Fired when the band's strip asks for a background. Carries the band's
+ *  own position, so the dialog can set the attribute on THAT node rather
+ *  than on whatever the selection happens to be when it closes. */
+export const RT_PICK_BAND_EVENT = "brs-rt-pick-band";
+
+function SectionView({ node, updateAttributes, deleteNode, editor, getPos }: NodeViewProps) {
+  const tone = sectionTone(node.attrs.tone);
+  const scrim = sectionScrim(node.attrs.scrim);
+  const assetId = typeof node.attrs.assetId === "string" ? node.attrs.assetId : "";
+  const [asset, setAsset] = useState<AssetRow | null>(() => peekAsset(assetId));
+
+  /* The same cache the inline pictures read, so a background that is
+     already in hand paints without a second request. */
+  useEffect(() => {
+    if (!assetId) {
+      setAsset(null);
+      return;
+    }
+    setAsset(peekAsset(assetId));
+    void loadAsset(assetId).then(setAsset);
+    return onAssetsChanged(() => setAsset(peekAsset(assetId)));
+  }, [assetId]);
+
+  const pickBackground = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+    editor.view.dom.dispatchEvent(
+      new CustomEvent(RT_PICK_BAND_EVENT, { bubbles: true, detail: { pos } }),
+    );
+  };
+
+  return (
+    <NodeViewWrapper
+      className={`rt-band rt-band-${tone}${asset ? " rt-band-photo" : ""} rt-band-shell`}
+    >
+      {asset ? (
+        <div className="rt-band-bg" contentEditable={false} aria-hidden="true">
+          <img src={assetUrl(asset)} alt="" />
+        </div>
+      ) : null}
+      {asset && scrim !== "none" ? (
+        <div className={`rt-band-scrim rt-band-scrim-${scrim}`} contentEditable={false} aria-hidden="true" />
+      ) : null}
+
+      <NodeViewContent className="rt-band-inner" />
+
+      {editor.isEditable ? (
+        <Tools handle>
+          <Picker label="Band colour" value={tone} onChange={(v) => updateAttributes({ tone: v })}>
+            {RICH_SECTION_TONES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.label}
+              </option>
+            ))}
+          </Picker>
+
+          {/* The scrim only means anything over a photograph. Offering
+              it on a plain colour band is a control that does nothing,
+              which is worse than a control that is missing. */}
+          {asset ? (
+            <Picker label="Scrim" value={scrim} onChange={(v) => updateAttributes({ scrim: v })}>
+              {RICH_SECTION_SCRIMS.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </Picker>
+          ) : null}
+
+          <Chip title="Choose a background photograph" onPress={pickBackground}>
+            {asset ? "Change photo" : "Background…"}
+          </Chip>
+          {asset ? (
+            <Chip title="Remove the background photograph" onPress={() => updateAttributes({ assetId: null })}>
+              Clear photo
+            </Chip>
+          ) : null}
+
+          <Chip title="Remove this band" onPress={deleteNode}>
+            Remove band
+          </Chip>
+        </Tools>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsSection = Node.create({
+  name: "brsSection",
+  group: "block",
+  content: "block+",
+  defining: true,
+  isolating: true,
+  draggable: true,
+
+  addAttributes() {
+    return {
+      tone: {
+        default: RICH_SECTION_TONE_DEFAULT,
+        parseHTML: (el: HTMLElement) => sectionTone(el.getAttribute("data-tone")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-tone": sectionTone(a.tone) }),
+      },
+      scrim: {
+        default: RICH_SECTION_SCRIM_DEFAULT,
+        parseHTML: (el: HTMLElement) => sectionScrim(el.getAttribute("data-scrim")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-scrim": sectionScrim(a.scrim) }),
+      },
+      assetId: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-asset-id"),
+        renderHTML: (a: Record<string, unknown>) =>
+          a.assetId ? { "data-asset-id": String(a.assetId) } : {},
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "section[data-rt-band]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["section", mergeAttributes(HTMLAttributes, { "data-rt-band": "", class: "rt-band" }), 0];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(SectionView);
+  },
+});
+
+/** A band starts as a heading and a line, both empty. */
+export const emptySection = () => ({
+  type: "brsSection",
+  content: [{ type: "heading", attrs: { level: 2, textAlign: "center" } }, { type: "paragraph", attrs: { textAlign: "center" } }],
+});
+
+/* ══ TABLES ═══════════════════════════════════════════════════════════
+ *
+ * PROSEMIRROR-TABLES, WHICH IS ALREADY INSTALLED.
+ *
+ * @tiptap/pm bundles it, so the editing behaviour that makes a table
+ * usable — Tab between cells, drag a rectangular selection, merge,
+ * split, add and delete rows and columns, and the repair pass that
+ * keeps a table rectangular after every one of those — costs nothing to
+ * adopt and would have been several hundred lines to reimplement badly.
+ *
+ * WHAT IS OURS IS THE SCHEMA AND THE OUTPUT. The node NAMES are the
+ * library's, because its commands look their own node types up by name
+ * and renaming them would mean forking it.
+ *
+ * ── HOW `tableRole` REACHES THE SCHEMA ──
+ * prosemirror-tables finds its node types through `spec.tableRole`, and
+ * Tiptap does not copy unknown config keys into the spec. The official
+ * extension solves this with declaration merging on Tiptap's own config
+ * interface — a `declare module` block against a package this app does
+ * not depend on directly. So the role is carried in `addOptions`, which
+ * IS typed, and `extendNodeSchema` below lifts it onto the spec. Same
+ * result, no module augmentation.
+ *
+ * ── WHAT IS DELIBERATELY NOT HERE ──
+ * COLUMN RESIZING. It stores a pixel width per cell, and a pixel width
+ * is the same mistake an inline picture width was: 300px is a third of
+ * the measure on a laptop and wider than a phone. Equal columns that
+ * wrap is the honest behaviour until somebody asks otherwise.
+ */
+
+/** Lifts `options.tableRole` onto the node's schema spec. Declared once,
+ *  on the table itself, and applied to every node in the editor —
+ *  returning nothing for the ones that have no role. */
+const liftTableRole = (extension: { options?: unknown }): Record<string, unknown> => {
+  const role = (extension.options as { tableRole?: unknown } | undefined)?.tableRole;
+  return typeof role === "string" ? { tableRole: role } : {};
+};
+
+/** The three attributes prosemirror-tables reads off a cell. `colwidth`
+ *  is declared because the library's own repair code expects the key to
+ *  exist; nothing sets it, because column resizing is not enabled. */
+const cellAttributes = () => ({
+  colspan: {
+    default: 1,
+    parseHTML: (el: HTMLElement) => Number(el.getAttribute("colspan")) || 1,
+    renderHTML: (a: Record<string, unknown>) =>
+      Number(a.colspan) > 1 ? { colspan: String(a.colspan) } : {},
+  },
+  rowspan: {
+    default: 1,
+    parseHTML: (el: HTMLElement) => Number(el.getAttribute("rowspan")) || 1,
+    renderHTML: (a: Record<string, unknown>) =>
+      Number(a.rowspan) > 1 ? { rowspan: String(a.rowspan) } : {},
+  },
+  colwidth: { default: null, renderHTML: () => ({}) },
+});
+
+export const BrsTable = Node.create({
+  name: "table",
+  group: "block",
+  content: "tableRow+",
+  isolating: true,
+
+  addOptions() {
+    return { tableRole: "table" };
+  },
+
+  extendNodeSchema: liftTableRole,
+
+  parseHTML() {
+    return [{ tag: "table" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return [
+      "table",
+      mergeAttributes(HTMLAttributes, { class: "rt-table" }),
+      ["tbody", 0],
+    ];
+  },
+
+  addProseMirrorPlugins() {
+    /* The plugin that makes a table behave like a table rather than like
+       a grid of unrelated boxes: rectangular cell selection, and the
+       repair that keeps every row the same length after a merge. */
+    return [tableEditing()];
+  },
+
+  addKeyboardShortcuts() {
+    /* Tab is the only way anybody moves through a table, and without
+       this it inserts a tab character into a cell. `false` lets the key
+       fall through when the cursor is not in a table at all. */
+    return {
+      Tab: () => this.editor.chain().command(({ state, dispatch }) => goToNextCell(1)(state, dispatch)).run(),
+      "Shift-Tab": () =>
+        this.editor.chain().command(({ state, dispatch }) => goToNextCell(-1)(state, dispatch)).run(),
+    };
+  },
+});
+
+export const BrsTableRow = Node.create({
+  name: "tableRow",
+  content: "(tableCell | tableHeader)*",
+
+  addOptions() {
+    return { tableRole: "row" };
+  },
+
+  parseHTML() {
+    return [{ tag: "tr" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["tr", mergeAttributes(HTMLAttributes), 0];
+  },
+});
+
+export const BrsTableCell = Node.create({
+  name: "tableCell",
+  content: "block+",
+  isolating: true,
+
+  addOptions() {
+    return { tableRole: "cell" };
+  },
+
+  addAttributes: cellAttributes,
+
+  parseHTML() {
+    return [{ tag: "td" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["td", mergeAttributes(HTMLAttributes), 0];
+  },
+});
+
+export const BrsTableHeader = Node.create({
+  name: "tableHeader",
+  content: "block+",
+  isolating: true,
+
+  addOptions() {
+    return { tableRole: "header_cell" };
+  },
+
+  addAttributes: cellAttributes,
+
+  parseHTML() {
+    return [{ tag: "th" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["th", mergeAttributes(HTMLAttributes, { scope: "col" }), 0];
+  },
+});
+
+/** A fresh table: a header row and two empty rows, three columns. The
+ *  shape a prize table or a schedule starts as. */
+export const emptyTable = (rows = 3, cols = 3) => {
+  const cell = (type: string) => ({ type, content: [{ type: "paragraph" }] });
+  const row = (type: string) => ({
+    type: "tableRow",
+    content: Array.from({ length: cols }, () => cell(type)),
+  });
+  return {
+    type: "table",
+    content: [row("tableHeader"), ...Array.from({ length: Math.max(1, rows - 1) }, () => row("tableCell"))],
+  };
+};
+
+/** The table commands the toolbar offers, wrapped so a caller does not
+ *  have to know they are raw ProseMirror commands. */
+export const TABLE_ACTIONS = {
+  addRow: addRowAfter,
+  deleteRow,
+  addColumn: addColumnAfter,
+  deleteColumn,
+  toggleHeaderRow,
+  mergeCells,
+  splitCell,
+  deleteTable,
+} as const;
+
+/* ══ THE LAYOUT AREA ══════════════════════════════════════════════════
+ *
+ * FREE PLACEMENT THAT CANNOT BREAK.
+ *
+ * Twenty-four columns, and a cell's ROW GROWS. When a paragraph wraps
+ * onto an extra line on somebody's phone, the row gets taller and
+ * everything below it is pushed down. An editor that stored an exact
+ * point per element — which this one had, briefly — would instead have
+ * let it cover whatever was underneath, on that machine only, with
+ * nothing to warn the person who arranged it.
+ *
+ * Overlap stops being a bug you find after publishing and becomes a
+ * state the layout cannot express. See the layout note in palette.ts.
+ *
+ * ── THREE RULES THIS VIEW ENFORCES ──
+ *   1. A drop that lands on an occupied square SLIDES DOWN to the first
+ *      clear row rather than being refused or shoving anything aside.
+ *      It always does something, and it never moves what you did not
+ *      touch.
+ *   2. After every move the cells are re-sorted top-to-bottom,
+ *      left-to-right. That is what makes the phone's stack, a screen
+ *      reader's reading order, and what a sighted reader sees the same
+ *      sequence instead of three.
+ *   3. One gesture is one undo step. The whole re-sort included.
+ *
+ * ── WHY THE GRID HAS NO GAP ──
+ * Because the drag arithmetic has to turn a pointer position into a
+ * column, and a gap makes that a different sum at every column. The
+ * space between cells is padding INSIDE them instead: identical to
+ * look at, and it keeps the column width an honest `width / 24`.
+ */
+
+/** Where a cell sits, read off a node. */
+const boxOf = (n: { attrs: Record<string, unknown> }): GridBox => ({
+  x: gridX(n.attrs.x),
+  y: gridY(n.attrs.y),
+  w: gridWAt(n.attrs.x, n.attrs.w),
+  h: gridH(n.attrs.h),
+});
+
+/**
+ * WHERE THE ROWS ACTUALLY ARE.
+ *
+ * Not arithmetic on a row height. Rows GROW to fit their contents —
+ * that is the entire point of the grid — so they are not all the same
+ * height, and no division can say which row a pixel is in.
+ *
+ * `grid-template-rows` on the computed style is the browser's own
+ * answer to "how tall did each row end up", as a list of pixel values.
+ * Walking it is exact. Past the last row that exists the base height is
+ * the right guess, because a row holding nothing has not grown.
+ */
+function rowMetrics(track: HTMLElement, baseRowPx: number) {
+  const rows = getComputedStyle(track)
+    .gridTemplateRows.split(" ")
+    .map((v) => Number.parseFloat(v))
+    .filter((v) => Number.isFinite(v));
+
+  const base = baseRowPx > 0 ? baseRowPx : 40;
+  const at = (i: number) => rows[i] ?? base;
+
+  return {
+    /** Distance from the top of the grid to the start of a row. */
+    offset(row: number): number {
+      let total = 0;
+      for (let i = 0; i < row; i++) total += at(i);
+      return total;
+    },
+    /** How tall a run of rows is. */
+    height(row: number, span: number): number {
+      let total = 0;
+      for (let i = row; i < row + span; i++) total += at(i);
+      return total;
+    },
+    /** Which row a distance from the top falls in. */
+    indexAt(y: number): number {
+      if (y <= 0) return 0;
+      let acc = 0;
+      for (let i = 0; i < RICH_GRID_ROWS_MAX; i++) {
+        acc += at(i);
+        if (y < acc) return i;
+      }
+      return RICH_GRID_ROWS_MAX - 1;
+    },
+  };
+}
+
+function CellView({ node, updateAttributes, editor, getPos }: NodeViewProps) {
+  const stored = boxOf(node);
+  const align = cellAlign(node.attrs.align);
+  const valign = cellVAlign(node.attrs.valign);
+  const editable = editor.isEditable;
+  const shell = useRef<HTMLDivElement>(null);
+
+  /**
+   * THE ELEMENT THAT IS ACTUALLY THE GRID.
+   *
+   * Not `.rt-grid-stage`, and finding that out cost a bug. Tiptap does
+   * not let a React node view own its content element: it creates its
+   * OWN div, marks it `data-node-view-content-react`, and appends it
+   * inside whatever `NodeViewContent` rendered. ProseMirror's children
+   * go in there.
+   *
+   * So the stage's only child is that div, the grid placed IT — one
+   * column of twenty-four — and every cell was crammed inside, which is
+   * why a paragraph wrapped a letter per line however wide its box
+   * claimed to be.
+   *
+   * Rather than name that div here, this walks UP from the mount: the
+   * element the grid places is this cell's own mount, so the grid is
+   * its parent, whatever Tiptap decided to call it. One less private
+   * detail of somebody else's library to be wrong about later.
+   */
+  const track = (): HTMLElement | null => {
+    const mount = shell.current?.closest(".rt-cell-mount");
+    const parent = mount?.parentElement;
+    return parent instanceof HTMLElement ? parent : null;
+  };
+
+  /** The grid this cell is in, its siblings' boxes, and where we sit. */
+  const context = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return null;
+    const $pos = editor.state.doc.resolve(pos);
+    if ($pos.parent.type.name !== "brsGrid") return null;
+    const index = $pos.index();
+    const others: GridBox[] = [];
+    $pos.parent.forEach((child, _offset, i) => {
+      if (i !== index) others.push(boxOf(child));
+    });
+    return { $pos, index, others };
+  };
+
+  /**
+   * Write a new position and put the cells back in reading order, in
+   * ONE transaction — so Ctrl+Z undoes the whole gesture rather than
+   * unpicking a move from a re-sort.
+   *
+   * The content is replaced wholesale rather than nudged with
+   * updateAttributes, because the ORDER is part of what changed and
+   * there is no attribute for order.
+   */
+  const commit = (box: GridBox) => {
+    const ctx = context();
+    if (!ctx) return;
+    const { $pos, index } = ctx;
+
+    const kids: { json: ReturnType<typeof node.toJSON>; box: GridBox }[] = [];
+    $pos.parent.forEach((child, _offset, i) => {
+      const json = child.toJSON() as { attrs?: Record<string, unknown> };
+      if (i === index) json.attrs = { ...(json.attrs ?? {}), ...box };
+      kids.push({ json, box: i === index ? box : boxOf(child) });
+    });
+    kids.sort((a, b) => gridReadingOrder(a.box, b.box));
+
+    const from = $pos.start();
+    const to = $pos.end();
+    const fragment = editor.schema.nodeFromJSON({
+      type: "brsGrid",
+      content: kids.map((k) => k.json),
+    }).content;
+
+    editor
+      .chain()
+      .focus()
+      .command(({ tr }) => {
+        tr.replaceWith(from, to, fragment);
+        return true;
+      })
+      .run();
+  };
+
+  /** Move to a wanted box, sliding down past anything in the way. */
+  const place = (want: GridBox) => {
+    const ctx = context();
+    if (!ctx) return;
+    const free = gridFreeSpot(want, ctx.others);
+    if (free.x === stored.x && free.y === stored.y && free.w === stored.w && free.h === stored.h) {
+      return;
+    }
+    commit(free);
+  };
+
+  /* ── The gesture ──────────────────────────────────────────────────
+     The ghost — the outline showing where this will land — is painted
+     by setting four custom properties on the GRID element, because a
+     cell cannot draw outside itself and the ghost has to appear at a
+     square the cell is not in yet. Transient and purely visual; no
+     document state is touched until the pointer comes up. */
+  const gesture = (
+    e: React.PointerEvent,
+    mode: "move" | "resize",
+  ) => {
+    if (!editable) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const rail = track();
+    const grid = shell.current?.closest(".rt-grid") as HTMLElement | null;
+    if (!rail || !grid) return;
+
+    const rect = rail.getBoundingClientRect();
+    const colW = rect.width / RICH_GRID_COLS;
+    const baseRowPx =
+      Number.parseFloat(getComputedStyle(grid).getPropertyValue("--rt-row-px")) || 40;
+    const rows = rowMetrics(rail, baseRowPx);
+
+    /* The ghost is drawn inside `.rt-grid`, which may not start at the
+       same point as the grid itself once a background gives it padding.
+       Measured rather than assumed. */
+    const gridRect = grid.getBoundingClientRect();
+    const inset = { x: rect.left - gridRect.left, y: rect.top - gridRect.top };
+
+    const startCol = Math.floor((e.clientX - rect.left) / colW);
+    const startRow = rows.indexAt(e.clientY - rect.top);
+    let want: GridBox = { ...stored };
+
+    grid.classList.add("rt-grid-dragging");
+
+    const move = (ev: PointerEvent) => {
+      const col = Math.floor((ev.clientX - rect.left) / colW);
+      const row = rows.indexAt(ev.clientY - rect.top);
+
+      if (mode === "move") {
+        want = {
+          x: gridX(stored.x + (col - startCol)),
+          y: gridY(stored.y + (row - startRow)),
+          w: stored.w,
+          h: stored.h,
+        };
+        // A cell that would hang off the right edge stops at it rather
+        // than wrapping — the same clamp gridWAt applies when reading.
+        want.x = Math.min(want.x, RICH_GRID_COLS - want.w);
+      } else {
+        want = {
+          x: stored.x,
+          y: stored.y,
+          w: gridW(Math.min(stored.w + (col - startCol), RICH_GRID_COLS - stored.x)),
+          h: gridH(stored.h + (row - startRow)),
+        };
+      }
+
+      /* PIXELS, NOT GRID LINES. The ghost lives outside the grid — it
+         is a sibling of the content, because ProseMirror owns what goes
+         inside — so it cannot be placed by `grid-column`. Measuring is
+         exact anyway, and it is the same measurement the drop uses. */
+      grid.style.setProperty("--gl", `${Math.round(inset.x + want.x * colW)}px`);
+      grid.style.setProperty("--gt", `${Math.round(inset.y + rows.offset(want.y))}px`);
+      grid.style.setProperty("--gw", `${Math.round(want.w * colW)}px`);
+      grid.style.setProperty("--gh", `${Math.round(rows.height(want.y, want.h))}px`);
+    };
+
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      grid.classList.remove("rt-grid-dragging");
+      place(want);
+    };
+
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  };
+
+  /* Arrow keys nudge by one square. Not a nicety: it is the only way to
+     place a cell exactly without a mouse, and the only way to do it at
+     all with a keyboard. */
+  const onGrabKey = (e: React.KeyboardEvent) => {
+    const step: Record<string, [number, number]> = {
+      ArrowLeft: [-1, 0],
+      ArrowRight: [1, 0],
+      ArrowUp: [0, -1],
+      ArrowDown: [0, 1],
+    };
+    const d = step[e.key];
+    if (!d) return;
+    e.preventDefault();
+    e.stopPropagation();
+    place({
+      x: Math.min(gridX(stored.x + d[0]), RICH_GRID_COLS - stored.w),
+      y: gridY(stored.y + d[1]),
+      w: stored.w,
+      h: stored.h,
+    });
+  };
+
+  const remove = () => {
+    const ctx = context();
+    if (!ctx) return;
+    const { $pos } = ctx;
+    // A grid cannot hold zero cells; the last one takes it with it.
+    if ($pos.parent.childCount <= 1) {
+      editor.chain().focus().deleteRange({ from: $pos.before(), to: $pos.after() }).run();
+      return;
+    }
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+    editor.chain().focus().deleteRange({ from: pos, to: pos + node.nodeSize }).run();
+  };
+
+  return (
+    <NodeViewWrapper
+      className={`rt-cell rt-cell-${align} rt-cell-v-${valign} rt-cell-shell`}
+      style={
+        {
+          "--cx": stored.x + 1,
+          "--cy": stored.y + 1,
+          "--cw": stored.w,
+          "--ch": stored.h,
+        } as React.CSSProperties
+      }
+    >
+      <div ref={shell} className="rt-cell-inner">
+        <NodeViewContent className="rt-cell-body" />
+      </div>
+
+      {editable ? (
+        <>
+          <button
+            type="button"
+            className="rt-cell-grab"
+            title="Drag to move · arrow keys nudge one square"
+            aria-label="Move this box"
+            onPointerDown={(e) => gesture(e, "move")}
+            onKeyDown={onGrabKey}
+          >
+            <span aria-hidden="true" />
+          </button>
+          <span
+            className="rt-cell-size"
+            title="Drag to resize"
+            aria-hidden="true"
+            onPointerDown={(e) => gesture(e, "resize")}
+          />
+
+          <Tools>
+            <span className="text-micro uppercase tabular text-text-tertiary">
+              {stored.w}×{stored.h}
+            </span>
+            <span aria-hidden="true" className="h-5 w-px bg-line-hairline" />
+            {RICH_CELL_ALIGNS.map((a) => (
+              <Chip
+                key={a}
+                title={`Text ${a}`}
+                active={align === a}
+                onPress={() => updateAttributes({ align: a })}
+              >
+                {a}
+              </Chip>
+            ))}
+            <span aria-hidden="true" className="h-5 w-px bg-line-hairline" />
+            {RICH_CELL_VALIGNS.map((v) => (
+              <Chip
+                key={v}
+                title={`Sit at the ${v} of the box`}
+                active={valign === v}
+                onPress={() => updateAttributes({ valign: v })}
+              >
+                {v}
+              </Chip>
+            ))}
+            <Chip title="Remove this box" onPress={remove}>
+              Remove
+            </Chip>
+          </Tools>
+        </>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsCell = Node.create({
+  name: "brsCell",
+  content: "block+",
+  isolating: true,
+  defining: true,
+  selectable: false,
+
+  addAttributes() {
+    return {
+      x: {
+        default: 0,
+        parseHTML: (el: HTMLElement) => gridX(el.getAttribute("data-x")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-x": String(gridX(a.x)) }),
+      },
+      y: {
+        default: 0,
+        parseHTML: (el: HTMLElement) => gridY(el.getAttribute("data-y")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-y": String(gridY(a.y)) }),
+      },
+      w: {
+        default: 6,
+        parseHTML: (el: HTMLElement) => gridW(el.getAttribute("data-w")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-w": String(gridW(a.w)) }),
+      },
+      h: {
+        default: 2,
+        parseHTML: (el: HTMLElement) => gridH(el.getAttribute("data-h")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-h": String(gridH(a.h)) }),
+      },
+      align: {
+        default: RICH_CELL_ALIGN_DEFAULT,
+        parseHTML: (el: HTMLElement) => cellAlign(el.getAttribute("data-align")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-align": cellAlign(a.align) }),
+      },
+      valign: {
+        default: RICH_CELL_VALIGN_DEFAULT,
+        parseHTML: (el: HTMLElement) => cellVAlign(el.getAttribute("data-valign")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-valign": cellVAlign(a.valign) }),
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-rt-cell]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { "data-rt-cell": "", class: "rt-cell" }), 0];
+  },
+
+  /**
+   * THE PLACEMENT GOES ON THE MOUNT, NOT ON THE BOX.
+   *
+   * Tiptap does not hand a React node view straight to ProseMirror. It
+   * builds its own element — `<div class="react-renderer">` — and
+   * renders the component INSIDE it, so what the grid actually sees as
+   * its child is that mount, and `NodeViewWrapper` is one level down.
+   *
+   * A `grid-column` on the wrapper is therefore a grid property on
+   * something that is not a grid item, which CSS ignores in silence.
+   * The mount auto-placed itself into the next free slot — one column
+   * of twenty-four, about forty pixels — and a paragraph inside it
+   * wrapped one letter per line. It looked like the grid was broken;
+   * the grid was never consulted.
+   *
+   * So the four numbers are written onto the MOUNT, where they land on
+   * the element the grid is really placing. `attrs` as a FUNCTION and
+   * not an object, because an object is applied once at mount and these
+   * change on every drag — see updateElementAttributes in
+   * @tiptap/react, which re-runs the function on each node update.
+   *
+   * Every value interpolated below has been through this project's own
+   * clamps, so the style attribute cannot carry a character an author
+   * chose — the same rule the renderer follows.
+   */
+  addNodeView() {
+    return ReactNodeViewRenderer(CellView, {
+      className: "rt-cell-mount",
+      attrs: ({ node }) => ({
+        style:
+          `--cx:${gridX(node.attrs.x) + 1};` +
+          `--cy:${gridY(node.attrs.y) + 1};` +
+          `--cw:${gridWAt(node.attrs.x, node.attrs.w)};` +
+          `--ch:${gridH(node.attrs.h)};`,
+      }),
+    });
+  },
+});
+
+function GridView({ node, updateAttributes, deleteNode, editor, getPos }: NodeViewProps) {
+  const density = gridDensity(node.attrs.density);
+  const tone = sectionTone(node.attrs.tone);
+  const scrim = sectionScrim(node.attrs.scrim);
+  const assetId = typeof node.attrs.assetId === "string" ? node.attrs.assetId : "";
+  const [asset, setAsset] = useState<AssetRow | null>(() => peekAsset(assetId));
+
+  useEffect(() => {
+    if (!assetId) {
+      setAsset(null);
+      return;
+    }
+    setAsset(peekAsset(assetId));
+    void loadAsset(assetId).then(setAsset);
+    return onAssetsChanged(() => setAsset(peekAsset(assetId)));
+  }, [assetId]);
+
+  /** A new box lands on the first clear row under everything already
+   *  here, so adding one never covers what is already arranged. */
+  const addCell = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+    const taken: GridBox[] = [];
+    node.forEach((child) => taken.push(boxOf(child)));
+    const spot = gridFreeSpot({ x: 0, y: 0, w: 6, h: 2 }, taken);
+
+    editor
+      .chain()
+      .focus()
+      .insertContentAt(pos + node.nodeSize - 1, {
+        type: "brsCell",
+        attrs: { ...spot },
+        content: [{ type: "paragraph" }],
+      })
+      .run();
+  };
+
+  const pickBackground = () => {
+    const pos = getPos();
+    if (typeof pos !== "number") return;
+    editor.view.dom.dispatchEvent(
+      new CustomEvent(RT_PICK_BAND_EVENT, { bubbles: true, detail: { pos } }),
+    );
+  };
+
+  const rowRem = gridRowRem(density);
+
+  return (
+    <NodeViewWrapper
+      className={`rt-grid rt-grid-${tone} rt-grid-d-${density}${
+        asset ? " rt-grid-photo" : ""
+      } rt-grid-shell`}
+      style={
+        {
+          "--rt-row": `${rowRem}rem`,
+          // The same number in pixels, for the drag arithmetic to read
+          // back without having to parse a rem out of a stylesheet.
+          "--rt-row-px": `${rowRem * 16}`,
+        } as React.CSSProperties
+      }
+    >
+      {asset ? (
+        <div className="rt-grid-bg" contentEditable={false} aria-hidden="true">
+          <img src={assetUrl(asset)} alt="" />
+        </div>
+      ) : null}
+      {asset && scrim !== "none" ? (
+        <div
+          className={`rt-band-scrim rt-band-scrim-${scrim}`}
+          contentEditable={false}
+          aria-hidden="true"
+        />
+      ) : null}
+
+      {/* The ghost: where the box being dragged will land. Positioned
+          from four custom properties the dragging cell sets on this
+          element — a cell cannot draw outside itself, and the ghost has
+          to appear at a square the cell is not in yet. */}
+      <span className="rt-grid-ghost" contentEditable={false} aria-hidden="true" />
+
+      <NodeViewContent className="rt-grid-stage" />
+
+      {editor.isEditable ? (
+        <Tools handle>
+          <Chip title="Add another box" onPress={addCell}>
+            + Box
+          </Chip>
+          <Picker
+            label="Row height"
+            value={density}
+            onChange={(v) => updateAttributes({ density: v })}
+          >
+            {RICH_GRID_DENSITIES.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.label}
+              </option>
+            ))}
+          </Picker>
+          <Picker label="Background colour" value={tone} onChange={(v) => updateAttributes({ tone: v })}>
+            {RICH_SECTION_TONES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.label}
+              </option>
+            ))}
+          </Picker>
+          {asset ? (
+            <Picker label="Scrim" value={scrim} onChange={(v) => updateAttributes({ scrim: v })}>
+              {RICH_SECTION_SCRIMS.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </Picker>
+          ) : null}
+          <Chip title="Choose a background photograph" onPress={pickBackground}>
+            {asset ? "Change photo" : "Background…"}
+          </Chip>
+          {asset ? (
+            <Chip title="Remove the background" onPress={() => updateAttributes({ assetId: null })}>
+              Clear photo
+            </Chip>
+          ) : null}
+          <Chip title="Remove this layout area" onPress={deleteNode}>
+            Remove area
+          </Chip>
+        </Tools>
+      ) : null}
+    </NodeViewWrapper>
+  );
+}
+
+export const BrsGrid = Node.create({
+  name: "brsGrid",
+  group: "block",
+  content: "brsCell+",
+  isolating: true,
+  draggable: true,
+
+  addAttributes() {
+    return {
+      density: {
+        default: RICH_GRID_DENSITY_DEFAULT,
+        parseHTML: (el: HTMLElement) => gridDensity(el.getAttribute("data-density")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-density": gridDensity(a.density) }),
+      },
+      tone: {
+        default: RICH_SECTION_TONE_DEFAULT,
+        parseHTML: (el: HTMLElement) => sectionTone(el.getAttribute("data-tone")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-tone": sectionTone(a.tone) }),
+      },
+      scrim: {
+        default: RICH_SECTION_SCRIM_DEFAULT,
+        parseHTML: (el: HTMLElement) => sectionScrim(el.getAttribute("data-scrim")),
+        renderHTML: (a: Record<string, unknown>) => ({ "data-scrim": sectionScrim(a.scrim) }),
+      },
+      assetId: {
+        default: null,
+        parseHTML: (el: HTMLElement) => el.getAttribute("data-asset-id"),
+        renderHTML: (a: Record<string, unknown>) =>
+          a.assetId ? { "data-asset-id": String(a.assetId) } : {},
+      },
+    };
+  },
+
+  parseHTML() {
+    return [{ tag: "div[data-rt-grid]" }];
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes, { "data-rt-grid": "", class: "rt-grid" }), 0];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(GridView);
+  },
+});
+
+/** A new layout area: one box, top-left, ready to be typed into and
+ *  dragged. Twelve columns wide — half the area, which is the width a
+ *  first box wants often enough to be the default. */
+export const emptyGrid = () => ({
+  type: "brsGrid",
+  content: [
+    {
+      type: "brsCell",
+      attrs: { x: 0, y: 0, w: 12, h: 3 },
+      content: [{ type: "heading", attrs: { level: 2 } }],
+    },
+  ],
+});
+
 /* ══ The assembled set ════════════════════════════════════════════════
  *
  * Deliberate omissions, each because render.ts has no way to publish it
@@ -963,10 +3513,136 @@ export const BrsEmbed = Node.create({
  *   h1          belongs to the page title; a body starts at h2
  *   h4-h6       three levels of heading is already more than any of
  *               these articles has ever used
+ *
+ * THE ORDER IN THIS ARRAY IS NOT THE SCHEMA'S ORDER. Tiptap resolves the
+ * content expressions after every extension has been read, so BrsColumns
+ * naming `brsCard+` before BrsCard is declared is fine. They are kept
+ * adjacent for the reader, not for the parser.
  */
+/* ══ BrsIndent ════════════════════════════════════════════════════════
+ *
+ * TAB MOVES THE PARAGRAPH.
+ *
+ * Before this, Tab was bound in exactly one place — inside a table, to
+ * step to the next cell — and everywhere else the browser took it and
+ * moved focus to the next control on the page. Pressing Tab in the
+ * middle of a sentence threw the writer out of the editor entirely,
+ * which is the single most startling thing a writing surface can do.
+ *
+ * ── WHY A LEVEL AND NOT SPACES ──
+ * See RICH_INDENT_MAX in palette.ts. The short version: spaces are
+ * characters, and characters cannot be un-indented.
+ *
+ * ── WHY PRIORITY 90 ──
+ * Tiptap offers a key to the highest-priority extension first. Tab
+ * already means something more specific in two places, and both must
+ * keep it: inside a table it steps to the next cell, inside a list it
+ * nests the item. Both sit at the default 100 and both return false
+ * when they do not apply, so sitting BELOW them means this catches
+ * exactly the presses neither of them wanted.
+ *
+ * ── WHY IT ALWAYS RETURNS TRUE ──
+ * Even at maximum indent, and even at zero for Shift-Tab. Returning
+ * false would hand the key back to the browser, and the writer would be
+ * thrown out of the editor at level six but not at level five — a
+ * keyboard trap is bad, but an intermittent one is worse.
+ *
+ * ── SO ESCAPE IS THE WAY OUT, AND IT HAS TO EXIST ──
+ * Consuming Tab unconditionally means somebody navigating by keyboard
+ * alone can enter this editor and never leave it. That is not a
+ * trade-off worth making silently, so Escape blurs. Blurring — rather
+ * than moving focus somewhere chosen here — is what keeps the browser's
+ * own sequential-navigation starting point on the editor, so the next
+ * Tab goes to whatever genuinely follows it in the form.
+ *
+ * Safe to bind despite the slash menu already using Escape: that
+ * listener is CAPTURING on the same element and calls stopPropagation
+ * while the menu is open, so an Escape meant for the menu never reaches
+ * ProseMirror and never reaches this.
+ */
+
+/** The blocks a level means anything on. Not list items — those nest,
+ *  which is a different and better answer that ListItem already gives.
+ *  Not cells, cards or bands: those are boxes, and a box that indents
+ *  its own contents is a box with a padding control, not an indent. */
+const INDENTABLE = new Set(["paragraph", "heading"]);
+
+/** True when this block is a list item's own paragraph. ListItem's Tab
+ *  runs first and nests the item; when it CANNOT — the first item of a
+ *  list has nothing to nest under — the press arrives here, and
+ *  indenting the paragraph inside the bullet instead would tear the
+ *  text away from its own marker. */
+const inListItem = (state: EditorState, pos: number): boolean => {
+  const name = state.doc.resolve(pos).parent.type.name;
+  return name === "listItem" || name === "taskItem";
+};
+
+const shiftIndent = (editor: Editor, by: number): boolean =>
+  editor.commands.command(({ tr, state, dispatch }) => {
+    const { from, to } = state.selection;
+    let moved = false;
+
+    /* Every indentable block the selection touches, not just the one
+       the caret is in: Tab with three paragraphs selected indents three
+       paragraphs, which is what selecting them was for. Positions stay
+       valid through the walk because setNodeAttribute changes no
+       node's size. */
+    state.doc.nodesBetween(from, to, (node, pos) => {
+      if (!INDENTABLE.has(node.type.name)) return;
+      if (inListItem(state, pos)) return;
+      const now = blockIndent(node.attrs.indent);
+      const next = blockIndent(now + by);
+      if (next === now) return;
+      tr.setNodeAttribute(pos, "indent", next);
+      moved = true;
+    });
+
+    if (moved && dispatch) dispatch(tr);
+    // See the note above: the key is consumed whether or not it moved.
+    return true;
+  });
+
+export const BrsIndent = Extension.create({
+  name: "brsIndent",
+  priority: 90,
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: [...INDENTABLE],
+        attributes: {
+          indent: {
+            default: 0,
+            parseHTML: (el: HTMLElement) => blockIndent(el.getAttribute("data-indent")),
+            /* Nothing at all at level zero. An attribute written on
+               every untouched paragraph would churn the generated
+               content files on the first save after this shipped. */
+            renderHTML: (a: Record<string, unknown>) => {
+              const n = blockIndent(a.indent);
+              return n ? { "data-indent": String(n), style: `--rt-indent:${n};` } : {};
+            },
+          },
+        },
+      },
+    ];
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Tab: () => shiftIndent(this.editor, 1),
+      "Shift-Tab": () => shiftIndent(this.editor, -1),
+      Escape: () => {
+        if (!this.editor.isFocused) return false;
+        this.editor.commands.blur();
+        return true;
+      },
+    };
+  },
+});
+
 export const RICH_EXTENSIONS = [
   StarterKit.configure({
-    heading: { levels: [2, 3] },
+    heading: { levels: [...RICH_HEADING_LEVELS] },
     codeBlock: false,
     link: {
       openOnClick: false,
@@ -991,4 +3667,28 @@ export const RICH_EXTENSIONS = [
   BrsStyle,
   BrsImage,
   BrsEmbed,
+  BrsPdf,
+  BrsButton,
+  /* Order matters to nothing here EXCEPT readability — but the two go
+     together and a row without a card is a schema error at startup
+     rather than at runtime, so they are never separated. */
+  BrsColumns,
+  BrsCard,
+  BrsCallout,
+  BrsSpacer,
+  BrsDetails,
+  BrsSummary,
+  BrsSection,
+  BrsTable,
+  BrsTableRow,
+  BrsTableCell,
+  BrsTableHeader,
+  BrsGrid,
+  BrsCell,
+  /* Last, and neither is a node. The grab handle lets every block ABOVE
+     be picked up and dropped somewhere else; BrsIndent gives Tab a
+     meaning inside the editor so it stops throwing the writer out of
+     it. Its priority puts it below the table's Tab and the list's. */
+  BrsDragHandle,
+  BrsIndent,
 ];

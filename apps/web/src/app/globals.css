@@ -488,6 +488,146 @@
    BASE
    ─────────────────────────────────────────────────────────────────────── */
 
+/* ── THE FACES A WRITER MAY CHOOSE ─────────────────────────────────────
+   Seventeen @font-face declarations, and they cost a reader nothing
+   until one is used.
+
+   That is the whole reason this is allowed to exist beside a 110 KB
+   font budget. §4.7 measures what every page pays ON FIRST PAINT — the
+   three families in src/app/fonts, which carry a <link rel=preload> and
+   are fetched before anything renders. A @font-face is INERT until a
+   rule matches it: an event page that uses none of these downloads none
+   of them, and one that sets a pull-quote in Lora downloads Lora, once,
+   and nothing else. So the critical path is unchanged and the number
+   §4.7 guards still means what it says.
+
+   Self-hosted, like everything else — §17.6 forbids a third-party font
+   CDN and an optional face is not an exception. scripts/fetch-content-fonts.mjs
+   downloads them at build time; nothing at runtime talks to Google.
+
+   `font-display: swap` on every one: the reader gets the fallback
+   immediately and the real face when it lands. `block` would give a
+   writer's decorative choice the power to hold up somebody's reading. ── */
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Open Sans";
+  src: url("/fonts/OpenSans-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/Montserrat-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lato";
+  src: url("/fonts/Lato-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/Poppins-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Merriweather";
+  src: url("/fonts/Merriweather-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/PlayfairDisplay-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lora";
+  src: url("/fonts/Lora-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Oswald";
+  src: url("/fonts/Oswald-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("/fonts/BebasNeue-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lobster";
+  src: url("/fonts/Lobster-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Mono";
+  src: url("/fonts/SpaceMono-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inconsolata";
+  src: url("/fonts/Inconsolata-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Courier Prime";
+  src: url("/fonts/CourierPrime-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pacifico";
+  src: url("/fonts/Pacifico-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Great Vibes";
+  src: url("/fonts/GreatVibes-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Dancing Script";
+  src: url("/fonts/DancingScript-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   *,
   *::before,
@@ -1140,6 +1280,35 @@
      HEADINGS KEEP THEIR AIR — `.prose h2/h3` set their own margin-top
      and are not touched here. A heading is a break in the text whether
      or not the paragraphs around it are stacked, and Docs agrees. ── */
+  /* ══ THE WRITE-UP IS ITS OWN CONTAINER ════════════════════════════
+     Every layout rule below that used to ask the WINDOW how wide it was
+     now asks THIS ELEMENT. That is a correction, not a convenience.
+
+     ── WHY THE WINDOW WAS THE WRONG THING TO ASK ──
+     Three columns become two when the COLUMN they sit in gets narrow.
+     The window is only a proxy for that, and it is a bad one: the same
+     1000px window gives the article ~870px on the published page and
+     whatever is left after the admin's chrome in the editor. So the
+     identical document broke to two columns at different moments in the
+     two places, and neither moment was the one that mattered.
+
+     ── AND IT IS WHAT MAKES THE DEVICE PREVIEW HONEST ──
+     The bar above the editor narrows this box to a phone's column
+     width. With media queries that would have changed nothing at all —
+     the window is still a laptop — so the preview would have shown a
+     narrow box still laid out for a desktop, which is worse than no
+     preview. Container queries mean narrowing the box IS the phone.
+
+     NAMED rather than anonymous. An unnamed `@container` query resolves
+     against the NEAREST container ancestor, so the day anything inside
+     a write-up becomes a container of its own — a sized box, a nested
+     layout — every rule below would silently start asking that thing
+     how wide it is instead of the page. A name costs one word and
+     cannot be captured. ── */
+  .prose.rt-doc {
+    container-type: inline-size;
+    container-name: rt-page;
+  }
   .prose.rt-doc > * + * {
     margin-top: 0;
   }
@@ -1170,6 +1339,27 @@
     line-height: var(--rt-lh, 1.7);
     color: var(--color-text-primary);
   }
+  /* ── WHAT TAB WRITES ───────────────────────────────────────────────
+     One rule for every level, on both surfaces, because the level rides
+     in as a custom property rather than as a class per step. The
+     attribute is only the hook — `[data-indent]` is absent entirely at
+     level zero, so an untouched paragraph matches nothing and inherits
+     nothing.
+
+     `margin-inline-start`, not padding: an indent moves the block, and
+     a padded block still draws its background out to the original edge,
+     which is wrong the moment one is inside a callout.
+
+     THE CAP IS THE POINT. Six levels at 2.5rem is 15rem, which inside a
+     phone's column is a paragraph one word wide. min() against 45% of
+     the measure means a deep indent still reads as deep on a laptop and
+     quietly stops mattering on a phone, without a breakpoint deciding
+     it in steps. */
+  .prose [data-indent],
+  .rt-doc [data-indent] {
+    margin-inline-start: min(calc(var(--rt-indent, 0) * 2.5rem), 45%);
+  }
+
   .prose h2,
   .prose h3 {
     font-family: var(--font-display);
@@ -1240,10 +1430,20 @@
      so that the admin editor, which is not `.prose`'s child in the same
      way, styles identically. What is typed is what publishes. ── */
 
-  /* Families. Six, and none of them a new download: three the site
-     already self-hosts, three already on the reader's machine. Eight
-     real webfonts would be ~200 KB on every event page so that one
-     paragraph could be different (§4.7). */
+  /* Families. Six of them cost nothing — three the site already
+     self-hosts, three already on the reader's machine — and the
+     nineteen below them cost nothing either UNTIL ONE IS USED.
+
+     This comment used to say eight real webfonts would be ~200 KB on
+     every event page. That was the right objection to the wrong plan:
+     it is only true if they are preloaded. Declared and left alone,
+     a face is fetched when a rule first matches it and not before, so
+     the cost lands on the one page that asked for it instead of on all
+     of them. See the @font-face block above.
+
+     ADDING A FONT MEANS EDITING BOTH FILES — a class here, an entry in
+     RICH_FONTS. The renderer builds `rt-font-<id>` from a set-membership
+     test, so a family with no class here silently renders as body copy. */
   .rt-font-editorial {
     /* Source Serif has no opsz axis and its thins clot below 1rem — see
        the --font-editorial note above. Combining this with rt-size-12
@@ -1261,6 +1461,76 @@
   }
   .rt-font-typewriter {
     font-family: "Courier New", Courier, monospace;
+  }
+
+  /* ── Sans ── */
+  .rt-font-roboto {
+    font-family: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  }
+  .rt-font-opensans {
+    font-family: "Open Sans", ui-sans-serif, system-ui, sans-serif;
+  }
+  .rt-font-montserrat {
+    font-family: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  }
+  .rt-font-lato {
+    font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
+  }
+  .rt-font-poppins {
+    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* ── Serif. Georgia and Times are the reader's own copies — a
+     download for a face already on the machine is paying twice. ── */
+  .rt-font-merriweather {
+    font-family: "Merriweather", Georgia, serif;
+  }
+  .rt-font-playfair {
+    font-family: "Playfair Display", Georgia, serif;
+  }
+  .rt-font-lora {
+    font-family: "Lora", Georgia, serif;
+  }
+  .rt-font-georgia {
+    font-family: Georgia, "Times New Roman", Times, serif;
+  }
+  .rt-font-times {
+    font-family: "Times New Roman", Times, Georgia, serif;
+  }
+
+  /* ── Display ── */
+  .rt-font-oswald {
+    font-family: "Oswald", Impact, ui-sans-serif, sans-serif;
+  }
+  .rt-font-bebas {
+    font-family: "Bebas Neue", Impact, ui-sans-serif, sans-serif;
+  }
+  .rt-font-lobster {
+    font-family: "Lobster", Georgia, cursive, serif;
+  }
+
+  /* ── Monospace ── */
+  .rt-font-spacemono {
+    font-family: "Space Mono", ui-monospace, monospace;
+  }
+  .rt-font-inconsolata {
+    font-family: "Inconsolata", ui-monospace, monospace;
+  }
+  .rt-font-courierprime {
+    font-family: "Courier Prime", "Courier New", Courier, monospace;
+  }
+
+  /* ── Script. Synthesised bold on these looks poor; that is the
+     writer's call to make, the same way rt-size-12 on the editorial
+     serif is. ── */
+  .rt-font-pacifico {
+    font-family: "Pacifico", cursive;
+  }
+  .rt-font-greatvibes {
+    font-family: "Great Vibes", cursive;
+  }
+  .rt-font-dancingscript {
+    font-family: "Dancing Script", cursive;
   }
 
   /* Sizes. Named by the number the toolbar shows, because that is what
@@ -1343,6 +1613,32 @@
     width: 100%;
     height: auto;
   }
+
+  /* ── A PDF, SHOWN WHOLE ─────────────────────────────────────────────
+     Same figure furniture as a picture — the width rides `--rt-w` so a
+     media query can shrink it on a phone — but the HEIGHT is real pixels
+     from `--rt-pdf-h`, because a PDF box has pages, not an aspect to
+     reflow. The frame is what the iframe fills; the iframe has no border
+     of its own so the frame draws the one hairline. */
+  .rt-pdf-frame {
+    position: relative;
+    width: var(--rt-w, 100%);
+    margin-inline: auto;
+    border: 1px solid var(--color-line-hairline);
+    background: var(--color-bg-inset);
+    overflow: hidden;
+  }
+  .rt-pdf-iframe {
+    display: block;
+    width: 100%;
+    height: var(--rt-pdf-h, 560px);
+    border: 0;
+  }
+  /* A floated PDF pulls the same way a floated picture does, and centres
+     when it is not floated — the alignment classes below already do this
+     for .rt-figure, so the frame only needs to not fight them. On a
+     phone a floated document is unreadable, so it goes full width there
+     — handled by the shared .rt-figure media query. */
   /* A CROPPED frame. `--rt-ar` is only set when the writer dragged the
      top or bottom edge; with it unset the declaration is invalid at
      computed-value time and aspect-ratio falls back to auto, which is
@@ -1421,7 +1717,7 @@
      floated picture stops floating and takes the width — and because the
      writer's number arrives as a custom property rather than as an
      inline `width`, this rule can actually win. */
-  @media (max-width: 640px) {
+  @container rt-page (max-width: 640px) {
     .rt-figure-left,
     .rt-figure-right {
       float: none;
@@ -1476,7 +1772,7 @@
      video at 25% of a phone is 90px wide — the play triangle alone is
      40px of that — and no writer choosing 25% at a desk meant "a
      thumbnail nobody can press". The same override the pictures get. */
-  @media (max-width: 640px) {
+  @container rt-page (max-width: 640px) {
     .rt-embed {
       width: 100%;
     }
@@ -1605,6 +1901,1414 @@
       border-top-width: 0.95rem;
       border-bottom-width: 0.95rem;
     }
+  }
+
+  /* ══ PAGE FURNITURE ═══════════════════════════════════════════════
+     A button, a row of columns, a card. Everything above styles a
+     WRITE-UP; these three style an ANNOUNCEMENT — see the note at the
+     foot of lib/richtext/palette.ts.
+
+     Every rule here paints BOTH surfaces. The editor draws a button as
+     a <span> and the page draws it as an <a>, so the class does the
+     work and the tag does not appear in a selector unless it has to.
+     That is what stops the draft and the published page drifting. ── */
+
+  /* ── A CALL TO ACTION ─────────────────────────────────────────────
+     THE VARIANT SETS THREE CUSTOM PROPERTIES AND NOTHING ELSE.
+
+     Written the obvious way — one rule per variant setting background,
+     colour and border directly — `.prose a` (oxblood, single class)
+     ties with `.rt-btn-primary` and the later one wins, so a solid
+     button on the published page came out with dark-red type on a
+     dark-red field while the editor's <span> was fine. Funnelling the
+     colours through three properties means the override that beats
+     `.prose a` is ONE rule that names no variant, instead of four that
+     have to be kept in step. ── */
+  /* ── THE WRAP IS INLINE, AND THAT IS THE FEATURE ───────────────────
+     It used to hold a `.rt-btn-row` flex box so the button could align
+     itself. A flex row is a BLOCK, and a block in the middle of a
+     paragraph is a wall: nothing flowed past it, the space beside it
+     belonged to no line, and clicking that space put the caret nowhere.
+     Removing it is what lets a sentence run either side of a button,
+     lets a line hold several, and makes "click to the right of it and
+     start typing" true rather than nearly true.
+
+     Where the line sits across the column is now the paragraph's
+     text-align, which is one control instead of two and is the only one
+     of the two that ever survived a phone screen. */
+  .rt-btn-wrap {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-inline: 0.35rem;
+    margin-block: 0.25rem;
+  }
+
+  /* ── WHILE ONE IS BEING DRAGGED ────────────────────────────────────
+     The original stays put and goes quiet rather than disappearing: a
+     gap opening in the text as soon as the finger moves makes every
+     line below jump, and the writer loses the place they were aiming
+     at. It moves once, on release. */
+  .rt-btn-wrap.is-dragging {
+    opacity: 0.35;
+  }
+
+  /* Out of flow on purpose — see the note in ButtonView. A strip that
+     took part in the line would be the block wall all over again. */
+  .rt-btn-tools {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    z-index: 30;
+    display: block;
+    /* WIDTH IS CAPPED, NOT NOWRAP. A nowrap strip of a dozen chips is
+       wider than a phone, and being out of flow it would overhang the
+       sheet with nothing to scroll it back. Capped, the flex box inside
+       wraps to two or three short rows instead. */
+    width: max-content;
+    max-width: min(86vw, 32rem);
+  }
+  /* ── AND THIS IS WHAT MAKES IT APPEAR ──────────────────────────────
+     `.adm-richtext-body .rt-tools` hides every strip in the editor by
+     default, and each kind of node then reveals its own on hover or
+     focus. The button never had such a rule — so its strip has been in
+     the document, laid out, 512px wide and completely invisible, for as
+     long as the strip has existed. Clicking a button therefore did
+     nothing you could see, which is exactly what "how do I move it?"
+     looks like from the outside.
+
+     No :hover here on purpose. A button is an atom: pressing it selects
+     it, React only renders this strip when `selected` is true, and
+     revealing it on hover as well would make a strip flash under every
+     button the pointer crossed on its way somewhere else. */
+  .adm-richtext-body .rt-btn-tools > .rt-tools {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* The label that follows the pointer. `fixed`, so no ancestor can
+     clip it or offset it, and `pointer-events: none`, so it never
+     becomes the thing under the pointer that posAtCoords is asked
+     about. */
+  .rt-drag-ghost {
+    position: fixed;
+    z-index: 9999;
+    transform: translate(-50%, -160%);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--color-accent);
+    background-color: var(--color-bg-raised);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-body-s);
+    font-variation-settings: "wght" 600;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.28);
+  }
+
+  /* WHERE IT WILL LAND, drawn as the caret the writer already reads.
+     A highlighted drop ZONE would be a lie at this size — the answer is
+     "between these two words", and a caret is how that is spelled. */
+  .rt-drop-caret {
+    position: fixed;
+    z-index: 9998;
+    width: 2px;
+    background-color: var(--color-accent);
+    pointer-events: none;
+    opacity: 0;
+  }
+  .rt-drop-caret.is-on {
+    opacity: 1;
+  }
+
+  /* For the duration of the gesture only. Without this a drag that
+     passes over text leaves a painted selection behind it on desktop,
+     and the I-beam cursor contradicts what is happening. */
+  body.rt-btn-dragging {
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  body.rt-btn-dragging * {
+    cursor: grabbing !important;
+  }
+
+  /* `touch-action: none` is what makes this work on a phone at all:
+     without it the browser claims the gesture as a scroll before the
+     first pointermove is delivered, and the button never moves. It is
+     scoped to the EDITOR's button — the published <a> must stay
+     scrollable and tappable like any other link. */
+  .rt-btn-grab {
+    cursor: grab;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  body.rt-btn-dragging .rt-btn-grab {
+    cursor: grabbing;
+  }
+
+  .rt-btn {
+    --rt-btn-bg: transparent;
+    --rt-btn-fg: var(--color-text-primary);
+    --rt-btn-edge: transparent;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    border: 1px solid var(--rt-btn-edge);
+    background-color: var(--rt-btn-bg);
+    color: var(--rt-btn-fg);
+    font-family: var(--font-display);
+    /* The fallback is the weight every button had before this was a
+       setting, so a button that never chose one is unchanged. The axis
+       tops out at 700 — see app/fonts.ts. */
+    font-variation-settings: "wght" var(--rt-btn-wght, 600);
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-micro) var(--ease-out),
+      border-color var(--duration-micro) var(--ease-out),
+      color var(--duration-micro) var(--ease-out);
+  }
+  /* The one rule that beats `.prose a`. Everything it needs is already
+     in the property the variant set. */
+  .prose a.rt-btn {
+    color: var(--rt-btn-fg);
+    text-decoration: none;
+  }
+
+  .rt-btn-primary {
+    --rt-btn-bg: var(--color-accent);
+    --rt-btn-fg: #ffffff;
+    --rt-btn-edge: var(--color-accent);
+  }
+  .rt-btn-primary:hover {
+    --rt-btn-bg: var(--color-accent-deep);
+    --rt-btn-edge: var(--color-accent-deep);
+  }
+  .rt-btn-petrol {
+    --rt-btn-bg: var(--color-petrol);
+    --rt-btn-fg: #ffffff;
+    --rt-btn-edge: var(--color-petrol);
+  }
+  .rt-btn-petrol:hover {
+    --rt-btn-bg: var(--color-bg-deep);
+    --rt-btn-edge: var(--color-bg-deep);
+  }
+  .rt-btn-outline {
+    --rt-btn-fg: var(--color-accent);
+    --rt-btn-edge: var(--color-accent);
+  }
+  .rt-btn-outline:hover {
+    --rt-btn-bg: var(--color-accent);
+    --rt-btn-fg: #ffffff;
+  }
+  .rt-btn-quiet {
+    --rt-btn-fg: var(--color-accent);
+    --rt-btn-edge: transparent;
+  }
+  .rt-btn-quiet:hover {
+    --rt-btn-edge: var(--color-line-strong);
+  }
+
+  /* ── THE REST OF THE STYLES ────────────────────────────────────────
+     Each one sets the same three custom properties and nothing else,
+     for the reason given above the first four: the single rule that has
+     to beat `.prose a` names no variant, so a new style here needs no
+     matching override there. */
+  .rt-btn-ink {
+    --rt-btn-bg: var(--color-text-primary);
+    --rt-btn-fg: var(--color-bg-base);
+    --rt-btn-edge: var(--color-text-primary);
+  }
+  .rt-btn-ink:hover {
+    --rt-btn-bg: var(--color-bg-deep);
+    --rt-btn-edge: var(--color-bg-deep);
+  }
+  .rt-btn-success {
+    --rt-btn-bg: var(--color-success);
+    --rt-btn-fg: #ffffff;
+    --rt-btn-edge: var(--color-success);
+  }
+  .rt-btn-success:hover {
+    --rt-btn-bg: color-mix(in srgb, var(--color-success) 82%, #000);
+    --rt-btn-edge: color-mix(in srgb, var(--color-success) 82%, #000);
+  }
+  /* WHITE type, and the label says "ochre" rather than "amber". The
+     token is #7d5310 — a dark warning colour drawn for TEXT on the page
+     ground, not a bright fill — so dark type on it is nearly invisible
+     and the honest name for what it paints is ochre. Calling it amber
+     and hoping was the version that produced an olive rectangle with
+     unreadable words on it. */
+  .rt-btn-warning {
+    --rt-btn-bg: var(--color-warning);
+    --rt-btn-fg: #ffffff;
+    --rt-btn-edge: var(--color-warning);
+  }
+  .rt-btn-warning:hover {
+    --rt-btn-bg: color-mix(in srgb, var(--color-warning) 84%, #000);
+    --rt-btn-edge: color-mix(in srgb, var(--color-warning) 84%, #000);
+  }
+  /* A tint of the accent rather than a fifth hue: it reads as a
+     secondary action beside a solid one, which is the job, and it
+     cannot fail contrast in either theme because the type stays the
+     accent's own dark. */
+  .rt-btn-soft {
+    --rt-btn-bg: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg-base));
+    --rt-btn-fg: var(--color-accent);
+    --rt-btn-edge: transparent;
+  }
+  .rt-btn-soft:hover {
+    --rt-btn-bg: color-mix(in srgb, var(--color-accent) 22%, var(--color-bg-base));
+  }
+  .rt-btn-outline-ink {
+    --rt-btn-fg: var(--color-text-primary);
+    --rt-btn-edge: var(--color-line-strong);
+  }
+  .rt-btn-outline-ink:hover {
+    --rt-btn-bg: var(--color-bg-inset);
+  }
+  .rt-btn-link {
+    --rt-btn-fg: var(--color-accent);
+    --rt-btn-edge: transparent;
+    padding-inline: 0;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  /* Beating `.prose a.rt-btn`, which removes the underline from every
+     button — this is the one style whose whole point is having it. */
+  .prose a.rt-btn-link {
+    text-decoration: underline;
+  }
+
+  /* ── SIZE ──────────────────────────────────────────────────────────
+     Five steps, and the two at the ends earn their place: xs is for a
+     button sitting inside a sentence, where the m one breaks the line
+     height, and xl is for the single call to action at the foot of an
+     announcement. */
+  .rt-btn-xs {
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--text-micro);
+  }
+  .rt-btn-s {
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: var(--text-body-s);
+  }
+  .rt-btn-m {
+    padding: var(--spacing-3) var(--spacing-6);
+    font-size: var(--text-body-m);
+  }
+  .rt-btn-l {
+    padding: var(--spacing-4) var(--spacing-8);
+    font-size: var(--text-body-l);
+  }
+  /* spacing-6 / spacing-12, not 5 / 10: the scale in this file jumps
+     4 → 6 → 8 → 12, and a var() that names a token nobody defined makes
+     the whole `padding` declaration invalid rather than falling back —
+     which is how the largest size briefly rendered smaller than the
+     smallest. */
+  .rt-btn-xl {
+    padding: var(--spacing-6) var(--spacing-12);
+    font-size: var(--text-heading-s);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── CORNER ────────────────────────────────────────────────────────
+     `square` writes no radius at all rather than `0`, so it is exactly
+     the button that existed before corners were a setting.
+
+     `pill` is 999px, not a number chosen to look round: the radius has
+     to be at least half the height to close the ends, and the height
+     changes with the size and with the reader's font settings. A large
+     fixed number is the only value that is right at every one of them. */
+  .rt-btn-r-xs {
+    border-radius: 2px;
+  }
+  .rt-btn-r-s {
+    border-radius: 4px;
+  }
+  .rt-btn-r-m {
+    border-radius: 8px;
+  }
+  .rt-btn-r-l {
+    border-radius: 14px;
+  }
+  .rt-btn-r-pill {
+    border-radius: 999px;
+  }
+
+  /* ── THE WORDS ─────────────────────────────────────────────────────
+     Weight arrives as --rt-btn-wght on the rule above; these three are
+     classes, because they are on or off rather than a value.
+
+     Italic is SYNTHESISED — the display face loads `style: "normal"`
+     only, so the browser slants it. That is already true of every
+     italic word in the editor, so the button is consistent with the
+     rest of the site rather than newly wrong. */
+  .rt-btn-i {
+    font-style: italic;
+  }
+  .rt-btn-u,
+  /* Beating `.prose a.rt-btn`, which strips the underline from every
+     button — the same override .rt-btn-link needs, and for the same
+     reason. */
+  .prose a.rt-btn-u {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+  }
+  /* The extra tracking is not optional. Capitals set at the tracking
+     chosen for lower case are capitals that touch, and a four-word
+     label is where that first becomes obvious. */
+  .rt-btn-caps {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── AN EXACT COLOUR ───────────────────────────────────────────────
+     The colours themselves arrive as inline custom properties, so there
+     is nothing here to set. What IS here is the hover, and it has to be
+     stated once for every possible colour: an inline property beats the
+     variant's `:hover` rule, so a recoloured button would otherwise sit
+     completely dead under the pointer. A brightness shift is the only
+     answer that works without knowing the colour — and it is applied to
+     the whole element rather than to a property, which is why it works
+     on the type and the border too. */
+  .rt-btn-tinted:hover {
+    filter: brightness(0.92);
+  }
+  /* `[data-field="deep"]`, not a prefers-color-scheme query: this site
+     has no light/dark toggle. What it has is FIELDS — a section declares
+     itself paper or deep and the --brs-* tokens re-point inside it — so
+     that is the only selector that can know the ground under a button is
+     dark. On a dark ground, darkening a custom colour further makes it
+     sink into the page instead of answering the pointer. */
+  [data-field="deep"] .rt-btn-tinted:hover {
+    filter: brightness(1.14);
+  }
+
+  /* ── A ROW OF COLUMNS ─────────────────────────────────────────────
+     THE STORED COUNT IS THE DESKTOP COUNT. What a phone does is this
+     file's decision, not the document's — a committee member choosing
+     "3" is saying "three across on a laptop", not agreeing to three
+     90px columns on a handset. See RICH_COLUMN_COUNTS.
+
+     One property drives the template, so the two breakpoints below
+     re-point a single number instead of restating the grid. ── */
+  .rt-cols {
+    display: grid;
+    grid-template-columns: repeat(var(--rt-cols, 3), minmax(0, 1fr));
+    gap: var(--spacing-6);
+  }
+  .prose .rt-cols {
+    margin-block: var(--spacing-12);
+  }
+  .rt-cols-2 {
+    --rt-cols: 2;
+  }
+  .rt-cols-3 {
+    --rt-cols: 3;
+  }
+  .rt-cols-4 {
+    --rt-cols: 4;
+  }
+  /* Tablet: three and four both fall to two. Four falling straight to
+     one skips the shape that actually fits — two rows of two is how a
+     four-across strip is meant to break. */
+  @container rt-page (max-width: 60rem) {
+    .rt-cols-3,
+    .rt-cols-4 {
+      --rt-cols: 2;
+    }
+  }
+  @container rt-page (max-width: 40rem) {
+    .rt-cols {
+      --rt-cols: 1;
+    }
+  }
+
+  /* ── ONE CARD ─────────────────────────────────────────────────────
+     `min-width: 0` is load-bearing on a grid item: without it a long
+     unbroken word sets the column's minimum to its own width and the
+     whole row overflows the page rather than wrapping. ── */
+  .rt-card {
+    display: block;
+    min-width: 0;
+    padding: var(--spacing-6);
+  }
+  /* Both shapes: the page renders the blocks straight into the card,
+     the editor wraps them in the node view's content element. */
+  .rt-card > * + *,
+  .rt-card-body > * + * {
+    margin-top: var(--spacing-3);
+  }
+  /* `.prose h2/h3` reach for 48px of air above them, which is right for
+     a heading that breaks up an article and absurd for one that is the
+     first line of a 200px box. */
+  .rt-card h2,
+  .rt-card h3 {
+    margin-top: 0;
+  }
+  .rt-card p,
+  .rt-card li {
+    font-size: var(--text-body-m);
+  }
+
+  .rt-card-bordered {
+    border: 1px solid var(--color-line-strong);
+    background-color: var(--color-bg-raised);
+  }
+  .rt-card-tinted {
+    border: 1px solid var(--color-mount-line);
+    background-color: var(--color-mount);
+  }
+  /* A card that is not a box still needs its gutter, but not its inset:
+     three plain cards in a row should line up with the text above them,
+     not sit 24px inside it. */
+  .rt-card-plain {
+    padding-inline: 0;
+  }
+
+  .rt-card-left {
+    text-align: left;
+  }
+  .rt-card-center {
+    text-align: center;
+  }
+  .rt-card-right {
+    text-align: right;
+  }
+
+  /* The icon rides `text-align` rather than a per-alignment margin,
+     which is the whole reason it is an inline-block inside a block. */
+  .rt-card-icon {
+    display: block;
+    margin-bottom: var(--spacing-3);
+    color: var(--color-accent);
+  }
+  .rt-icon {
+    display: inline-block;
+    width: 2.75rem;
+    height: 2.75rem;
+    vertical-align: middle;
+  }
+
+  /* A card that is entirely a link. `.prose a` would paint every word
+     in it oxblood — this is a box you press, not a phrase you click. */
+  .prose a.rt-card-link {
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color var(--duration-micro) var(--ease-out),
+      background-color var(--duration-micro) var(--ease-out);
+  }
+  .rt-card-link:hover {
+    border-color: var(--color-accent);
+  }
+  .rt-card-link:hover .rt-card-icon {
+    color: var(--color-accent-deep);
+  }
+
+  /* ── THE SAME THREE, INSIDE THE EDITOR ────────────────────────────
+     The strips of controls that hang off a row and off each card.
+     Hidden until the pointer or the caret is inside the thing they
+     belong to — a page built of six cards would otherwise be six
+     toolbars and no page.
+
+     ABSOLUTE, NOT IN FLOW. In flow they resize the card on hover, which
+     moves every other card in the row under the pointer that is trying
+     to reach them. Absolute costs an overlap with whatever is below for
+     as long as the pointer is there, which is the cheaper of the two. ── */
+  .adm-richtext-body .rt-cols-shell,
+  .adm-richtext-body .rt-card-shell {
+    position: relative;
+  }
+  .adm-richtext-body .rt-tools {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-micro) var(--ease-out);
+  }
+  .adm-richtext-body .rt-cols-shell > .rt-tools {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + var(--spacing-1));
+    z-index: 6;
+  }
+  .adm-richtext-body .rt-card-shell > .rt-tools {
+    position: absolute;
+    left: 0;
+    top: calc(100% + var(--spacing-1));
+    /* Wider than the column it hangs off, deliberately: eight controls
+       wrapped into a 200px card is eight rows of one button. */
+    min-width: 24rem;
+    z-index: 5;
+  }
+  .adm-richtext-body .rt-cols-shell:hover > .rt-tools,
+  .adm-richtext-body .rt-cols-shell:focus-within > .rt-tools,
+  .adm-richtext-body .rt-card-shell:hover > .rt-tools,
+  .adm-richtext-body .rt-card-shell:focus-within > .rt-tools {
+    opacity: 1;
+    visibility: visible;
+  }
+  /* A row's or a spacer's strip sits in flow under it. The button's does
+     NOT, and cannot: it is an inline node inside a paragraph, and a
+     block in the middle of a line is the thing that used to stop text
+     flowing past it. See .rt-btn-tools above. */
+  .adm-richtext-body .rt-shell > .rt-tools {
+    margin-top: var(--spacing-2);
+  }
+  /* An empty card still has to be clickable. Without this a card whose
+     heading and paragraph are both empty is a zero-height box. */
+  .adm-richtext-body .rt-card-shell {
+    min-height: 4rem;
+  }
+  /* The draft's button is a <span>, so it has no href to follow and no
+     reason to show a text caret over it. */
+  .adm-richtext-body span.rt-btn {
+    user-select: none;
+  }
+
+  /* ══ CALLOUT ══════════════════════════════════════════════════════
+     The tone sets two properties and the rest of the rule reads them,
+     for the same reason the button variants do it — one override beats
+     `.prose a` and `.prose p` instead of five that drift apart. ── */
+  .rt-callout {
+    --rt-call-edge: var(--color-petrol);
+    --rt-call-fill: var(--color-mount);
+
+    display: flex;
+    gap: var(--spacing-4);
+    align-items: flex-start;
+    border-left: 3px solid var(--rt-call-edge);
+    background-color: var(--rt-call-fill);
+    padding: var(--spacing-4) var(--spacing-6);
+  }
+  .prose .rt-callout {
+    margin-block: var(--spacing-8);
+  }
+  .rt-callout-body {
+    min-width: 0;
+    flex: 1;
+  }
+  .rt-callout-body > * + * {
+    margin-top: var(--spacing-3);
+  }
+  .rt-callout p,
+  .rt-callout li {
+    font-size: var(--text-body-m);
+  }
+  .rt-callout h2,
+  .rt-callout h3,
+  .rt-callout h4 {
+    margin-top: 0;
+  }
+  .rt-callout-icon {
+    flex: none;
+    color: var(--rt-call-edge);
+  }
+  .rt-callout-icon .rt-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .rt-callout-info {
+    --rt-call-edge: var(--color-petrol);
+    --rt-call-fill: var(--rt-mark-petrol);
+  }
+  .rt-callout-warning {
+    --rt-call-edge: var(--color-warning);
+    --rt-call-fill: var(--rt-mark-warning);
+  }
+  .rt-callout-success {
+    --rt-call-edge: var(--color-success);
+    --rt-call-fill: var(--rt-mark-success);
+  }
+  .rt-callout-accent {
+    --rt-call-edge: var(--color-accent);
+    --rt-call-fill: var(--rt-mark-accent);
+  }
+  .rt-callout-neutral {
+    --rt-call-edge: var(--color-line-strong);
+    --rt-call-fill: var(--rt-mark-neutral);
+  }
+  /* The tints are light-theme values; on the petrol ground they are
+     already redefined as a mix with the page (see --rt-mark-* under the
+     dark block), so a callout follows the theme with no rule of its
+     own. Text inside one has to be told, though — the tints stay light
+     enough in both themes that near-black is the readable choice. */
+  .rt-callout p,
+  .rt-callout li,
+  .rt-callout h2,
+  .rt-callout h3,
+  .rt-callout h4,
+  .rt-callout strong {
+    color: #14181a;
+  }
+  .prose .rt-callout a {
+    color: var(--color-accent-deep);
+  }
+
+  /* ══ DELIBERATE EMPTY SPACE ═══════════════════════════════════════ */
+  .rt-spacer {
+    width: 100%;
+  }
+  .rt-spacer-s {
+    height: var(--spacing-4);
+  }
+  .rt-spacer-m {
+    height: var(--spacing-8);
+  }
+  .rt-spacer-l {
+    height: var(--spacing-16);
+  }
+  .rt-spacer-xl {
+    height: var(--spacing-24);
+  }
+  /* A phone has a fifth of the vertical room; 96px of nothing there is
+     a screen of nothing. */
+  @container rt-page (max-width: 40rem) {
+    .rt-spacer-l {
+      height: var(--spacing-8);
+    }
+    .rt-spacer-xl {
+      height: var(--spacing-12);
+    }
+  }
+
+  /* ══ ACCORDION ════════════════════════════════════════════════════
+     The browser's own <details>. The marker is replaced rather than
+     hidden, because a disclosure with no affordance is a heading people
+     do not press. ── */
+  .rt-details {
+    border-top: 1px solid var(--color-line-hairline);
+    border-bottom: 1px solid var(--color-line-hairline);
+  }
+  .prose .rt-details {
+    margin-block: var(--spacing-6);
+  }
+  /* Two in a row share an edge instead of drawing two. */
+  .rt-details + .rt-details {
+    border-top: 0;
+    margin-top: 0;
+  }
+  .rt-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4) 0;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 600;
+    font-size: var(--text-body-l);
+    color: var(--color-text-primary);
+    list-style: none;
+  }
+  /* Safari's own triangle, which `list-style: none` does not remove. */
+  .rt-summary::-webkit-details-marker {
+    display: none;
+  }
+  .rt-summary::before {
+    content: "";
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
+    transform: rotate(-45deg);
+    transition: transform var(--duration-micro) var(--ease-out);
+  }
+  .rt-details[open] > .rt-summary::before {
+    transform: rotate(45deg);
+  }
+  .rt-details-body {
+    padding-bottom: var(--spacing-6);
+  }
+  .rt-details-body > * + * {
+    margin-top: var(--spacing-4);
+  }
+  .rt-details-body h2,
+  .rt-details-body h3,
+  .rt-details-body h4 {
+    margin-top: var(--spacing-6);
+  }
+
+  /* ══ A FULL-WIDTH BAND ════════════════════════════════════════════
+     The 100vw-with-a-centring-translate trick, exactly as `.roster-band`
+     does it and for the reason written there: negative margins only
+     reach the shell's edge, so above 1440px the field stopped and the
+     page resumed along two hard seams. `overflow-x: clip` on body is
+     what keeps 100vw from producing a scrollbar. ── */
+  .rt-band {
+    position: relative;
+    /* 100vw is the WINDOW, which is right on the published page and
+       wrong inside a device preview that is pretending to be a phone.
+       The variable is what lets the preview say "the width of this box"
+       instead. */
+    width: var(--rt-bleed, 100vw);
+    margin-left: var(--rt-bleed-shift, 50%);
+    transform: translateX(var(--rt-bleed-pull, -50%));
+    padding-block: var(--spacing-24);
+    isolation: isolate;
+  }
+  /* Two classes, so this ties `.prose.rt-doc > * + *` — which zeroes the
+     gap between blocks in a document — and wins by coming later. */
+  .prose .rt-band {
+    margin-block: var(--spacing-12);
+  }
+  /* The content goes back inside the measure. The band is wide; the
+     writing in it is not. */
+  .rt-band-inner {
+    position: relative;
+    z-index: 2;
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding-inline: var(--spacing-6);
+  }
+  .rt-band-inner > * + * {
+    margin-top: var(--spacing-4);
+  }
+  .rt-band-inner h2,
+  .rt-band-inner h3,
+  .rt-band-inner h4 {
+    margin-top: 0;
+  }
+
+  .rt-band-plain {
+    background-color: var(--color-bg-base);
+  }
+  .rt-band-tinted {
+    background-color: var(--color-mount);
+  }
+  /* The two inverted tones. `--color-text-primary` already resolves to
+     white on a petrol ground elsewhere on the site, but that inversion
+     is set by the SECTION there, not by the token, so it is stated. */
+  .rt-band-petrol {
+    background-color: var(--color-petrol);
+  }
+  .rt-band-accent {
+    background-color: var(--color-accent-deep);
+  }
+  .rt-band-petrol,
+  .rt-band-accent,
+  .rt-band-photo {
+    color: #ffffff;
+  }
+  .rt-band-petrol .rt-band-inner :is(p, li, h2, h3, h4, strong),
+  .rt-band-accent .rt-band-inner :is(p, li, h2, h3, h4, strong),
+  .rt-band-photo .rt-band-inner :is(p, li, h2, h3, h4, strong) {
+    color: #ffffff;
+  }
+  .prose .rt-band-petrol a,
+  .prose .rt-band-accent a,
+  .prose .rt-band-photo a {
+    color: #ffffff;
+  }
+
+  /* The background photograph and the scrim over it. Both are behind
+     the content's z-index, and both are aria-hidden in the markup —
+     they are the field the words sit on, not something to read out. */
+  .rt-band-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .rt-band-bg img,
+  .rt-band-bg picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .rt-band-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .rt-band-scrim-soft {
+    background-color: rgb(0 0 0 / 0.35);
+  }
+  .rt-band-scrim-strong {
+    background-color: rgb(0 0 0 / 0.6);
+  }
+  @container rt-page (max-width: 40rem) {
+    .rt-band {
+      padding-block: var(--spacing-12);
+    }
+  }
+
+  /* ══ A TABLE ══════════════════════════════════════════════════════
+     THE WRAPPER SCROLLS, NOT THE PAGE. A table wider than the measure
+     otherwise takes the whole document's horizontal scrollbar with it —
+     invisible on the machine it was built on, unmissable on a phone. ── */
+  .rt-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .prose .rt-table-wrap {
+    margin-block: var(--spacing-8);
+  }
+  .rt-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Equal columns that wrap, rather than stored pixel widths — see
+       the note on column resizing in extensions.tsx. */
+    table-layout: fixed;
+    font-size: var(--text-body-m);
+  }
+  .rt-table :is(th, td) {
+    border: 1px solid var(--color-line-hairline);
+    padding: var(--spacing-3) var(--spacing-4);
+    vertical-align: top;
+    text-align: left;
+    min-width: 6rem;
+  }
+  .rt-table th {
+    background-color: var(--color-mount);
+    font-family: var(--font-display);
+    font-variation-settings: "wght" 600;
+    color: var(--color-text-primary);
+  }
+  .rt-table :is(th, td) > * + * {
+    margin-top: var(--spacing-2);
+  }
+  .rt-table :is(th, td) p {
+    font-size: var(--text-body-m);
+    line-height: var(--rt-lh, 1.5);
+  }
+
+  /* ══ THE SAME BLOCKS, INSIDE THE EDITOR ═══════════════════════════ */
+
+  /* A band is 100vw, and inside the editor "100vw" is the whole window
+     rather than the writing sheet — so it would hang out over the admin
+     chrome on both sides. In the box it is simply a wide block. */
+  .adm-richtext-body .rt-band-shell {
+    width: auto;
+    margin-left: 0;
+    transform: none;
+    padding-block: var(--spacing-12);
+  }
+  .adm-richtext-body .rt-band-shell,
+  .adm-richtext-body .rt-callout-shell,
+  .adm-richtext-body .rt-details-shell,
+  .adm-richtext-body .rt-spacer-shell {
+    position: relative;
+  }
+  .adm-richtext-body :is(.rt-band-shell, .rt-callout-shell, .rt-details-shell) > .rt-tools {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + var(--spacing-1));
+    z-index: 6;
+  }
+  .adm-richtext-body .rt-band-shell:hover > .rt-tools,
+  .adm-richtext-body .rt-band-shell:focus-within > .rt-tools,
+  .adm-richtext-body .rt-callout-shell:hover > .rt-tools,
+  .adm-richtext-body .rt-callout-shell:focus-within > .rt-tools,
+  .adm-richtext-body .rt-details-shell:hover > .rt-tools,
+  .adm-richtext-body .rt-details-shell:focus-within > .rt-tools {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* AN ACCORDION IS ALWAYS OPEN IN THE EDITOR. It is a plain block
+     here, not a <details> — a writer cannot fix a paragraph they cannot
+     see, and `open` is what the READER gets. */
+  .adm-richtext-body .rt-details-inner > .rt-summary {
+    cursor: text;
+  }
+  .adm-richtext-body .rt-details-inner > * + * {
+    margin-top: var(--spacing-4);
+  }
+
+  /* Empty space has to be visible in order to be selected and resized.
+     A dashed rule down the middle of the gap, and nothing on the page. */
+  .adm-richtext-body .rt-spacer {
+    display: flex;
+    align-items: center;
+  }
+  .adm-richtext-body .rt-spacer-mark {
+    display: block;
+    width: 100%;
+    border-top: 1px dashed var(--color-line-hairline);
+  }
+
+  /* prosemirror-tables paints a rectangular cell selection with this
+     class. Without a rule it is invisible, and merging cells you cannot
+     see selected is guesswork. */
+  .adm-richtext-body .selectedCell {
+    position: relative;
+  }
+  .adm-richtext-body .selectedCell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    pointer-events: none;
+  }
+  .adm-richtext-body table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-block: var(--spacing-6);
+  }
+  .adm-richtext-body :is(th, td) {
+    border: 1px solid var(--color-line-hairline);
+    padding: var(--spacing-2) var(--spacing-3);
+    vertical-align: top;
+    min-width: 5rem;
+  }
+  .adm-richtext-body th {
+    background-color: var(--color-mount);
+    text-align: left;
+    font-variation-settings: "wght" 600;
+  }
+
+  /* The slash menu. Fixed-position, so it is not clipped by the
+     scrolling admin shell or offset by the sticky toolbar. */
+  .adm-slash button:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: -2px;
+  }
+
+  /* ══ THE DRAG HANDLE ══════════════════════════════════════════════
+     One shared element, parked beside whichever block the pointer is
+     over. Fixed, on the body, because the editor sits inside a
+     scrolling shell under a sticky bar inside a bordered sheet, and an
+     absolutely-positioned handle would be clipped by one ancestor and
+     offset by another. ── */
+  .rt-drag-handle {
+    position: fixed;
+    z-index: 40;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.5rem;
+    cursor: grab;
+    color: var(--color-text-tertiary);
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-line-hairline);
+  }
+  .rt-drag-handle.is-on {
+    display: flex;
+  }
+  .rt-drag-handle:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .rt-drag-handle:active {
+    cursor: grabbing;
+  }
+  .rt-drag-handle svg {
+    fill: currentColor;
+  }
+
+  /* ══ THE DEVICE PREVIEW ═══════════════════════════════════════════
+     The writing box, narrowed to the column an article actually gets on
+     a real screen. The numbers are derived in DeviceBar.tsx from the
+     page's own layout classes, not guessed here.
+
+     This does its work by being NARROW, and nothing else. Everything
+     that then rearranges — the canvas restacking, three columns
+     becoming one, a floated picture going full width — happens because
+     those rules are container queries against `.prose.rt-doc`, which is
+     inside this box. See the note on that rule above. ── */
+  .adm-richtext[data-device]:not([data-device="full"]) {
+    max-width: var(--adm-device-w);
+    margin-inline: auto;
+    /* A dashed edge so the narrow column reads as a screen rather than
+       as the panel having broken. Outside the writing, not through it. */
+    outline: 1px dashed var(--color-line-strong);
+    outline-offset: 4px;
+  }
+  /* A BAND IS FULL-BLEED AGAINST THE WINDOW, and inside a preview
+     pretending to be a phone the window is still a laptop — so it would
+     paint straight out through the dashed edge and across the admin
+     panel. Held to the box instead, which is what full-bleed means once
+     the box IS the screen. */
+  .adm-richtext[data-device]:not([data-device="full"]) .rt-band {
+    --rt-bleed: 100%;
+    --rt-bleed-shift: 0;
+    --rt-bleed-pull: 0;
+  }
+
+  /* ══ THE LAYOUT AREA ══════════════════════════════════════════════
+     Twenty-four columns, rows of a fixed height that GROW to fit their
+     contents. That growth is the whole design: when a paragraph wraps
+     onto an extra line on somebody's phone, its row gets taller and
+     everything below is pushed down, where a canvas would have let it
+     cover whatever was underneath.
+
+     NO GAP, deliberately. The drag arithmetic turns a pointer position
+     into a column, and a gap makes that a different sum at every
+     column. The space between boxes is padding INSIDE them: identical
+     to look at, and it keeps the column width an honest width / 24. ── */
+  .rt-grid {
+    position: relative;
+    isolation: isolate;
+  }
+  .prose .rt-grid {
+    margin-block: var(--spacing-12);
+  }
+  /* THE STAGE IS THE GRID, and the area around it holds the background.
+     One nesting level, no subgrid: the stage is the full width of the
+     area either way, so an independent set of twenty-four tracks is the
+     same geometry as inheriting the parent's and has one less thing
+     that can be unsupported. */
+  .rt-grid-stage {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+    /* minmax, not a fixed height: the floor is the row you arranged
+       against, the ceiling is however much the words actually need. */
+    grid-auto-rows: minmax(var(--rt-row, 2.5rem), auto);
+  }
+
+  .rt-cell {
+    position: relative;
+    min-width: 0;
+    grid-column: var(--cx, 1) / span var(--cw, 6);
+    grid-row: var(--cy, 1) / span var(--ch, 2);
+    padding: var(--spacing-2) var(--spacing-3);
+    display: flex;
+    flex-direction: column;
+  }
+  .rt-cell > * + *,
+  .rt-cell-body > * + * {
+    margin-top: var(--spacing-3);
+  }
+  .rt-cell :is(h2, h3, h4) {
+    margin-top: 0;
+  }
+  .rt-cell :is(p, li) {
+    font-size: var(--text-body-m);
+  }
+  .rt-cell-left {
+    text-align: left;
+  }
+  .rt-cell-center {
+    text-align: center;
+  }
+  .rt-cell-right {
+    text-align: right;
+  }
+  /* Where the words sit when the box is taller than they need. */
+  .rt-cell-v-top {
+    justify-content: flex-start;
+  }
+  .rt-cell-v-middle {
+    justify-content: center;
+  }
+  .rt-cell-v-bottom {
+    justify-content: flex-end;
+  }
+  .rt-cell-inner {
+    min-width: 0;
+  }
+
+  /* The background photograph, behind the whole arrangement. It was a
+     canvas's before the canvas was removed; the grid is the only thing
+     that has one now, so it is named for the grid. */
+  .rt-grid-bg {
+    z-index: 0;
+    overflow: hidden;
+  }
+  .rt-grid-bg img,
+  .rt-grid-bg picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .rt-grid-plain {
+    background-color: transparent;
+  }
+  .rt-grid-tinted {
+    background-color: var(--color-mount);
+  }
+  .rt-grid-petrol {
+    background-color: var(--color-petrol);
+  }
+  .rt-grid-accent {
+    background-color: var(--color-accent-deep);
+  }
+  .rt-grid-petrol,
+  .rt-grid-accent,
+  .rt-grid-photo {
+    color: #ffffff;
+  }
+  .rt-grid-petrol .rt-cell :is(p, li, h2, h3, h4, strong),
+  .rt-grid-accent .rt-cell :is(p, li, h2, h3, h4, strong),
+  .rt-grid-photo .rt-cell :is(p, li, h2, h3, h4, strong) {
+    color: #ffffff;
+  }
+  .prose .rt-grid-petrol a,
+  .prose .rt-grid-accent a,
+  .prose .rt-grid-photo a {
+    color: #ffffff;
+  }
+  /* The background sits behind the stage and covers the whole
+     arrangement however tall it grew. */
+  .rt-grid > .rt-grid-bg,
+  .rt-grid > .rt-band-scrim {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ── AND ON A PHONE IT STOPS BEING A GRID ─────────────────────────
+     Under 40rem the boxes become ordinary blocks at FULL READABLE SIZE,
+     in the order they are stored — which the editor keeps sorted
+     top-to-bottom, left-to-right after every move. So the phone's
+     stack, a screen reader's reading order and what a sighted reader
+     sees are one sequence rather than three.
+
+     This is the difference between the grid and the canvas. A canvas
+     shrinks its design; a grid rearranges it. Shrinking keeps the
+     picture and loses the words. ── */
+  @container rt-page (max-width: 40rem) {
+    .rt-grid-stage,
+    .adm-richtext-body .rt-grid-stage > [data-node-view-content-react] {
+      display: block;
+    }
+    .rt-cell {
+      display: block;
+      padding-inline: 0;
+    }
+    .rt-cell + .rt-cell {
+      margin-top: var(--spacing-6);
+    }
+    .rt-cell :is(p, li) {
+      font-size: var(--text-body-l);
+    }
+    .rt-grid-tinted,
+    .rt-grid-petrol,
+    .rt-grid-accent,
+    .rt-grid-photo {
+      padding: var(--spacing-6);
+    }
+  }
+
+  /* ══ THE LAYOUT AREA, INSIDE THE EDITOR ═══════════════════════════ */
+
+  /* ── A ROW OF COLUMNS HAS THE SAME PROBLEM ───────────────────────
+     `.rt-cols` lays out its CHILDREN, and in the editor its only child
+     is Tiptap's content div. Every card was therefore stacked inside
+     one grid cell rather than sitting side by side — the same fault as
+     the layout area, found by reading rather than by anyone hitting it.
+
+     `--rt-cols` is inherited, so the breakpoints that retune it further
+     up still reach this. ── */
+  .adm-richtext-body .rt-cols {
+    display: block;
+  }
+  .adm-richtext-body .rt-cols > [data-node-view-content-react] {
+    display: grid;
+    grid-template-columns: repeat(var(--rt-cols, 3), minmax(0, 1fr));
+    gap: var(--spacing-6);
+  }
+
+  /* And the same div swallows the gap between blocks INSIDE a
+     container, because `> * + *` on the container now has exactly one
+     child to look at. Listed rather than applied to every content div,
+     because on `.rt-cols` and `.rt-grid-stage` those children are grid
+     items and a margin on them would push the whole arrangement out of
+     true. */
+  .adm-richtext-body
+    :is(.rt-cell-body, .rt-card-body, .rt-callout-body, .rt-details-inner, .rt-band-inner)
+    > [data-node-view-content-react]
+    > * + * {
+    margin-top: var(--spacing-3);
+  }
+
+  /* ── THE OTHER ELEMENT TIPTAP PUTS IN ─────────────────────────────
+     A React node view does not own its content element either. Tiptap
+     creates its own div, marks it `data-node-view-content-react`, and
+     appends it inside whatever `NodeViewContent` rendered — and THAT is
+     where ProseMirror puts the children.
+
+     So on the published page `.rt-grid-stage` holds the cells, and in
+     the editor it holds one plain div which holds the cells. Putting
+     the twenty-four tracks on the stage in the editor therefore laid
+     out a grid whose only item was that div: every cell crammed into
+     column one, and a paragraph wrapping a letter per line however wide
+     its box said it was.
+
+     The tracks move one level down instead. The stage stays a plain
+     block that spans the width, so both surfaces still measure a column
+     as one twenty-fourth of the same box. ── */
+  .adm-richtext-body .rt-grid-stage {
+    display: block;
+  }
+  .adm-richtext-body .rt-grid-stage > [data-node-view-content-react] {
+    display: grid;
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+    grid-auto-rows: minmax(var(--rt-row, 2.5rem), auto);
+  }
+
+  /* ── THE ELEMENT TIPTAP PUTS BETWEEN THE GRID AND THE BOX ─────────
+     A React node view is not handed to ProseMirror directly: Tiptap
+     builds its own `<div class="react-renderer">` and renders the
+     component inside it. So the grid's real child is that mount, and
+     `.rt-cell` is one level down — where `grid-column` is a property on
+     something that is not a grid item, which CSS ignores without a
+     word. The mount auto-placed into one column of twenty-four and the
+     text wrapped a letter per line.
+
+     The placement therefore rides the mount, written on by the `attrs`
+     option in extensions.tsx. `.rt-cell` keeps its own copy of the same
+     rule because on the PUBLISHED page there is no mount and the cell
+     is the grid item itself. Two surfaces, one arrangement. ── */
+  .adm-richtext-body .rt-cell-mount {
+    grid-column: var(--cx, 1) / span var(--cw, 6);
+    grid-row: var(--cy, 1) / span var(--ch, 2);
+    /* On the grid ITEM, not on the box inside it: this is what stops one
+       long word setting the column's minimum and dragging the whole row
+       wider than the page. */
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  /* So a box set to sit at the bottom of a tall cell has a tall cell to
+     sit at the bottom of. */
+  .adm-richtext-body .rt-cell-mount > .rt-cell {
+    flex: 1;
+    min-height: 0;
+  }
+  /* A card in a row of columns has the same mount and needs the same
+     min-width for the same reason; its placement is automatic, so that
+     is all it needs. */
+  .adm-richtext-body .rt-card-mount {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .adm-richtext-body .rt-card-mount > .rt-card {
+    flex: 1;
+  }
+
+  .adm-richtext-body .rt-grid-shell {
+    outline: 1px dashed var(--color-line-strong);
+    outline-offset: -1px;
+    min-height: calc(var(--rt-row, 2.5rem) * 3);
+  }
+  .adm-richtext-body .rt-grid-shell > .rt-tools {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + var(--spacing-1));
+    z-index: 12;
+    max-width: none;
+  }
+  .adm-richtext-body .rt-grid-shell:hover > .rt-tools,
+  .adm-richtext-body .rt-grid-shell:focus-within > .rt-tools {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* THE GRID LINES, ONLY WHILE DRAGGING. A permanent grid is a page
+     that looks like graph paper; no grid at all is a drag with nothing
+     to aim at. The class is toggled by the cell being dragged. */
+  .adm-richtext-body .rt-grid-shell.rt-grid-dragging [data-node-view-content-react] {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--color-line-hairline) 0,
+      var(--color-line-hairline) 1px,
+      transparent 1px,
+      transparent calc(100% / 24)
+    );
+  }
+
+  /* The ghost: where the box will land if the pointer comes up now.
+     Placed from four properties the dragging cell writes onto the grid,
+     because a cell cannot draw outside itself and this has to appear at
+     a square the cell is not in yet. */
+  /* PLACED IN PIXELS, NOT ON GRID LINES. The ghost is a sibling of the
+     content rather than a cell in it — ProseMirror owns what goes
+     inside the grid — so `grid-column` has nothing to act on. The
+     dragging cell measures the target and writes it here; that is the
+     same measurement the drop itself uses, so what you see is where it
+     goes. */
+  .adm-richtext-body .rt-grid-ghost {
+    display: none;
+    position: absolute;
+    left: var(--gl, 0);
+    top: var(--gt, 0);
+    width: var(--gw, 0);
+    height: var(--gh, 0);
+    z-index: 6;
+    pointer-events: none;
+    border: 2px solid var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+  .adm-richtext-body .rt-grid-dragging > .rt-grid-ghost {
+    display: block;
+  }
+
+  .adm-richtext-body .rt-cell-shell {
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+  }
+  .adm-richtext-body .rt-cell-shell:hover,
+  .adm-richtext-body .rt-cell-shell:focus-within {
+    outline-color: var(--color-line-hairline);
+  }
+  /* The grab bar. A button, not a bare element: it takes focus, so the
+     arrow keys can nudge the box one square at a time — which is the
+     only way to place one precisely without a mouse, and the only way
+     to place one at all without one. */
+  .adm-richtext-body .rt-cell-grab {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 0.7rem;
+    cursor: grab;
+    background-color: var(--color-line-strong);
+    opacity: 0;
+    border: 0;
+    padding: 0;
+    transition: opacity var(--duration-micro) var(--ease-out);
+  }
+  .adm-richtext-body .rt-cell-shell:hover > .rt-cell-grab,
+  .adm-richtext-body .rt-cell-grab:focus-visible {
+    opacity: 1;
+  }
+  .adm-richtext-body .rt-cell-grab:focus-visible {
+    background-color: var(--color-accent);
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  .adm-richtext-body .rt-cell-size {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0.8rem;
+    height: 0.8rem;
+    cursor: nwse-resize;
+    background-color: var(--color-bg-raised);
+    border: 1px solid var(--color-accent);
+    opacity: 0;
+    transition: opacity var(--duration-micro) var(--ease-out);
+  }
+  .adm-richtext-body .rt-cell-shell:hover > .rt-cell-size {
+    opacity: 1;
+  }
+  .adm-richtext-body .rt-cell-shell > .rt-tools {
+    position: absolute;
+    left: 0;
+    top: calc(100% + var(--spacing-1));
+    min-width: 26rem;
+    z-index: 11;
+  }
+  .adm-richtext-body .rt-cell-shell:hover > .rt-tools,
+  .adm-richtext-body .rt-cell-shell:focus-within > .rt-tools {
+    opacity: 1;
+    visibility: visible;
   }
 
   /* Rendered only by the admin preview, and only when a document holds
@@ -2211,7 +3915,11 @@
      it. Outlining the figure drew an enormous rectangle around empty
      space, and because .ProseMirror-selectednode matched the same
      element there were up to three nested outlines at once. */
-  .adm-richtext-body .rt-node-selected:not(.rt-figure) {
+  .adm-richtext-body .rt-node-selected:not(.rt-figure):not(.rt-shell) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  .adm-richtext-body .rt-node-selected .rt-btn {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
   }
@@ -2255,6 +3963,47 @@
      having a box: those inherit through the DOM tree. ══ */
   .adm-richtext-body [class*="node-brs"] {
     display: contents;
+  }
+
+  /* ── THE PDF, IN THE EDITOR ─────────────────────────────────────── */
+  .adm-richtext-body .rt-pdf-frame {
+    width: var(--rt-w, 100%);
+    height: var(--rt-pdf-h, 560px);
+    /* NOT overflow:hidden. The resize handles sit 6px OUTSIDE this box,
+       and clipping them does two things at once — hides half of each
+       dot, and, worse, hands the corner pixel back to the iframe so a
+       real drag lands in the PDF instead of on the handle. The iframe
+       is exactly 100% × 100% of the frame, so it has nothing to
+       overflow anyway. */
+  }
+  .adm-richtext-body .rt-pdf-iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    pointer-events: none;
+  }
+  .adm-richtext-body .rt-node-selected .rt-pdf-iframe {
+    pointer-events: auto;
+  }
+  .adm-richtext-body .rt-pdf-cover {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: block;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .adm-richtext-body .rt-node:not(.rt-node-selected) .rt-pdf-cover:hover {
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  }
+  .adm-richtext-body .rt-pdf-cover.is-selected {
+    pointer-events: none;
+  }
+  .adm-richtext-body .rt-pdf-frame .rt-handle {
+    z-index: 10;
+    pointer-events: auto;
   }
 
   .adm-richtext-body .rt-frame {
@@ -2463,5 +4212,282 @@
     transform: none !important;
     opacity: 1 !important;
     will-change: auto;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TEAM NAVULA — /teams/navula
+
+   Everything here is structure that a Tailwind utility cannot express:
+   a repeating background, a percentage-driven absolute position that
+   must only apply above a breakpoint, and a marker drawn from two rules.
+   None of it is a design VALUE — every colour and length below resolves
+   to a token defined at the top of this file, which is what keeps rule 3
+   satisfied without exempting the components from it.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* ── §01 THE DRAFTING SHEET ──────────────────────────────────────────
+     A blueprint grid over the petrol field. The badge's own provenance
+     note at the top of this file describes its field as "petrol under a
+     blueprint grid" — this is that grid, made literal, and it is the
+     reason the nameplate needs no photograph to carry a full viewport.
+
+     Painted with a gradient, which is banned as a Tailwind UTILITY and
+     entirely legal here: rule 3 bans gradient utilities so that colour
+     transitions are not invented in markup. This is a 1px rule repeated,
+     drawn in the same hairline token every border on the site uses. */
+  /* ── §01 HEIGHT ──────────────────────────────────────────────────────
+     The nameplate is the first thing under a sticky masthead and, while
+     the content is still a draft, under the draft ribbon as well. At a
+     flat 100svh its own bottom rail — the four measured fields, which
+     are the point of a nameplate — sat exactly that far below the fold.
+
+     --navula-chrome is set on <main> by the page, which is the only
+     place that knows whether the ribbon is currently rendered. The
+     fallback covers the masthead alone, so this stays correct if the
+     section is ever used on a page without a ribbon. */
+  .navula-nameplate {
+    min-height: calc(100svh - var(--navula-chrome, 4rem));
+  }
+
+  .navula-grid {
+    background-image:
+      repeating-linear-gradient(
+        to right,
+        var(--brs-line-faint) 0 1px,
+        transparent 1px 5rem
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        var(--brs-line-faint) 0 1px,
+        transparent 1px 5rem
+      );
+  }
+
+  /* ── §04 THE CALLOUTS ────────────────────────────────────────────────
+     Below 768px they are a plain register in the flow beneath the
+     photograph. At 768px and up the SAME elements lift onto the image at
+     the percentage each one declares.
+
+     The position is carried in --navula-label, set inline by the
+     component, and READ ONLY INSIDE THIS MEDIA QUERY. That is the whole
+     trick: an inline `top` would also apply on a phone, where these are
+     supposed to be a list. A custom property is inert until something
+     consumes it, so one inline style can mean two different layouts. */
+  /* THE PLATE IS INSET, and that inset is what makes §03 legible.
+
+     The callouts were originally laid over the photograph. They could
+     not be read, for a reason that is structural rather than a matter of
+     taste: --brs-mount is near-black by design, so that club photographs
+     of every ratio letterbox onto something that reads as a mount — and
+     every text token on a light field is near-black too. Dark on dark,
+     clipped at both edges.
+
+     Insetting the plate fixes it at the source rather than papering over
+     it with a second set of on-mount text tokens. The placards sit on
+     the page ground, where the palette they already use is legible; the
+     leader lines enter the frame from outside it; and the section
+     becomes a drawing with margins, annotated in them, which is what an
+     engineering drawing has always been.
+
+     Full width below 768px, where the callouts are a register in the
+     flow and there are no margins to make. */
+  @media (min-width: 768px) {
+    .navula-figure {
+      margin-inline: 15rem;
+    }
+  }
+
+  .navula-callout {
+    position: static;
+  }
+
+  @media (min-width: 768px) {
+    .navula-callout {
+      position: absolute;
+      top: var(--navula-label);
+      width: 13rem;
+      transform: translateY(-50%);
+    }
+
+    .navula-callout[data-side="left"] {
+      left: 0;
+    }
+
+    .navula-callout[data-side="right"] {
+      right: 0;
+      text-align: right;
+    }
+
+    /* Hovering one callout dims the other four, so a reader can isolate
+       a part without a click and without a line of JavaScript. :has()
+       is doing the work an island would otherwise have been added for.
+       Where it is unsupported nothing dims, which is not a loss.
+
+       THE SELECTOR ENDS IN `> *` FOR A REASON, and it is not a nicety.
+       The reveal timeline animates opacity on the <li> itself, which
+       GSAP writes as an INLINE style — and no amount of specificity in a
+       stylesheet beats an inline declaration. Dimming the <li> here
+       therefore did nothing at all; the rule was live and silently
+       losing every time.
+
+       Dimming its children instead sidesteps the conflict rather than
+       escalating it: the two opacities are on different elements, so
+       they compose (0.3 inside 1) instead of competing, and the hover
+       state still works correctly mid-scrub while the reveal is running.
+       The alternative was !important, which would have won the cascade
+       and then fought the timeline for the rest of the page's life. */
+    .navula-callouts:has(.navula-callout:hover) .navula-callout:not(:hover) > * {
+      opacity: 0.3;
+    }
+
+    .navula-callout > * {
+      transition: opacity var(--duration-base) var(--ease-out);
+    }
+  }
+
+  /* ── §03 / §08 THE NUMBERED LISTS ────────────────────────────────────
+     A charter clause and a selection stage are the same object: a number
+     in the margin, sometimes a heading, then a paragraph. Their column
+     templates live here rather than as arbitrary Tailwind values because
+     that is precisely the decision rule 3 exists to catch — a measure
+     like "the clause-number gutter is 6rem" is a layout constant of this
+     page, and it should be stated once where it can be found.
+
+     Single column below 768px: three columns of six words each is not a
+     charter, it is a crossword. */
+  @media (min-width: 768px) {
+    .navula-clause {
+      grid-template-columns: 6rem 12rem minmax(0, 1fr);
+    }
+
+    .navula-stage {
+      grid-template-columns: 6rem minmax(0, 1fr);
+    }
+  }
+
+  /* ── §05 THE REGISTER ────────────────────────────────────────────────
+     The native disclosure triangle, removed in both spellings — Safari
+     still needs the WebKit pseudo-element. */
+  .navula-row-summary {
+    list-style: none;
+  }
+
+  .navula-row-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .navula-row-summary::marker {
+    content: "";
+  }
+
+  /* A plus drawn from two rules, rotating into a minus when the row
+     opens. One element, two pseudo-elements, no glyph swap — so the
+     change is animatable and never reflows the row. */
+  .navula-marker {
+    position: relative;
+    display: block;
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .navula-marker::before,
+  .navula-marker::after {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 1px;
+    background: var(--brs-line-strong);
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .navula-marker::after {
+    transform: rotate(90deg);
+  }
+
+  .navula-row[open] .navula-marker::after {
+    transform: rotate(0deg);
+  }
+
+  .navula-row[open] .navula-marker::before,
+  .navula-row[open] .navula-marker::after {
+    background: var(--brs-accent);
+  }
+
+  /* The summary's own hover state is a colour change on the accession
+     code, not a background fill — a filled row would turn the register
+     into a menu. */
+  .navula-row-summary:hover .navula-marker::before,
+  .navula-row-summary:hover .navula-marker::after {
+    background: var(--brs-accent);
+  }
+
+  /* ── §06 THE TRAVERSE ────────────────────────────────────────────────
+     Panel widths. Held here rather than as arbitrary Tailwind values so
+     the traverse's proportions are one edit in one place — the lead
+     panel is deliberately wider than a stop, because a heading that is
+     the same width as a data panel reads as the first data panel. */
+  .navula-panel {
+    width: 86vw;
+  }
+
+  @media (min-width: 768px) {
+    .navula-panel {
+      width: 34vw;
+    }
+
+    .navula-panel-lead {
+      width: 46vw;
+    }
+  }
+
+  /* THE AXIS. One hairline per panel, butted end to end, so the line is
+     continuous across the entire track without anything measuring the
+     track's width. This is what makes the section a chronology rather
+     than a row of cards. */
+  .navula-axis {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--brs-line-hairline);
+  }
+
+  .navula-tick {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 1.5rem;
+    background: var(--brs-accent);
+  }
+
+  /* On a phone the track is a native snap scroller and the panels stack
+     their own way; a horizontal axis through a vertically-scrolled list
+     would be a line to nowhere. */
+  @media (max-width: 767px) {
+    .navula-axis,
+    .navula-tick {
+      display: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Safety net, matching the one above for the motion sheet. Both
+     timelines are gated on this query in JS and never build — but if one
+     ever escapes the gate, the leader lines land drawn and the callouts
+     land legible rather than frozen half-drawn. */
+  [data-leader] {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .navula-callout,
+  [data-clause] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

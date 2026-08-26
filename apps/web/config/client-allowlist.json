@@ -225,13 +225,13 @@
     },
     {
       "file": "src/components/admin/richtext/Toolbar.tsx",
-      "reason": "The formatting bar: paragraph style, six fonts, the size scale, bold/italic/underline/strike/code, ink and highlight swatches, links, alignment, lists, picture, video, rule, clear. Every control maps to something lib/richtext/render.ts can publish.",
+      "reason": "The formatting bar: paragraph style (h2/h3/h4/quote), six fonts, the size scale, bold/italic/underline/strike/code, ink and highlight swatches, links, alignment, line spacing, lists, picture, video, rule, button, columns, an Insert menu for the remaining blocks, and a table group that appears only when the cursor is in a table. Every control maps to something lib/richtext/render.ts can publish.",
       "phase": "Admin",
       "status": "active"
     },
     {
       "file": "src/components/admin/richtext/extensions.tsx",
-      "reason": "The three Tiptap pieces that have to know about this site: the style mark (token names, not CSS), the inline picture (an asset id, not a URL, so it keeps its derivatives and EXIF strip) and the video (provider plus id, so no third-party markup is ever stored). Includes their in-editor node views.",
+      "reason": "The Tiptap pieces that have to know about this site. For a write-up: the style mark (token names, not CSS), line spacing, the inline picture (an asset id, not a URL, so it keeps its derivatives and EXIF strip) and the video (provider plus id, so no third-party markup is ever stored). For an announcement page: a button, a row of columns and the cards in it, a callout, a spacer, an accordion, a full-width band, and tables over the already-installed prosemirror-tables. Includes every in-editor node view.",
       "phase": "Admin",
       "status": "active"
     },
@@ -242,8 +242,26 @@
       "status": "active"
     },
     {
+      "file": "src/components/admin/richtext/SlashMenu.tsx",
+      "reason": "Type \"/\" at the start of a block and get the block list \u2014 the keyboard half of the pair whose other half is the toolbar's Insert menu. Hand-rolled rather than @tiptap/suggestion: the trigger is a slash at the start of an empty block in a single-author editor, which is three fields of state, not a dependency. WITHOUT JS: no admin panel at all, as above.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
       "file": "src/components/admin/richtext/Preview.tsx",
       "reason": "Runs the same two renderers the content build runs, so Preview is the article rather than an approximation of it.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/richtext/DeviceBar.tsx",
+      "reason": "Fit / Desktop / Tablet / Phone above the writing box, narrowing it to the column an article actually gets on that screen \u2014 1200, 706 and 342, derived from the page's own layout classes rather than from the device widths, because a 390px phone does not give an article 390px. It works because the write-up's breakpoints are container queries against .prose.rt-doc, so narrowing the box IS the phone; under media queries it would have shown a narrow box still laid out for a desktop. The choice lives in a module-level value so the Write and Preview bars agree. WITHOUT JS: no admin panel at all, as above.",
+      "phase": "Admin",
+      "status": "active"
+    },
+    {
+      "file": "src/components/admin/richtext/drag-handle.ts",
+      "reason": "A grab handle beside whichever block the pointer is over, so any block can be picked up and dropped somewhere else in the document. A ProseMirror plugin rather than a node view, because it has to serve nodes this project does not own \u2014 StarterKit's paragraph, heading, list and quote. The drop itself is delegated to ProseMirror via view.dragging, so the schema decides what may land where. WITHOUT JS: no admin panel at all, as above.",
       "phase": "Admin",
       "status": "active"
     },
@@ -252,6 +270,24 @@
       "reason": "One fetch per photograph rather than one per render, so an article with twelve inline pictures does not re-request them on every keystroke.",
       "phase": "Admin",
       "status": "active"
+    },
+    {
+      "file": "src/components/navula/PurposeHold.tsx",
+      "reason": "\u00a702 of the team dossier: one sentence pinned and revealed clause by clause. WITHOUT JS, and under prefers-reduced-motion: the clauses are rendered at full opacity by the server and the effect is what dims them, so the section is simply the finished sentence with no pin \u2014 the correct failure for a statement of purpose.",
+      "phase": "N",
+      "status": "built"
+    },
+    {
+      "file": "src/components/navula/AnnotatedMachine.tsx",
+      "reason": "\u00a704, the optional flagship: hairline leader lines drawn onto a photograph of the machine, each arriving with a placard. WITHOUT JS: the lines carry no dash attributes until the effect measures them, so the finished diagram renders. Below 768px the callouts are not positioned at all and become a plain register beneath the photograph, and no timeline is built.",
+      "phase": "N",
+      "status": "built"
+    },
+    {
+      "file": "src/components/navula/RecordTraverse.tsx",
+      "reason": "\u00a706, the competition record as a pinned horizontal chronology, and the climax of the page. Same derived pin length as the motion sheet's gallery. WITHOUT JS, below 768px, and under prefers-reduced-motion: the identical track becomes a native snap-scrolling list, so every campaign is reachable by touch, scrollbar and keyboard with no pin.",
+      "phase": "N",
+      "status": "built"
     }
   ]
 }
