@@ -280,6 +280,29 @@ function measurableParent(el: HTMLElement | null): HTMLElement | null {
 }
 
 /**
+ * THE BOX THAT ACTUALLY SCROLLS UNDER THE WRITING.
+ *
+ * Dragging a TOP edge is a lie the layout cannot tell on its own: a
+ * block's top is fixed by the flow above it, so making the box taller
+ * can only ever push its bottom down. The way every drawing program
+ * makes it feel right is to move the page by exactly as much as the box
+ * grew, so the edge that was not grabbed stays under the same pixel.
+ *
+ * Which thing to move depends on the page: the admin editor scrolls the
+ * window, but a preview pane scrolls itself, and `window.scrollBy` in
+ * that case moves nothing at all.
+ */
+function scrollingAncestor(el: HTMLElement | null): HTMLElement | null {
+  let p: HTMLElement | null = el;
+  while (p) {
+    const oy = getComputedStyle(p).overflowY;
+    if ((oy === "auto" || oy === "scroll") && p.scrollHeight > p.clientHeight + 1) return p;
+    p = p.parentElement;
+  }
+  return null;
+}
+
+/**
  * The picture as it appears WHILE WRITING.
  *
  * It resolves its own asset because the document only holds an id. The
@@ -1076,11 +1099,40 @@ function PdfView({ node, updateAttributes, deleteNode, selected, editor, getPos 
     if (typeof pos === "number") editor.chain().setNodeSelection(pos).run();
   };
 
+  /**
+   * ONE EDGE MOVES, THE OTHER THREE STAY WHERE THEY ARE.
+   *
+   * That is the whole contract of an edge grip, and it is the only thing
+   * that makes a side handle worth having over a corner: drag the right
+   * edge and the left one does not budge, so the document stays where
+   * the writer put it and only gets wider.
+   *
+   * ── HOW THE OPPOSITE EDGE IS HELD ──
+   * The width is a PERCENTAGE of the column, and a centred figure splits
+   * whatever is left over between its two automatic side margins — which
+   * is precisely a box that grows from the middle outwards. So before
+   * the first pixel of movement, the edge that was NOT grabbed is nailed
+   * down as a real margin in pixels and only the far side is left `auto`
+   * to take up the slack. From then on the percentage can change freely
+   * and the pinned edge cannot move.
+   *
+   * A LEFT- OR RIGHT-ALIGNED document needs none of this: it is floated,
+   * and a float is already held against its own side of the column. It
+   * is also the one case where an explicit margin would do harm, because
+   * the margin on the text side is the gutter the paragraph wraps
+   * against.
+   */
   const startHandleResize = (e: React.PointerEvent, handle: Handle) => {
     if (!editable || e.button !== 0) return;
     const box = frame.current;
-    const column = measurableParent(box);
-    if (!box || !column) return;
+    /* The COLUMN, which is the figure's parent — not the frame's. The
+       frame's parent is the figure itself, and measuring against that
+       made every drag a percentage of a box that was itself changing
+       size: the number fed back into its own denominator and the width
+       ran to its limit on the first few pixels of movement. */
+    const figure = box?.parentElement ?? null;
+    const column = measurableParent(figure);
+    if (!box || !figure || !column) return;
     const rect = box.getBoundingClientRect();
     const columnRect = column.getBoundingClientRect();
     const isHeight = handle === "n" || handle === "s";
@@ -1090,17 +1142,23 @@ function PdfView({ node, updateAttributes, deleteNode, selected, editor, getPos 
     e.stopPropagation();
 
     const columnWidth = column.clientWidth || 1;
-    const startX = e.clientX;
     const startY = e.clientY;
-    const startWidth = rect.width;
     const startHeight = rect.height;
+    const floating = align === "left" || align === "right";
 
-    if (handle === "e") {
-      const leftPx = Math.max(0, rect.left - columnRect.left);
-      setMarginOverride({ marginLeft: `${leftPx}px`, marginRight: "auto" });
-    } else if (handle === "w") {
-      const rightPx = Math.max(0, columnRect.right - rect.right);
-      setMarginOverride({ marginRight: `${rightPx}px`, marginLeft: "auto" });
+    /* The edge that stays put, in pixels from the column's own edge. */
+    const leftPin = Math.max(0, rect.left - columnRect.left);
+    const rightPin = Math.max(0, columnRect.right - rect.right);
+    /* …and how far the dragged edge may travel before the box would
+       spill out of the column on the pinned side. */
+    const maxWidthPx = Math.max(48, columnWidth - (handle === "e" ? leftPin : rightPin));
+
+    if (!floating && handle === "e") {
+      setMarginOverride({ marginLeft: `${leftPin}px`, marginRight: "auto" });
+    } else if (!floating && handle === "w") {
+      setMarginOverride({ marginRight: `${rightPin}px`, marginLeft: "auto" });
+    } else if (floating) {
+      setMarginOverride(null);
     }
 
     setDragging(zone);
@@ -1122,6 +1180,15 @@ function PdfView({ node, updateAttributes, deleteNode, selected, editor, getPos 
         Math.max(RICH_IMAGE_WIDTH_MIN, Math.round((px / columnWidth) * 100)),
       );
 
+    const scroller = scrollingAncestor(box);
+    /* Growing upward is really "grow downward, then move the page down
+       by the same amount", so the bottom edge holds still and the top
+       edge is the one that follows the pointer. */
+    const holdBottomEdge = (heightDiff: number) => {
+      if (scroller) scroller.scrollTop += heightDiff;
+      else window.scrollBy(0, heightDiff);
+    };
+
     let lastY = startY;
     let currentHeight = startHeight;
 
@@ -1141,19 +1208,21 @@ function PdfView({ node, updateAttributes, deleteNode, selected, editor, getPos 
         if (heightDiff !== 0) {
           currentHeight = newHeight;
           updateAttributes({ height: newHeight });
-          window.scrollBy(0, -heightDiff);
+          holdBottomEdge(heightDiff);
         }
         return;
       }
 
       if (handle === "e") {
-        const newWidthPx = Math.max(48, ev.clientX - rect.left);
+        /* Measured from the pinned LEFT edge, so the width is whatever
+           the pointer has walked out to and the left edge is untouched. */
+        const newWidthPx = Math.min(maxWidthPx, Math.max(48, ev.clientX - rect.left));
         updateAttributes({ width: asPercent(newWidthPx) });
         return;
       }
 
       if (handle === "w") {
-        const newWidthPx = Math.max(48, rect.right - ev.clientX);
+        const newWidthPx = Math.min(maxWidthPx, Math.max(48, rect.right - ev.clientX));
         updateAttributes({ width: asPercent(newWidthPx) });
         return;
       }
