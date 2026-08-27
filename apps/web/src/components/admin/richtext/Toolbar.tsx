@@ -400,7 +400,6 @@ export function Toolbar({
            Each control disappears rather than lying when there is
            nothing for it to act on. */
         anim: richAnim(motionAttr(e.state, ANIMATABLE, "anim")),
-        canAnimate: motionAttr(e.state, ANIMATABLE, "anim") !== undefined,
         stagger: richStagger(motionAttr(e.state, STAGGERABLE, "stagger")),
         canStagger: motionAttr(e.state, STAGGERABLE, "stagger") !== undefined,
         hover: richHover(motionAttr(e.state, HOVERABLE, "hover")),
@@ -817,11 +816,18 @@ export function Toolbar({
           The entrance control is always here, because there is always a
           block; the other two appear only when the cursor is somewhere
           they mean something. */}
+      {/* NEVER DISABLED. It was, when the selection had nothing to hang
+          an entrance on — and a greyed box reading "No animation" that
+          will not open is indistinguishable from a broken feature. It
+          reached a real writer that way. The two states that produced
+          it are handled in motionTarget now; if some third one ever
+          turns up, the control opens, the choice does nothing, and the
+          writer tries something else — which is a far cheaper failure
+          than a control that looks dead on arrival. */}
       <select
         aria-label="Entrance animation"
         title="How this block arrives when the reader scrolls to it"
         value={s.anim ?? ""}
-        disabled={!s.canAnimate}
         onChange={(e) =>
           setMotionAttr(editor, ANIMATABLE, "anim", richAnim(e.target.value))
         }
