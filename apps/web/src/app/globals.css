@@ -2698,6 +2698,67 @@
     visibility: hidden;
     transition: opacity var(--duration-micro) var(--ease-out);
   }
+
+  /* ══ THE DEAD ZONE BETWEEN A BLOCK AND ITS CONTROLS ═════════════════
+     Reported as "I hover the card, the options appear, and when I move
+     the cursor to click one they vanish."
+
+     Every strip below hangs off its block with a gap — `top:
+     calc(100% + …)` under a card and a cell, `bottom: calc(100% + …)`
+     over a row, a band, a callout, a collapsible and a layout area. The
+     gap belongs to NEITHER element, so the pointer crossing it is over
+     the shell no longer, `:hover` goes false, and the strip is
+     `visibility: hidden` before the pointer arrives. It cannot be
+     hovered back, because there is nothing there to hover. Measured on
+     a card: fifteen pixels of it, and the strip went hidden at the
+     first pixel and stayed hidden all the way down.
+
+     Fifteen, not the four the positioning asks for, because `.rt-shell
+     > .rt-tools` adds `margin-top: var(--spacing-2)` — a rule meant for
+     the strips that sit IN FLOW under their block, which every shell
+     here also matches. It is turned off for the positioned ones below.
+
+     THE BRIDGE. A transparent pseudo-element on the strip, filling the
+     gap, on whichever side the strip hangs. It is part of the strip, so
+     it is part of the shell, so the pointer crossing it keeps the shell
+     hovered — and the strip stays up long enough to be reached. It
+     inherits `visibility: hidden` with the strip, which is what stops
+     an invisible 4px bar sitting over the document the rest of the
+     time. ══ */
+  .adm-richtext-body :is(
+      .rt-cols-shell, .rt-card-shell, .rt-band-shell, .rt-callout-shell,
+      .rt-details-shell, .rt-grid-shell, .rt-cell-shell
+    ) > .rt-tools {
+    margin-top: 0;
+  }
+  .adm-richtext-body :is(
+      .rt-cols-shell, .rt-card-shell, .rt-band-shell, .rt-callout-shell,
+      .rt-details-shell, .rt-grid-shell, .rt-cell-shell
+    ) > .rt-tools::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    /* THE GAP PLUS SLACK, and the slack is not padding-out of caution.
+       `top: 100%` resolves against the strip's PADDING box, which stops
+       one border-width short of the box the gap is measured from — so a
+       bridge exactly `--spacing-1` tall left a one-pixel sliver of dead
+       zone at the shell's very edge, and one pixel is all it takes:
+       hover goes false, the strip hides, and the bridge hides with it.
+       Overshooting runs the bridge a few pixels INTO the shell, where
+       the pointer is already hovering and nothing changes. */
+    height: calc(var(--spacing-1) + 5px);
+  }
+  /* Hanging BELOW its block: the gap is above the strip. */
+  .adm-richtext-body :is(.rt-card-shell, .rt-cell-shell) > .rt-tools::before {
+    bottom: 100%;
+  }
+  /* Hanging ABOVE it: the gap is below. */
+  .adm-richtext-body :is(
+      .rt-cols-shell, .rt-band-shell, .rt-callout-shell, .rt-details-shell, .rt-grid-shell
+    ) > .rt-tools::before {
+    top: 100%;
+  }
   .adm-richtext-body .rt-cols-shell > .rt-tools {
     position: absolute;
     right: 0;
