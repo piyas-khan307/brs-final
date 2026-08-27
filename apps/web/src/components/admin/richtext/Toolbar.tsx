@@ -45,6 +45,7 @@ import {
   ANIMATABLE,
   HOVERABLE,
   STAGGERABLE,
+  emptyColumns,
   emptyGrid,
   emptyDetails,
   emptySection,
@@ -331,6 +332,11 @@ function ColourControl({
  *  cannot drift apart. */
 const BLOCKS: Record<string, () => unknown> = {
   callout: () => ({ type: "brsCallout", content: [{ type: "paragraph" }] }),
+  /* THREE TO START, and not because three is special: the row's own
+     chips change it to 2 or 4, and "+ Card" adds a seventh. Seven cards
+     in a four-across row is four and then three, which is the shape a
+     segments grid actually has. */
+  cards: () => emptyColumns(3),
   details: () => emptyDetails(),
   table: () => emptyTable(),
   band: () => emptySection(),
@@ -902,6 +908,15 @@ export function Toolbar({
         <option value="details">Collapsible section</option>
         <option value="table">Table</option>
         <option value="band">Full-width band</option>
+        {/* A ROW OF CARDS, PUT BACK. It was taken off this menu on the
+            grounds that the layout area below does the same job, and it
+            does not: a layout area gives you positioned boxes, and a
+            card is a bordered panel with an icon, a variant and a link
+            of its own. Removing the only way to make one left the whole
+            card feature — its node, its node view, its stylesheet and
+            its renderer — reachable only by documents written before
+            the removal. */}
+        <option value="cards">Row of cards</option>
         {/* THE ONE PLACE THINGS ARE PLACED BY HAND. There were two for
             a while — this and a free canvas that stored exact points —
             and two tools for one job is worse than either. The canvas

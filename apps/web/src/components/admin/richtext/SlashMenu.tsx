@@ -42,6 +42,7 @@ import type { Editor } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
+  emptyColumns,
   emptyDetails,
   emptyGrid,
   emptySection,
@@ -235,6 +236,13 @@ const ITEMS = (dialogs: {
       hint: "A deliberate gap",
       keywords: "gap space spacer padding air",
       apply: insert({ type: "brsSpacer" }),
+    },
+    {
+      id: "cards",
+      label: "Row of cards",
+      hint: "Two to four across, and as many cards as you add",
+      keywords: "card cards row columns segments grid panels tiles",
+      apply: insert(emptyColumns(3)),
     },
     {
       id: "count",
