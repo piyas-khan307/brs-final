@@ -18,10 +18,6 @@ import { COMMITTEES } from "@/lib/committees.generated";
 const NAV = [
   { label: "Record", href: "/achievements" },
   { label: "Events", href: "/events" },
-  // Points straight at the team rather than at a /teams index, which does
-  // not exist yet and would be a one-item list if it did. When a second
-  // team is written this becomes a nav-menu like Committee's.
-  { label: "Navula", href: "/teams/navula" },
   { label: "Explore", href: "/explore" },
 ];
 

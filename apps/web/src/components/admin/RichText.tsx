@@ -47,14 +47,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { renderMarkdown } from "@/lib/markdown";
 import { parseRichDoc } from "@/lib/richtext/render";
-import { DeviceBar, deviceProps, useDevice } from "./richtext/DeviceBar";
-import { ButtonDialog, ImageDialog, LinkDialog, PdfDialog, VideoDialog } from "./richtext/dialogs";
-import {
-  RICH_EXTENSIONS,
-  RT_EDIT_BUTTON_EVENT,
-  RT_PICK_BAND_EVENT,
-} from "./richtext/extensions";
-import { SlashMenu } from "./richtext/SlashMenu";
+import { ImageDialog, LinkDialog, PdfDialog, VideoDialog } from "./richtext/dialogs";
+import { RICH_EXTENSIONS } from "./richtext/extensions";
 import { Toolbar } from "./richtext/Toolbar";
 
 export type RichValue = { content: string; format: "doc" };
@@ -65,6 +59,7 @@ export function RichText({
   onChange,
   rows = 18,
   attachedAssetIds,
+  attachedDocumentIds,
 }: {
   /** JSON when `format` is "doc"; markdown otherwise. */
   value: string;
@@ -74,19 +69,15 @@ export function RichText({
   /** Photographs already attached to the record being edited. Offered
    *  first in the picture dialog; see ImageDialog. */
   attachedAssetIds?: string[];
+  /** PDFs already attached to the record being edited. Offered first
+   *  in the PDF dialog; see PdfDialog. */
+  attachedDocumentIds?: string[];
 }) {
   /* What we last emitted, so a parent re-render does not reset the
      document under a live cursor — which is how an editor sends the
      caret to position zero on every keystroke. */
   const emitted = useRef<string | null>(null);
-  const [dialog, setDialog] = useState<"link" | "image" | "video" | "pdf" | "button" | null>(null);
-  /* Which band asked for a background, as a document position. Held
-     rather than derived, because by the time the picker closes the
-     selection is wherever the modal left it — and "the band the strip
-     belonged to" is not recoverable from that. */
-  const bandPos = useRef<number | null>(null);
-  /* Shared with the Preview tab's bar — see DeviceBar. */
-  const [device] = useDevice();
+  const [dialog, setDialog] = useState<"link" | "image" | "video" | "pdf" | null>(null);
 
   /* Computed once. `value` afterwards is compared against `emitted`
      below rather than re-parsed, because every keystroke changes it. */
@@ -149,32 +140,6 @@ export function RichText({
     },
   });
 
-  /* THE ONE THING A NODE VIEW CANNOT DO FOR ITSELF: OPEN A DIALOG.
-     A button drawn inside the document needs the same five-field box
-     the toolbar opens, and the node view has no way to reach this
-     component — ProseMirror constructs it, not React. So it fires an
-     event at the editor's own DOM node and this catches it. The node
-     view has already selected the button, so the dialog opens knowing
-     which one it is editing. */
-  useEffect(() => {
-    if (!editor) return;
-    const dom = editor.view.dom;
-
-    const openButton = () => setDialog("button");
-    const openBand = (e: Event) => {
-      const at = (e as CustomEvent<{ pos?: number }>).detail?.pos;
-      bandPos.current = typeof at === "number" ? at : null;
-      setDialog("image");
-    };
-
-    dom.addEventListener(RT_EDIT_BUTTON_EVENT, openButton);
-    dom.addEventListener(RT_PICK_BAND_EVENT, openBand);
-    return () => {
-      dom.removeEventListener(RT_EDIT_BUTTON_EVENT, openButton);
-      dom.removeEventListener(RT_PICK_BAND_EVENT, openBand);
-    };
-  }, [editor]);
-
   /* A parent that swaps in a different record — "Back to events", then
      open another one — must replace the document. A parent echoing back
      what we just emitted must not. */
@@ -201,23 +166,16 @@ export function RichText({
 
   return (
     <div className="adm-editor">
-      <DeviceBar />
       <Toolbar
         editor={editor}
         onAddLink={() => setDialog("link")}
         onAddImage={() => setDialog("image")}
         onAddVideo={() => setDialog("video")}
         onAddPdf={() => setDialog("pdf")}
-        onAddButton={() => setDialog("button")}
       />
 
       <div
         className="adm-richtext"
-        /* The device width. Applied to the BOX rather than to the
-           editable element inside it, so the dashed frame that marks
-           the edge of the screen sits outside the writing rather than
-           through it. */
-        {...deviceProps(device)}
         /**
          * EVERY PIXEL OF THIS BOX PUTS A CURSOR SOMEWHERE.
          *
@@ -251,31 +209,7 @@ export function RichText({
           const view = editor.view;
           const surface = view.dom as HTMLElement;
           const target = e.target as globalThis.Node;
-
-          // If clicking an interactive control (button, input, toolbar chip, handle), let it handle natively
-          if (target instanceof HTMLElement) {
-            if (
-              target.closest("button, input, select, a, [contenteditable='false'], .rt-btn, .rt-tools, .rt-handle")
-            ) {
-              return;
-            }
-          }
-
-          /* A PRESS THAT LANDED ON THE WRITING IS NOT OURS.
-             The note above has always said so — "left entirely to the
-             browser, which is what makes dragging a selection still
-             work" — and the code below never checked, so every press on
-             a paragraph was preventDefault()ed and collapsed to a caret.
-             Selecting a phrase by dragging, double-clicking a word and
-             shift-clicking to extend were all impossible, in the one
-             place a writer does them constantly.
-
-             `target !== surface` is the whole subtlety: a press in the
-             blank space under the last block DOES land inside the
-             editable element — it is the element's own min-height — and
-             that one still needs answering below, because the nearest
-             position to it may be a photograph rather than a line. */
-          if (surface.contains(target) && target !== surface) return;
+          if (target !== surface && surface.contains(target)) return;
 
           e.preventDefault();
 
@@ -319,50 +253,18 @@ export function RichText({
       </div>
 
       <LinkDialog editor={editor} isOpen={dialog === "link"} onClose={() => setDialog(null)} />
-      <ButtonDialog editor={editor} isOpen={dialog === "button"} onClose={() => setDialog(null)} />
       <VideoDialog editor={editor} isOpen={dialog === "video"} onClose={() => setDialog(null)} />
-      <PdfDialog editor={editor} isOpen={dialog === "pdf"} onClose={() => setDialog(null)} />
       <ImageDialog
         editor={editor}
         isOpen={dialog === "image"}
-        onClose={() => {
-          bandPos.current = null;
-          setDialog(null);
-        }}
+        onClose={() => setDialog(null)}
         attachedAssetIds={attachedAssetIds}
-        /* Only when a band asked. Without a position this is the
-           ordinary picture picker, unchanged. */
-        pickOne={
-          bandPos.current === null
-            ? undefined
-            : (assetId) => {
-                const at = bandPos.current;
-                if (at === null) return;
-                /* setNodeAttribute on a KNOWN position, not
-                   updateAttributes on the selection: the selection has
-                   been through a modal by now, and the band that asked
-                   is the one that must change. */
-                editor
-                  .chain()
-                  .focus()
-                  .command(({ tr }) => {
-                    tr.setNodeAttribute(at, "assetId", assetId);
-                    return true;
-                  })
-                  .run();
-              }
-        }
       />
-
-      {/* Rendered last: it is a fixed-position layer over everything,
-          and it decides for itself whether it is open. */}
-      <SlashMenu
+      <PdfDialog
         editor={editor}
-        onAddLink={() => setDialog("link")}
-        onAddImage={() => setDialog("image")}
-        onAddVideo={() => setDialog("video")}
-        onAddPdf={() => setDialog("pdf")}
-        onAddButton={() => setDialog("button")}
+        isOpen={dialog === "pdf"}
+        onClose={() => setDialog(null)}
+        attachedDocumentIds={attachedDocumentIds}
       />
     </div>
   );

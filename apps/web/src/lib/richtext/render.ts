@@ -34,41 +34,16 @@
  */
 
 import {
-  calloutTone,
-  cellAlign,
-  countdownAt,
-  countText,
-  countTo,
-  richAnim,
-  richHover,
-  richStagger,
-  cellVAlign,
-  gridDensity,
-  gridRowRem,
-  gridWAt,
-  gridX,
-  gridY,
-  gridH,
-  buttonAttrs,
-  cardVariant,
-  columnCount,
   embedSrc,
   embedWatchUrl,
   imageAspect,
   imageWidth,
-  pdfHeight,
   isAlign,
   isImageAlign,
-  isHeadingLevel,
-  isPdfDataUrl,
   isProvider,
   isVideoId,
-  richIconSvg,
   richLead,
   richStyleAttrs,
-  sectionScrim,
-  sectionTone,
-  spacerSize,
 } from "./palette";
 
 /* ── The shape of a stored document ───────────────────────────────────
@@ -97,23 +72,23 @@ export type RichImage = {
   webp?: { w: number; url: string }[];
 };
 
-/**
- * What the walk carries that the CALLER does not supply.
- *
- * Anchors are the reason this exists. A heading's id has to be unique
- * within the page, which means the thing that mints one has to remember
- * every id it has already minted — and that memory has to be per-render,
- * not per-module, or the second event built in the same process would
- * start numbering its anchors from wherever the first one stopped.
- *
- * Internal. The exported RenderOptions is still the two fields a caller
- * knows about.
- */
-type Ctx = RenderOptions & { anchors: Set<string> };
+/** What a PDF looks like once resolved — far simpler than RichImage,
+ *  because there is no derivative ladder for a PDF: the browser's own
+ *  viewer renders the original file directly. */
+export type RichDocument = {
+  src: string;
+  title: string;
+};
 
 export type RenderOptions = {
   /** Resolve an asset id to something renderable, or null if it is gone. */
   image: (assetId: string) => RichImage | null;
+  /** Resolve a document id to something renderable, or null if it is
+   *  gone. Optional so existing callers (nothing published a PDF before
+   *  this) do not have to supply one; a brsPdf node with no resolver
+   *  simply renders nothing, the same "vanished, not broken" behaviour
+   *  a deleted picture already gets. */
+  document?: (documentId: string) => RichDocument | null;
   /** Throw on an unrecognised node or mark. The content build sets this. */
   strict?: boolean;
 };
@@ -165,11 +140,9 @@ function blockAttrs(n: PMNode): string {
     lead ? "rt-lead" : "",
   ].filter(Boolean);
 
-  const style = lead ? `--rt-lh:${lead};` : "";
-
   return (
     (classes.length ? ` class="${classes.join(" ")}"` : "") +
-    (style ? ` style="${style}"` : "")
+    (lead ? ` style="--rt-lh:${lead};"` : "")
   );
 }
 
@@ -190,7 +163,7 @@ const SIMPLE_MARK_TAG: Record<string, string> = {
   code: "code",
 };
 
-function wrapMarks(inner: string, marks: unknown, o: Ctx): string {
+function wrapMarks(inner: string, marks: unknown, o: RenderOptions): string {
   const list = asArray(marks);
   if (!list.length) return inner;
 
@@ -230,6 +203,7 @@ function wrapMarks(inner: string, marks: unknown, o: Ctx): string {
         size: attr(m, "size"),
         ink: attr(m, "ink"),
         mark: attr(m, "mark"),
+        spacing: attr(m, "spacing"),
       });
       // A brsStyle carrying nothing valid is not a span worth emitting.
       if (!cls && !style) continue;
@@ -248,7 +222,7 @@ function wrapMarks(inner: string, marks: unknown, o: Ctx): string {
   return out;
 }
 
-function unknownThing(what: string, o: Ctx): void {
+function unknownThing(what: string, o: RenderOptions): void {
   if (o.strict) {
     throw new Error(
       `richtext: unsupported ${what} in a stored write-up. Either the editor ` +
@@ -266,15 +240,7 @@ function unknownThing(what: string, o: Ctx): void {
  * bytes arrive. This is the entire reason the document stores an ASSET
  * ID and not a URL — a URL would have been one fixed-size JPEG.
  */
-function picture(
-  img: RichImage,
-  align: string,
-  width: number | null,
-  /** Overrides the computed `sizes`. A band's background is the width of
-   *  the WINDOW, not of the measure, so the ch-based guess below would
-   *  have it fetch a 700px derivative for a 2560px field. */
-  sizesOverride?: string,
-): string {
+function picture(img: RichImage, align: string, width: number | null): string {
   const srcset = (list: { w: number; url: string }[] | undefined) =>
     list?.length ? list.map((s) => `${escape(s.url)} ${s.w}w`).join(", ") : null;
 
@@ -287,12 +253,10 @@ function picture(
      reason the derivative ladder exists. Defaults match the CSS: a
      centred picture fills the column, a floated one takes half. */
   const frac = (width ?? (align === "center" ? 100 : 50)) / 100;
-  const sizes =
-    sizesOverride ??
-    `(min-width: 72ch) ${Math.max(1, Math.round(72 * frac))}ch, ${Math.max(
-      1,
-      Math.round(100 * frac),
-    )}vw`;
+  const sizes = `(min-width: 72ch) ${Math.max(1, Math.round(72 * frac))}ch, ${Math.max(
+    1,
+    Math.round(100 * frac),
+  )}vw`;
 
   const sources = [
     avif ? `<source type="image/avif" srcset="${avif}" sizes="${sizes}" />` : "",
@@ -381,122 +345,15 @@ function embed(
   );
 }
 
-/** Every character of text under a node, marks and nesting ignored. */
-const textOf = (n: PMNode): string =>
-  typeof n.text === "string" ? n.text : asArray(n.content).map(textOf).join("");
-
-/**
- * A HEADING'S ANCHOR, so a long announcement can be linked into.
- *
- * "SEGMENTS" becomes `#segments`, and a button elsewhere on the page can
- * point at it. Nothing in the editor asks for this — it is minted from
- * the words that are already there, because an id somebody has to
- * remember to fill in is an id that is empty on every page.
- *
- * ── WHY THE OUTPUT NEEDS NO ESCAPING ──
- * The regex keeps `a-z`, `0-9` and `-`, and drops every other byte
- * rather than replacing it. There is no input — not a quote, not an
- * angle bracket, not a space — that survives into the returned string.
- * That is a whitelist, not a sanitiser, and it is the same shape of
- * check as every other value this file lets through.
- *
- * Collisions are numbered rather than allowed: two sections called
- * "Rules" give `#rules` and `#rules-2`, so the first link on the page
- * does not silently win.
- */
-function anchorFor(text: string, o: Ctx): string | null {
-  const base = text
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60)
-    .replace(/-+$/, "");
-  if (!base) return null;
-
-  let id = base;
-  let n = 2;
-  while (o.anchors.has(id)) id = `${base}-${n++}`;
-  o.anchors.add(id);
-  return id;
-}
-
-/**
- * Whether a subtree already contains something clickable.
- *
- * A card can be given a destination of its own — the whole box becomes
- * the link, which is how a grid of segments behaves everywhere. But a
- * card can also CONTAIN a link or a button, and an <a> inside an <a> is
- * invalid HTML that browsers do not merely tolerate: the parser closes
- * the outer anchor early and re-opens it after, which leaves a second
- * link in the tab order with no accessible name and a card whose top
- * half goes somewhere different from its bottom half.
- *
- * So the outer link is dropped rather than the inner one. The card
- * keeps the writing the editor put in it; it just stops being a link
- * itself, which is the half of the conflict a reader can actually see.
- */
-function hasInteractive(n: PMNode): boolean {
-  if (n.type === "brsButton") return true;
-  if (Array.isArray(n.marks) && (n.marks as PMNode[]).some((m) => m && m.type === "link")) {
-    return true;
-  }
-  return asArray(n.content).some(hasInteractive);
-}
-
 /* ── The walk ─────────────────────────────────────────────────────────── */
 
-function children(n: PMNode, o: Ctx): string {
+function children(n: PMNode, o: RenderOptions): string {
   return asArray(n.content)
     .map((c) => node(c, o))
     .join("");
 }
 
-/**
- * ── MOTION, ADDED IN ONE PLACE ────────────────────────────────────────
- *
- * The entrance, the stagger and the hover are attributes on blocks that
- * already exist (see BrsMotion in richtext/extensions.tsx), so the
- * alternative to this was three lines added to each of fifteen `case`
- * branches — and a sixteenth block added next year that silently could
- * not be animated because somebody forgot the sixteenth copy.
- *
- * So the dispatcher does it instead: whatever a branch returns, its
- * OPENING TAG gets the attributes. That tag is always the node's own
- * box, because every branch below writes it first.
- *
- * ── WHY THIS CANNOT CARRY AN AUTHOR'S BYTES ──
- * Nothing here is interpolated from the document. richAnim and
- * richHover return a member of a fixed list in palette.ts or null, and
- * richStagger returns a boolean — so the three strings that can be
- * written are the only three this build knows how to write. The regular
- * expression matches a tag name this file produced a line earlier, not
- * anything parsed from input.
- */
-function withMotion(html: string, n: PMNode): string {
-  // A node that rendered to nothing — an emptied card, a deleted
-  // picture — has no tag to hang anything on, and is not on the page.
-  if (!html) return html;
-
-  const anim = richAnim(attr(n, "anim"));
-  const hover = richHover(attr(n, "hover"));
-  const stagger = richStagger(attr(n, "stagger"));
-  const bits =
-    (anim ? ` data-rt-anim="${anim}"` : "") +
-    (stagger ? ` data-rt-stagger=""` : "") +
-    (hover ? ` data-rt-hover="${hover}"` : "");
-  if (!bits) return html;
-
-  const open = /^<([a-z]+[1-6]?)(?=[\s/>])/.exec(html);
-  if (!open) return html;
-  return html.slice(0, open[0].length) + bits + html.slice(open[0].length);
-}
-
-function node(n: PMNode, o: Ctx): string {
-  return withMotion(nodeHtml(n, o), n);
-}
-
-function nodeHtml(n: PMNode, o: Ctx): string {
+function node(n: PMNode, o: RenderOptions): string {
   const type = typeof n.type === "string" ? n.type : "";
 
   switch (type) {
@@ -514,18 +371,11 @@ function nodeHtml(n: PMNode, o: Ctx): string {
     }
 
     case "heading": {
-      /* h1 belongs to the page title — the event page already renders
-         one, and a second is the heading fault that makes a document
-         outline useless. h5 and h6 are flattened to h3 rather than
-         dropped, which is what a document written before h4 existed
-         needs. See RICH_HEADING_LEVELS. */
-      const raw = attr(n, "level");
-      const level = isHeadingLevel(raw) ? raw : 3;
-      const id = anchorFor(textOf(n), o);
-      return (
-        `<h${level}${id ? ` id="${id}"` : ""}${blockAttrs(n)}>` +
-        `${children(n, o)}</h${level}>`
-      );
+      const level = attr(n, "level");
+      // h1 belongs to the page title. A write-up starts at h2, and
+      // anything deeper than h3 is flattened rather than dropped.
+      const tag = level === 2 ? "h2" : "h3";
+      return `<${tag}${blockAttrs(n)}>${children(n, o)}</${tag}>`;
     }
 
     case "bulletList":
@@ -546,62 +396,6 @@ function nodeHtml(n: PMNode, o: Ctx): string {
 
     case "hardBreak":
       return "<br />";
-
-    /* ── A TAB ─────────────────────────────────────────────────────
-       What Tab writes: a gap in the line, at the point the writer put
-       it. There is nothing of the author's in this tag — not a
-       character, not a number — so it is a literal string, and its
-       width is one rule in the stylesheet that the editor reads too. */
-    case "brsTab":
-      return `<span class="rt-tab"></span>`;
-
-    /* ── A NUMBER THAT COUNTS UP ───────────────────────────────────
-       THE FINISHED NUMBER IS WHAT IS WRITTEN. The script sets it back
-       to zero and climbs when the reader arrives; without a script the
-       page simply states the figure, which is the true thing and the
-       one a crawler should index. Every character here is either from
-       countTo — a bounded integer — or escaped. */
-    case "brsCount": {
-      const to = countTo(attr(n, "to"));
-      const prefix = countText(attr(n, "prefix"), 8);
-      const suffix = countText(attr(n, "suffix"), 8);
-      const label = countText(attr(n, "label"));
-      const shown = `${prefix}${to.toLocaleString("en-GB")}${suffix}`;
-      return (
-        `<span class="rt-count" data-rt-count data-to="${to}"` +
-        (prefix ? ` data-prefix="${escape(prefix)}"` : "") +
-        (suffix ? ` data-suffix="${escape(suffix)}"` : "") +
-        `><span class="rt-count-value">${escape(shown)}</span>` +
-        (label ? `<span class="rt-count-label">${escape(label)}</span>` : "") +
-        `</span>`
-      );
-    }
-
-    /* ── A CLOCK COUNTING DOWN ─────────────────────────────────────
-       What the build knows is the DATE, so the date is what it writes,
-       as a sentence. The script replaces that sentence with ticking
-       cells; a reader without one is told when the thing happens,
-       which is the useful half of a countdown anyway.
-
-       A countdown with no date renders nothing at all rather than a row
-       of zeroes — the same answer a picture with no asset gets. */
-    case "brsCountdown": {
-      const to = countdownAt(attr(n, "to"));
-      if (!to) return "";
-      const label = countText(attr(n, "label"));
-      const when = new Date(to).toLocaleString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-      });
-      return (
-        `<div class="rt-countdown" data-rt-countdown data-to="${escape(to)}">` +
-        `<span class="rt-countdown-date">Until ${escape(when)}</span></div>` +
-        (label ? `<p class="rt-count-label">${escape(label)}</p>` : "")
-      );
-    }
 
     case "brsImage": {
       const assetId = attr(n, "assetId");
@@ -640,6 +434,44 @@ function nodeHtml(n: PMNode, o: Ctx): string {
       );
     }
 
+    case "brsPdf": {
+      const documentId = attr(n, "documentId");
+      if (typeof documentId !== "string" || !documentId) return "";
+      const resolve = o.document;
+      const doc = resolve ? resolve(documentId) : null;
+      // A document that has been deleted from the library, or a build
+      // that has no document resolver at all, leaves nothing behind —
+      // same rule as a picture, above.
+      if (!doc) return "";
+      const titleAttr = attr(n, "title");
+      const title =
+        typeof titleAttr === "string" && titleAttr.trim() ? titleAttr.trim() : doc.title;
+      // The size an editor dragged the box to in the admin panel,
+      // carried through so the published page matches. Width is a
+      // percent of the column (fluid, like a picture's); height is a
+      // fixed pixel count (a PDF page has a real printed size, unlike a
+      // photograph whose height a percent-width plus its own aspect
+      // ratio already determines).
+      const heightAttr = attr(n, "height");
+      const height =
+        typeof heightAttr === "number" && heightAttr > 0 ? Math.round(heightAttr) : 512;
+      const widthAttr = attr(n, "width");
+      const width =
+        typeof widthAttr === "number" && widthAttr > 0 ? Math.round(widthAttr) : 100;
+      const alignAttr = attr(n, "align");
+      const align = alignAttr === "left" || alignAttr === "center" || alignAttr === "right"
+        ? alignAttr
+        : "left";
+      return (
+        `<figure class="rt-pdf-embed rt-pdf-embed-${align}" style="width:${width}%;height:${height}px">` +
+        `<iframe class="rt-pdf-embed-frame" src="${escape(doc.src)}" title="${escape(title)}" loading="lazy"></iframe>` +
+        `<figcaption class="rt-pdf-embed-caption">` +
+        `<span class="rt-pdf-title">${escape(title)}</span>` +
+        `<a href="${escape(doc.src)}" target="_blank" rel="noopener noreferrer">Open in a new tab</a>` +
+        `</figcaption></figure>`
+      );
+    }
+
     case "brsEmbed": {
       const provider = attr(n, "provider");
       const videoId = attr(n, "videoId");
@@ -651,331 +483,6 @@ function nodeHtml(n: PMNode, o: Ctx): string {
       // pinned to 30% on a laptop is a postage stamp on a phone.
       const w = imageWidth(attr(n, "width"));
       return embed(provider, videoId, typeof title === "string" ? title : "", w);
-    }
-
-    /* ── A PDF, SHOWN WHOLE ────────────────────────────────────────
-       The <iframe src> is the one place in this renderer that carries a
-       URL an author supplied, so it is also the most carefully guarded.
-       isPdfDataUrl demands the exact `data:application/pdf;base64,`
-       prefix and a base64 tail — the MIME is fixed by us, not read from
-       the file, so the browser renders a PDF and cannot be coaxed into
-       rendering markup, and base64 has no character that could close the
-       attribute. Anything failing the test renders NOTHING, the same as
-       a deleted picture. */
-    case "brsPdf": {
-      const src = attr(n, "src");
-      if (!isPdfDataUrl(src)) return "";
-      const nameRaw = attr(n, "name");
-      const name = typeof nameRaw === "string" && nameRaw.trim() ? nameRaw.trim() : "PDF document";
-      const rawAlign = attr(n, "align");
-      const align = isImageAlign(rawAlign) ? rawAlign : "center";
-      // Width in percent, height in px — both computed and clamped here,
-      // never a character the author chose. The width rides a custom
-      // property so a media query can override it on a phone; the height
-      // is fixed pixels because a PDF box has no aspect to reflow.
-      const w = imageWidth(attr(n, "width"));
-      const h = pdfHeight(attr(n, "height"));
-      const vars = (w ? `--rt-w:${w}%;` : "") + `--rt-pdf-h:${h}px;`;
-      /* ── NO `sandbox`, AND THAT IS MEASURED RATHER THAN ASSUMED ──
-         It used to carry sandbox="allow-scripts", on the reasoning that
-         the viewer needs its own scripts and nothing else. The reasoning
-         was sound and the result was not: Chrome refuses to hand a
-         `data:` PDF to its viewer through a sandboxed frame AT ALL, with
-         ANY value of the attribute — allow-scripts, allow-same-origin,
-         both together, the lot. Checked one combination at a time in
-         Chromium: every one drew the grey broken-document icon, and only
-         the frame with no attribute showed the document. So the choice
-         was never "sandboxed viewer or open viewer", it was "no document
-         or a document".
-
-         WHAT STILL HOLDS IT SHUT is the MIME, not the attribute. The src
-         passed isPdfDataUrl, so it is `data:application/pdf;base64,` —
-         and a `data:` document has an opaque origin no attribute can
-         widen, so it cannot read this page, its cookies or its storage.
-         Bytes of HTML uploaded under that MIME do not become a page
-         either: the browser hands them to the PDF viewer, which fails to
-         parse them. Verified the same way — a data:application/pdf frame
-         whose payload was <script> and an onerror handler executed
-         nothing, messaged nothing, and navigated nothing, with no
-         sandbox attribute present.
-
-         What the attribute did buy, and what a PDF from the library can
-         now do, is a link the reader clicks and a form the reader
-         submits. The file is uploaded by a signed-in editor, which is
-         the same trust as every other thing on this page. */
-      return (
-        `<figure class="rt-figure rt-pdf rt-figure-${align}" style="${vars}">` +
-        `<div class="rt-pdf-frame">` +
-        `<iframe class="rt-pdf-iframe" src="${escape(src)}#toolbar=1&navpanes=0&view=FitH"` +
-        ` title="${escape(name)}" loading="lazy"></iframe>` +
-        `</div></figure>`
-      );
-    }
-
-    /* ── A CALL TO ACTION ──────────────────────────────────────────
-       The label and the address are the only author bytes here, and
-       both go through escape(). Everything else in the tag is a class
-       built from a value that buttonAttrs coerced into one
-       of a handful of strings this build names. */
-    case "brsButton": {
-      const href = safeHref(attr(n, "href"));
-      const raw = attr(n, "label");
-      const label = typeof raw === "string" ? raw.trim() : "";
-      if (!href || !label) return "";
-
-      /* Class and style from the same builder the node view uses, so
-         the draft and this are one implementation rather than two that
-         drift. Every value inside has been through a coercer or the hex
-         set-membership test, so nothing an author typed reaches the
-         attribute unescaped. */
-      const look = buttonAttrs({
-        variant: attr(n, "variant"),
-        size: attr(n, "size"),
-        radius: attr(n, "radius"),
-        bg: attr(n, "bg"),
-        fg: attr(n, "fg"),
-        weight: attr(n, "weight"),
-        italic: attr(n, "italic"),
-        underline: attr(n, "underline"),
-        caps: attr(n, "caps"),
-      });
-
-      const away = href.startsWith("/")
-        ? ""
-        : ' target="_blank" rel="noopener noreferrer"';
-
-      /* NO ALIGNMENT AND NO OFFSET. Both used to be written here, and
-         the alignment half was a class — rt-btn-wrap-center — that no
-         stylesheet has ever defined, so it did nothing on the published
-         page while appearing to work in the editor. The honest version
-         is that a button is an inline node: it sits where the writer put
-         it in the sentence, and the paragraph's own text-align (see
-         blockAttrs) decides where the line sits. One mechanism, and it
-         is the one that already survives a phone screen. */
-      return (
-        `<span class="rt-btn-wrap">` +
-        `<a class="${look.class}"${look.style ? ` style="${look.style}"` : ""}` +
-        ` href="${escape(href)}"${away}>${escape(label)}</a></span>`
-      );
-    }
-
-    /* ── A ROW OF COLUMNS ──────────────────────────────────────────
-       The count is the desktop count; what happens on a narrow screen
-       is globals.css's decision, not the document's. See
-       RICH_COLUMN_COUNTS in palette.ts. */
-    case "brsColumns": {
-      const inner = children(n, o);
-      // Every card was emptied or dropped. An empty grid is a gap in the
-      // page that nobody can see to delete.
-      if (!inner) return "";
-      return `<div class="rt-cols rt-cols-${columnCount(attr(n, "cols"))}">${inner}</div>`;
-    }
-
-    /* ── ONE CARD ──────────────────────────────────────────────────
-       Its text is real child content rather than attributes, so
-       richDocToText() below finds it and the page keeps a meta
-       description even when the whole body is cards. */
-    case "brsCard": {
-      const variant = cardVariant(attr(n, "variant"));
-      const icon = richIconSvg(attr(n, "icon"));
-      const inner =
-        (icon ? `<span class="rt-card-icon">${icon}</span>` : "") + children(n, o);
-      const cls = `rt-card rt-card-${variant}`;
-
-      const href = safeHref(attr(n, "href"));
-      if (href && !hasInteractive(n)) {
-        const away = href.startsWith("/")
-          ? ""
-          : ' target="_blank" rel="noopener noreferrer"';
-        return `<a class="${cls} rt-card-link" href="${escape(href)}"${away}>${inner}</a>`;
-      }
-      return `<div class="${cls}">${inner}</div>`;
-    }
-
-    /* ── A CALLOUT ─────────────────────────────────────────────────
-       The sentence a reader must not miss. Tone is a token name, so it
-       is the one element on the page whose contrast is right in both
-       themes by construction rather than by somebody checking. */
-    case "brsCallout": {
-      const inner = children(n, o);
-      if (!inner) return "";
-      const icon = richIconSvg(attr(n, "icon"));
-      return (
-        `<div class="rt-callout rt-callout-${calloutTone(attr(n, "tone"))}">` +
-        (icon ? `<span class="rt-callout-icon">${icon}</span>` : "") +
-        `<div class="rt-callout-body">${inner}</div></div>`
-      );
-    }
-
-    /* ── DELIBERATE EMPTY SPACE ────────────────────────────────────
-       aria-hidden and empty: it is a gap, and a gap announced to a
-       screen reader is noise. */
-    case "brsSpacer":
-      return `<div class="rt-spacer rt-spacer-${spacerSize(attr(n, "size"))}" aria-hidden="true"></div>`;
-
-    /* ── AN ACCORDION ──────────────────────────────────────────────
-       <details> and <summary>, which is the browser's own disclosure
-       widget: it opens without JavaScript, it is in the tab order
-       already, it announces its state to a screen reader, and Ctrl+F
-       opens it to reach text inside. A div with a click handler would
-       have been none of those four. */
-    case "brsDetails": {
-      const kids = asArray(n.content);
-      const head = kids.find((k) => k.type === "brsSummary");
-      const summary = head ? children(head, o) : "";
-      const body = kids
-        .filter((k) => k.type !== "brsSummary")
-        .map((k) => node(k, o))
-        .join("");
-      if (!summary && !body) return "";
-      // The fallback is this file's own bytes, not an author's.
-      return (
-        `<details class="rt-details"${attr(n, "open") === true ? " open" : ""}>` +
-        `<summary class="rt-summary">${summary || "Details"}</summary>` +
-        `<div class="rt-details-body">${body}</div></details>`
-      );
-    }
-
-    /* Rendered by its parent, above. Reached on its own only by a
-       document that has been edited by hand, and then it is just its
-       words rather than a thrown build. */
-    case "brsSummary":
-      return children(n, o);
-
-    /* ── A FULL-BLEED BAND ─────────────────────────────────────────
-       The only block that leaves the article's measure — see
-       RICH_SECTION_TONES for the mechanics and for why the background
-       is an <img> rather than a CSS url(). */
-    case "brsSection": {
-      const inner = children(n, o);
-      const assetId = attr(n, "assetId");
-      const img = typeof assetId === "string" && assetId ? o.image(assetId) : null;
-      if (!inner && !img) return "";
-
-      const tone = sectionTone(attr(n, "tone"));
-      const scrim = sectionScrim(attr(n, "scrim"));
-
-      /* alt="" DELIBERATELY. A band's background is decoration behind
-         the words on top of it; describing it twice is what makes a
-         screen reader read a page's furniture aloud. */
-      const bg = img
-        ? `<div class="rt-band-bg" aria-hidden="true">` +
-          `${picture({ ...img, alt: "" }, "center", 100, "100vw")}</div>`
-        : "";
-      const veil =
-        img && scrim !== "none"
-          ? `<div class="rt-band-scrim rt-band-scrim-${scrim}" aria-hidden="true"></div>`
-          : "";
-
-      return (
-        `<section class="rt-band rt-band-${tone}${img ? " rt-band-photo" : ""}">` +
-        `${bg}${veil}<div class="rt-band-inner">${inner}</div></section>`
-      );
-    }
-
-    /* ── A TABLE ───────────────────────────────────────────────────
-       The node names are prosemirror-tables', not ours, because the
-       editing behaviour — tab between cells, select a rectangle, merge,
-       split — is that library's and it addresses its own schema by
-       those names. Renaming them would mean forking it.
-
-       A FIRST ROW OF HEADER CELLS BECOMES A <thead>. Not cosmetic: it
-       is what lets a screen reader say "Prize, second place, 50,000"
-       instead of reading three loose numbers. */
-    case "table": {
-      const rows = asArray(n.content);
-      const [firstRow] = rows;
-      const first = firstRow ? asArray(firstRow.content) : [];
-      const headed =
-        firstRow !== undefined && first.length > 0 && first.every((c) => c.type === "tableHeader");
-
-      const head = headed && firstRow ? `<thead>${node(firstRow, o)}</thead>` : "";
-      const body = (headed ? rows.slice(1) : rows).map((r) => node(r, o)).join("");
-      if (!head && !body) return "";
-
-      /* THE WRAPPER IS NOT DECORATION. A table wider than the measure
-         otherwise takes the whole PAGE's horizontal scrollbar with it,
-         which is the one layout fault that is invisible on the machine
-         it was built on and unmissable on a phone. */
-      return (
-        `<div class="rt-table-wrap"><table class="rt-table">` +
-        `${head}${body ? `<tbody>${body}</tbody>` : ""}</table></div>`
-      );
-    }
-
-    case "tableRow":
-      return `<tr>${children(n, o)}</tr>`;
-
-    case "tableCell":
-    case "tableHeader": {
-      const tag = type === "tableHeader" ? "th" : "td";
-      const span = (k: string) => {
-        const v = attr(n, k);
-        return typeof v === "number" && Number.isInteger(v) && v > 1 && v <= 100 ? v : 1;
-      };
-      const cs = span("colspan");
-      const rs = span("rowspan");
-      return (
-        `<${tag}${cs > 1 ? ` colspan="${cs}"` : ""}${rs > 1 ? ` rowspan="${rs}"` : ""}` +
-        // Only column headers are offered by the toolbar, so the scope
-        // is known rather than guessed.
-        `${tag === "th" ? ' scope="col"' : ""}>${children(n, o)}</${tag}>`
-      );
-    }
-
-    /* ── A LAYOUT AREA ─────────────────────────────────────────────
-       Twenty-four columns and rows of a fixed height. Free placement
-       that cannot overlap — see the layout note in palette.ts.
-
-       The column count is a literal from this file, and the row height
-       is a number looked up in this file's own table. Neither is
-       author-supplied, so neither needs escaping. */
-    case "brsGrid": {
-      const inner = children(n, o);
-      const assetId = attr(n, "assetId");
-      const img = typeof assetId === "string" && assetId ? o.image(assetId) : null;
-      if (!inner && !img) return "";
-
-      const tone = sectionTone(attr(n, "tone"));
-      const scrim = sectionScrim(attr(n, "scrim"));
-      const density = gridDensity(attr(n, "density"));
-
-      const bg = img
-        ? `<div class="rt-grid-bg" aria-hidden="true">` +
-          `${picture({ ...img, alt: "" }, "center", 100, "100vw")}</div>`
-        : "";
-      const veil =
-        img && scrim !== "none"
-          ? `<div class="rt-band-scrim rt-band-scrim-${scrim}" aria-hidden="true"></div>`
-          : "";
-
-      return (
-        `<div class="rt-grid rt-grid-${tone} rt-grid-d-${density}` +
-        `${img ? " rt-grid-photo" : ""}" style="--rt-row:${gridRowRem(density)}rem;">` +
-        `${bg}${veil}<div class="rt-grid-stage">${inner}</div></div>`
-      );
-    }
-
-    /* ── ONE CELL ──────────────────────────────────────────────────
-       Stored zero-based because that is what the editor's arithmetic
-       wants; converted to CSS's one-based grid lines here, at the one
-       point where it becomes a grid-column.
-
-       The SPAN is clamped against the start, so a cell stored at column
-       20 with a width of 10 stops at the edge instead of wrapping onto
-       the next row. */
-    case "brsCell": {
-      const inner = children(n, o);
-      if (!inner) return "";
-      const x = gridX(attr(n, "x"));
-      const y = gridY(attr(n, "y"));
-      const w = gridWAt(attr(n, "x"), attr(n, "w"));
-      const h = gridH(attr(n, "h"));
-      return (
-        `<div class="rt-cell rt-cell-${cellAlign(attr(n, "align"))}` +
-        ` rt-cell-v-${cellVAlign(attr(n, "valign"))}"` +
-        ` style="--cx:${x + 1};--cy:${y + 1};--cw:${w};--ch:${h};">${inner}</div>`
-      );
     }
 
     case "doc":
@@ -997,8 +504,7 @@ function nodeHtml(n: PMNode, o: Ctx): string {
  */
 export function renderRichDoc(doc: unknown, options: RenderOptions): string {
   if (!doc || typeof doc !== "object") return "";
-  // A fresh anchor set per document — see Ctx.
-  return node(doc as PMNode, { ...options, anchors: new Set<string>() });
+  return node(doc as PMNode, options);
 }
 
 /** Parse what the database column holds. Returns null for anything that
@@ -1030,20 +536,27 @@ export function collectAssetIds(doc: unknown): string[] {
   return out;
 }
 
+/** Same as collectAssetIds, for a brsPdf node's documentId. */
+export function collectDocumentIds(doc: unknown): string[] {
+  const out: string[] = [];
+  const walk = (n: PMNode) => {
+    if (n.type === "brsPdf") {
+      const id = attr(n, "documentId");
+      if (typeof id === "string" && id && !out.includes(id)) out.push(id);
+    }
+    for (const c of asArray(n.content)) walk(c);
+  };
+  if (doc && typeof doc === "object") walk(doc as PMNode);
+  return out;
+}
+
 /** Plain text, for meta descriptions and feed-card excerpts — the
  *  stripMarkdown() of this format. */
 export function richDocToText(doc: unknown): string {
   const parts: string[] = [];
   const walk = (n: PMNode) => {
     if (n.type === "text" && typeof n.text === "string") parts.push(n.text);
-    if (n.type === "hardBreak" || n.type === "brsTab") parts.push(" ");
-    /* A counter is an atom, so its number is an attribute rather than a
-       child — and "250 participants" is exactly the kind of sentence a
-       meta description wants. Without this a page whose whole body is
-       counters would describe itself with nothing. */
-    if (n.type === "brsCount") {
-      parts.push(` ${countTo(attr(n, "to"))} ${countText(attr(n, "label"))} `);
-    }
+    if (n.type === "hardBreak") parts.push(" ");
     const kids = asArray(n.content);
     for (const c of kids) walk(c);
     // Blocks end with a space so two paragraphs do not run together.

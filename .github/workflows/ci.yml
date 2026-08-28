@@ -20,14 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # NO `version:` HERE. package.json's "packageManager" already names
-      # the exact pnpm, and action-setup refuses to start when both are
-      # set: "Multiple versions of pnpm specified". That error killed the
-      # job at its second step, before a single line of this repo was
-      # installed — which is why every run of this workflow since it was
-      # added has been red, on branches and on main alike, whatever the
-      # code did. One source for the version, and it is the lockfile's.
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - uses: actions/setup-node@v4
         with:

@@ -81,7 +81,6 @@ import {
   useFlash,
 } from "@/components/admin/ui";
 import { RichPreview } from "@/components/admin/richtext/Preview";
-import { DeviceBar, deviceProps, useDevice } from "@/components/admin/richtext/DeviceBar";
 import { items } from "@/lib/admin/client";
 import { collectAssetIds, parseRichDoc } from "@/lib/richtext/render";
 
@@ -144,8 +143,6 @@ function EventEditor() {
   const [flash, setFlash] = useFlash();
   const [slugTouched, setSlugTouched] = useState(false);
   const [view, setView] = useState<"write" | "preview">("write");
-  /* The preview width, shared with the Write tab's own bar. */
-  const [device] = useDevice();
   /* Photographs already attached to this event. Not a section to manage —
      that was removed on client direction — but the picture dialog offers
      them first, and the line under the editor says they are there. */
@@ -401,11 +398,7 @@ function EventEditor() {
               // in, class for class, so switching tabs changes what is
               // on the page and nothing about the page itself.
               <div className="adm-editor">
-                {/* The same bar the Write tab carries, sharing the same
-                    choice — switching tabs must not silently switch
-                    back to a desktop width. */}
-                <DeviceBar />
-                <div className="adm-richtext" {...deviceProps(device)}>
+                <div className="adm-richtext">
                   <RichPreview
                     content={event.body ?? ""}
                     format={event.body_format ?? "md"}

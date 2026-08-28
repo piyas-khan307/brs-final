@@ -54,7 +54,6 @@ const LOADERS: Record<string, () => Promise<{ EVENT: EventArticle }>> = {
   "asdf": () => import("./events/asdf.generated"),
   "asdfasdf": () => import("./events/asdfasdf.generated"),
   "image": () => import("./events/image.generated"),
-  "kkk": () => import("./events/kkk.generated"),
   "muttakin": () => import("./events/muttakin.generated"),
   "wow": () => import("./events/wow.generated"),
 };
