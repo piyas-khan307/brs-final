@@ -19,7 +19,7 @@
  * ══════════════════════════════════════════════════════════════════════
  */
 
-import { getAccessToken } from "./client";
+import { ensureFreshToken, refreshSession } from "./client";
 
 export const INGEST_URL = process.env.NEXT_PUBLIC_INGEST_URL ?? "http://localhost:8790";
 
@@ -47,11 +47,21 @@ export type UploadOptions = {
   credit?: string;
 };
 
-/** Returns the new asset's id. Throws with a readable message. */
+/**
+ * ── WHY THIS ASKS FOR THE TOKEN INSTEAD OF READING IT ──
+ * It used to read whatever `getAccessToken()` had lying about. That token
+ * is good for fifteen minutes; writing up an event takes an hour. So the
+ * upload that fails is reliably the one at the end of a long afternoon of
+ * writing — the picture goes in, the panel says the session has expired,
+ * and signing in again used to cost the afternoon.
+ *
+ * `ensureFreshToken()` re-mints it if it is close to the wire. The retry
+ * below covers the rest: a token can be refused for reasons a clock
+ * cannot see (the server restarted, an administrator ended the session),
+ * and one forced re-mint distinguishes that from a session that is
+ * genuinely over.
+ */
 export async function uploadAsset(file: File, opts: UploadOptions = {}): Promise<string> {
-  const token = getAccessToken();
-  if (!token) throw new Error("Your session has expired. Please sign in again.");
-
   const form = new FormData();
   form.set("file", file);
   form.set("alt", opts.alt?.trim() || DEFAULT_ALT);
@@ -59,11 +69,22 @@ export async function uploadAsset(file: File, opts: UploadOptions = {}): Promise
   if (opts.credit?.trim()) form.set("credit", opts.credit.trim());
   form.set("published", "true");
 
-  const res = await fetch(`${INGEST_URL}/ingest`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: form,
-  });
+  const send = async (token: string) =>
+    fetch(`${INGEST_URL}/ingest`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
+    });
+
+  let token = await ensureFreshToken();
+  if (!token) throw new Error("Your session has expired. Please sign in again.");
+
+  let res = await send(token);
+  if (res.status === 401) {
+    token = await refreshSession();
+    if (!token) throw new Error("Your session has expired. Please sign in again.");
+    res = await send(token);
+  }
 
   const body = (await res.json().catch(() => ({}))) as { assetId?: string; error?: string };
   if (!res.ok || !body.assetId) throw new Error(body.error ?? `Upload failed (${res.status})`);

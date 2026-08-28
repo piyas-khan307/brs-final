@@ -2252,6 +2252,18 @@
     visibility: visible;
   }
 
+  /* ── THE SIGN-IN PANEL THAT DOES NOT NAVIGATE ──
+     Shown over whatever the admin panel already had on screen when a
+     session ran out, so an hour of writing is not torn down by a route
+     change. It has to sit above the admin header (z 40) AND above the
+     picture and category dialogs (z 50), because a session can just as
+     easily end with one of those open. */
+  .adm-reauth {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+  }
+
   /* The label that follows the pointer. `fixed`, so no ancestor can
      clip it or offset it, and `pointer-events: none`, so it never
      becomes the thing under the pointer that posAtCoords is asked
