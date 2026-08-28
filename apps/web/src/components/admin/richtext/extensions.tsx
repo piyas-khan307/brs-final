@@ -90,7 +90,6 @@ import {
   gridX,
   gridY,
   type GridBox,
-  cardAlign,
   cardVariant,
   columnCount,
   embedSrc,
@@ -114,8 +113,6 @@ import {
   RICH_GRID_DENSITIES,
   RICH_GRID_DENSITY_DEFAULT,
   RICH_GRID_ROWS_MAX,
-  RICH_CARD_ALIGNS,
-  RICH_CARD_ALIGN_DEFAULT,
   RICH_CARD_VARIANTS,
   RICH_CARD_VARIANT_DEFAULT,
   RICH_COLUMN_COUNTS,
@@ -2073,7 +2070,6 @@ export const BrsButton = Node.create({
  */
 function CardView({ node, updateAttributes, editor, getPos }: NodeViewProps) {
   const variant = cardVariant(node.attrs.variant);
-  const align = cardAlign(node.attrs.align);
   const icon = typeof node.attrs.icon === "string" ? node.attrs.icon : "";
   const svg = richIconSvg(icon);
   const href = typeof node.attrs.href === "string" ? node.attrs.href : "";
@@ -2113,7 +2109,7 @@ function CardView({ node, updateAttributes, editor, getPos }: NodeViewProps) {
   };
 
   return (
-    <NodeViewWrapper className={`rt-card rt-card-${variant} rt-card-${align} rt-card-shell`}>
+    <NodeViewWrapper className={`rt-card rt-card-${variant} rt-card-shell`}>
       {svg ? (
         <span
           className="rt-card-icon"
@@ -2145,17 +2141,6 @@ function CardView({ node, updateAttributes, editor, getPos }: NodeViewProps) {
               </option>
             ))}
           </Picker>
-
-          {RICH_CARD_ALIGNS.map((a) => (
-            <Chip
-              key={a}
-              title={`Align ${a}`}
-              active={align === a}
-              onPress={() => updateAttributes({ align: a })}
-            >
-              {a}
-            </Chip>
-          ))}
 
           <input
             type="text"
@@ -2202,11 +2187,6 @@ export const BrsCard = Node.create({
         default: RICH_CARD_VARIANT_DEFAULT,
         parseHTML: (el: HTMLElement) => cardVariant(el.getAttribute("data-variant")),
         renderHTML: (a: Record<string, unknown>) => ({ "data-variant": cardVariant(a.variant) }),
-      },
-      align: {
-        default: RICH_CARD_ALIGN_DEFAULT,
-        parseHTML: (el: HTMLElement) => cardAlign(el.getAttribute("data-align")),
-        renderHTML: (a: Record<string, unknown>) => ({ "data-align": cardAlign(a.align) }),
       },
       href: {
         default: null,
