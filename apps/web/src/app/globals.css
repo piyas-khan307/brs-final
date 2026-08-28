@@ -2639,14 +2639,11 @@
     padding-inline: 0;
   }
 
-  .rt-card-left {
-    text-align: left;
-  }
-  .rt-card-center {
+  /* CENTRED, FULL STOP. See the note on RICH_CARD_VARIANTS in
+     palette.ts: the three alignment chips were the first thing a writer
+     asked to have removed, and the answer had been "centre" every time. */
+  .rt-card {
     text-align: center;
-  }
-  .rt-card-right {
-    text-align: right;
   }
 
   /* The icon rides `text-align` rather than a per-alignment margin,

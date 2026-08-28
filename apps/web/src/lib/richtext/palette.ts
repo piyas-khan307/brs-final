@@ -892,18 +892,24 @@ export const RICH_CARD_VARIANTS: Option[] = [
   { id: "plain", label: "No box" },
 ];
 
-export const RICH_CARD_ALIGNS = ["left", "center", "right"] as const;
-
+/* A CARD IS CENTRED, AND THAT IS NOT A SETTING.
+ *
+ * There were three chips here — left, centre, right — and they were the
+ * first thing a writer asked to have taken away. They were three of the
+ * six controls on a card's strip, and the answer was "centre" every
+ * time: a segment card is an icon over a name over a line of small
+ * capitals, and that shape only reads centred. Left or right turned it
+ * into a paragraph wearing a border.
+ *
+ * The alignment lives in one rule in globals.css now. Nothing stored it
+ * — no write-up in content/ contains a card at all, checked before
+ * removing — so there was no document to keep working. */
 export const RICH_CARD_VARIANT_DEFAULT = "bordered";
-export const RICH_CARD_ALIGN_DEFAULT = "center";
 
 const CARD_VARIANT_IDS = ids(RICH_CARD_VARIANTS);
-const CARD_ALIGN_VALUES = new Set<string>(RICH_CARD_ALIGNS);
 
 export const cardVariant = (v: unknown): string =>
   typeof v === "string" && CARD_VARIANT_IDS.has(v) ? v : RICH_CARD_VARIANT_DEFAULT;
-export const cardAlign = (v: unknown): string =>
-  typeof v === "string" && CARD_ALIGN_VALUES.has(v) ? v : RICH_CARD_ALIGN_DEFAULT;
 
 /* ── Icons ────────────────────────────────────────────────────────────
  *

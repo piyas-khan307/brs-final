@@ -50,7 +50,6 @@ import {
   gridY,
   gridH,
   buttonAttrs,
-  cardAlign,
   cardVariant,
   columnCount,
   embedSrc,
@@ -778,11 +777,10 @@ function nodeHtml(n: PMNode, o: Ctx): string {
        description even when the whole body is cards. */
     case "brsCard": {
       const variant = cardVariant(attr(n, "variant"));
-      const align = cardAlign(attr(n, "align"));
       const icon = richIconSvg(attr(n, "icon"));
       const inner =
         (icon ? `<span class="rt-card-icon">${icon}</span>` : "") + children(n, o);
-      const cls = `rt-card rt-card-${variant} rt-card-${align}`;
+      const cls = `rt-card rt-card-${variant}`;
 
       const href = safeHref(attr(n, "href"));
       if (href && !hasInteractive(n)) {
