@@ -2542,6 +2542,11 @@ export const BrsSummary = Node.create({
  */
 function DetailsView({ node, updateAttributes, deleteNode, editor }: NodeViewProps) {
   const open = node.attrs.open === true;
+  /* The first child is the summary — the schema says so ("brsSummary
+     block+"), so this cannot be anything else. An unnamed section still
+     publishes, and publishes as the word "Details", so the bar says so
+     while there is time to fix it. */
+  const named = (node.firstChild?.textContent ?? "").trim().length > 0;
 
   return (
     <NodeViewWrapper className="rt-details rt-details-shell">
@@ -2552,8 +2557,12 @@ function DetailsView({ node, updateAttributes, deleteNode, editor }: NodeViewPro
           onMouseDown={(e) => e.stopPropagation()}
         >
           <span className="rt-details-kind">Collapsible section</span>
-          <span className="rt-details-state">
-            {open ? "Open when the page loads" : "Closed until a reader opens it"}
+          <span className={named ? "rt-details-state" : "rt-details-warn"}>
+            {named
+              ? open
+                ? "Open when the page loads"
+                : "Closed until a reader opens it"
+              : "Give it a name on the line below — a reader clicks that"}
           </span>
           <span className="rt-details-acts">
             <Chip
@@ -4217,10 +4226,53 @@ export const BrsCount = Node.create({
  * it, which is how you get "-412 days" on a society's homepage. Past
  * the instant, the script writes the finished line instead.
  */
+/** Days, hours, minutes and seconds in whatever is left, zero-padded —
+ *  the same arithmetic the page's own script does, so the editor and the
+ *  published block cannot disagree about the same instant. */
+function remaining(ms: number): { n: string; u: string }[] {
+  const units: [string, number][] = [
+    ["Days", 86_400_000],
+    ["Hours", 3_600_000],
+    ["Minutes", 60_000],
+    ["Seconds", 1000],
+  ];
+  let left = ms;
+  return units.map(([u, size]) => {
+    const v = Math.floor(left / size);
+    left -= v * size;
+    return { n: (v < 10 ? "0" : "") + v, u };
+  });
+}
+
 function CountdownView({ node, updateAttributes, deleteNode, selected, editor }: NodeViewProps) {
   const to = countdownAt(node.attrs.to);
   const label = countText(node.attrs.label);
   const editable = editor.isEditable;
+
+  /* ── THE EDITOR USED TO SHOW FOUR ZEROES, ALWAYS ──
+     Whatever date you chose, the block read 00 Days 00 Hours 00 Minutes
+     00 Seconds — the same as an unset one. So there was no way to tell
+     from the editor whether the date had taken, and no way at all to
+     notice you had picked one that has already gone by. That is the
+     whole of "it shows 00 though I selected a specific time, and nothing
+     shows in preview": a date in the past publishes as "This has now
+     started.", which looks like the block failing rather than like the
+     date being wrong.
+
+     A countdown is a clock. It now shows the real time left, ticking,
+     and says so plainly when the moment has passed. This is not the
+     "editor never animates" rule the counter follows — that rule is
+     about a number CLIMBING for decoration. A digit changing once a
+     second is the block's entire content. */
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!to) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [to]);
+
+  const left = to ? new Date(to).getTime() - now : 0;
+  const gone = to !== null && left <= 0;
 
   /* `datetime-local` wants "YYYY-MM-DDTHH:mm" in LOCAL time, and the
      document stores UTC — so the box is filled from the local reading of
@@ -4250,17 +4302,22 @@ function CountdownView({ node, updateAttributes, deleteNode, selected, editor }:
       data-drag-handle
     >
       <div className="rt-countdown">
-        {to ? (
-          (["Days", "Hours", "Minutes", "Seconds"] as const).map((unit) => (
-            <span key={unit} className="rt-countdown-cell">
-              <span className="rt-countdown-n">00</span>
-              <span className="rt-countdown-u">{unit}</span>
-            </span>
-          ))
-        ) : (
+        {!to ? (
           <span className="rt-countdown-date">
             No date set — this will not publish until one is chosen.
           </span>
+        ) : gone ? (
+          <span className="rt-countdown-past">
+            That date has already gone by, so a reader will see “This has now started.”
+            rather than a clock. Pick a date in the future.
+          </span>
+        ) : (
+          remaining(left).map((cell) => (
+            <span key={cell.u} className="rt-countdown-cell">
+              <span className="rt-countdown-n">{cell.n}</span>
+              <span className="rt-countdown-u">{cell.u}</span>
+            </span>
+          ))
         )}
       </div>
       {label ? <p className="rt-count-label">{label}</p> : null}
@@ -4374,8 +4431,28 @@ export const RICH_EXTENSIONS = [
     alignments: [...RICH_ALIGNS],
   }),
   Placeholder.configure({
-    // An empty box that says nothing looks broken rather than empty.
-    placeholder: "Write about what happened…",
+    /* An empty box that says nothing looks broken rather than empty.
+       A collapsible section gets its OWN prompt, because the empty line
+       at the top of one is not "somewhere to write" — it is the name of
+       the section, and it is the button a reader presses. Left blank it
+       published as the word "Details", which is the browser's fallback
+       and not a title anybody chose. */
+    placeholder: ({ node }: { node: PMNodeType }) =>
+      node.type.name === "brsSummary"
+        ? "Name this section — “Rules”, “Prizes”, “Frequently asked”…"
+        : "Write about what happened…",
+    /* Not only the node the caret is in: a section's name has to prompt
+       for itself while the writer is somewhere else entirely, or they
+       will never learn it wants one. And not only the top level, which
+       is all this extension walks by default — a summary lives INSIDE
+       the section, so without `includeChildren` it was never reached
+       and the prompt never appeared.
+
+       The CSS paints exactly two of these — the first paragraph of an
+       empty document, and an unnamed section — so nothing else gains
+       ghost text. */
+    showOnlyCurrent: false,
+    includeChildren: true,
   }),
   KeepPendingMarks,
   BrsLead,

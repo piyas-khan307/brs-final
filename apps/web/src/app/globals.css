@@ -3172,6 +3172,20 @@
     background-color: var(--color-bg-raised);
     margin-block: var(--spacing-6);
   }
+  /* A COUNTDOWN POINTED AT THE PAST, SAID IN THE EDITOR. The page can
+     only report the fact — "This has now started." — by which point it
+     reads as the block being broken. Here there is still time to fix
+     the date, so it says which of the two it is. */
+  .adm-richtext-body .rt-countdown-past {
+    max-width: 34rem;
+    padding: var(--spacing-3) var(--spacing-4);
+    border-left: 2px solid var(--color-accent);
+    background-color: var(--color-bg-inset);
+    font-size: var(--text-body-s);
+    color: var(--color-text-secondary);
+    text-align: left;
+  }
+
   .adm-richtext-body .rt-details-bar {
     display: flex;
     flex-wrap: wrap;
@@ -3191,6 +3205,11 @@
   .adm-richtext-body .rt-details-state {
     font-size: var(--text-micro);
     color: var(--color-text-tertiary);
+  }
+  /* Same slot, said louder, while the section has no name. */
+  .adm-richtext-body .rt-details-warn {
+    font-size: var(--text-micro);
+    color: var(--color-accent);
   }
   /* Pushed to the far end so the two chips are always in the same place
      however long the sentence beside them runs. */
@@ -4319,12 +4338,22 @@
      class comes from Tiptap's Placeholder extension; the old rule used
      :empty, which a contenteditable never actually is — it holds a <p>
      with a <br> in it. */
-  .adm-richtext-body p.is-editor-empty:first-child::before {
+  .adm-richtext-body p.is-editor-empty:first-child::before,
+  .adm-richtext-body summary.rt-summary.is-empty::before {
     content: attr(data-placeholder);
     float: left;
     height: 0;
     pointer-events: none;
     color: var(--color-text-tertiary);
+  }
+  /* THE NAME OF A COLLAPSIBLE SECTION, WHILE IT HAS NONE. Left blank it
+     published as "Details" — the fallback in render.ts, and not a title
+     anybody chose. The prompt sits on the line that becomes the button,
+     which is where the answer goes. Weight and colour of a real title,
+     so the empty line reads as a field rather than as a gap. */
+  .adm-richtext-body summary.rt-summary.is-empty::before {
+    color: var(--color-text-tertiary);
+    font-variation-settings: "wght" 400;
   }
   /* A video is one object: clicking it selects the whole thing, and the
      outline says so.
