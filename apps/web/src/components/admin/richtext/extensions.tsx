@@ -34,7 +34,14 @@
 
 import TextAlign from "@tiptap/extension-text-align";
 import { Placeholder } from "@tiptap/extensions";
-import { NodeSelection, Plugin, PluginKey, Selection, type EditorState } from "@tiptap/pm/state";
+import {
+  NodeSelection,
+  Plugin,
+  PluginKey,
+  Selection,
+  TextSelection,
+  type EditorState,
+} from "@tiptap/pm/state";
 import type { Node as PMNodeType, NodeType } from "@tiptap/pm/model";
 import type { EditorView } from "@tiptap/pm/view";
 import {
@@ -2509,32 +2516,61 @@ export const BrsSummary = Node.create({
   },
 });
 
+/**
+ * ── WHY THIS ONE HAS A HEADER BAR AND THE OTHERS DO NOT ──
+ * Reported as "the collapsible section is not working clearly, and its
+ * UI is not good", and both halves were fair.
+ *
+ * It drew as two hairlines and nothing else, so on the page it looked
+ * exactly like a heading followed by a paragraph: there was no way to
+ * see where the section began, what was inside it, or that it collapsed
+ * for a reader at all. Its two controls hung ABOVE the block in the
+ * floating strip every block uses, which put them on top of the
+ * paragraph before it — they read as belonging to that paragraph, and
+ * they were only there while the pointer was.
+ *
+ * A block that is invisible cannot afford invisible controls. So this
+ * one carries a bar of its own, always on, INSIDE its outline: what the
+ * block is, what a reader will see when the page loads, and the two
+ * things you can do to it. The body sits indented under the title so
+ * "inside the section" and "after the section" are different places on
+ * the screen rather than a fact you have to remember.
+ *
+ * The block stays EXPANDED here whatever `open` says. A closed accordion
+ * in a writing surface is a paragraph you cannot fix; `open` is what the
+ * READER gets, and the bar now says so in words.
+ */
 function DetailsView({ node, updateAttributes, deleteNode, editor }: NodeViewProps) {
   const open = node.attrs.open === true;
 
   return (
     <NodeViewWrapper className="rt-details rt-details-shell">
-      {/* ALWAYS EXPANDED IN THE EDITOR, whatever `open` says.
-          A closed accordion in a writing surface is content that cannot
-          be edited without first being opened, and a writer who cannot
-          see a paragraph cannot fix it. `open` is what the READER gets;
-          the chip below sets it. */}
-      <NodeViewContent className="rt-details-inner" />
-
       {editor.isEditable ? (
-        <Tools>
-          <Chip
-            title="Whether it starts open for a reader"
-            active={open}
-            onPress={() => updateAttributes({ open: !open })}
-          >
-            {open ? "Starts open" : "Starts closed"}
-          </Chip>
-          <Chip title="Remove this section" onPress={deleteNode}>
-            Remove
-          </Chip>
-        </Tools>
+        <div
+          className="rt-details-bar"
+          contentEditable={false}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <span className="rt-details-kind">Collapsible section</span>
+          <span className="rt-details-state">
+            {open ? "Open when the page loads" : "Closed until a reader opens it"}
+          </span>
+          <span className="rt-details-acts">
+            <Chip
+              title="Whether it starts open for a reader"
+              active={open}
+              onPress={() => updateAttributes({ open: !open })}
+            >
+              {open ? "Starts open" : "Starts closed"}
+            </Chip>
+            <Chip title="Remove this section" onPress={deleteNode}>
+              Remove
+            </Chip>
+          </span>
+        </div>
       ) : null}
+
+      <NodeViewContent className="rt-details-inner" />
     </NodeViewWrapper>
   );
 }
@@ -3934,6 +3970,66 @@ export const BrsMotion = Extension.create({
   },
 });
 
+/* ══ BrsKeepBlocks ════════════════════════════════════════════════════
+ *
+ * TYPING NEXT TO A BLOCK MUST NOT DELETE THE BLOCK.
+ *
+ * Click a counter and it becomes the selection — that is how its
+ * settings appear. ProseMirror's default for a selected node is then the
+ * same as for selected text: the next character typed REPLACES it. So
+ * clicking a counter to change its number and starting to type destroyed
+ * the counter, its label, its prefix and its suffix, silently and in one
+ * keystroke. Reported as "when I click the box of counting, the writings
+ * get vanished", and it does exactly that.
+ *
+ * Replacing a word you selected is what you asked for. Replacing a whole
+ * configured block because you clicked it and then typed is not: nobody
+ * selects a counter in order to overwrite it, and there is no way to
+ * discover that this is what will happen until it has happened.
+ *
+ * So a printable character now starts a NEW PARAGRAPH after the block and
+ * puts the caret in it. That is what the keystroke was for in every case
+ * anyone has: carrying on writing underneath the thing just placed.
+ *
+ * Deleting still deletes. Backspace and Delete are untouched, because
+ * they say what they mean — and Remove is still on every block's own
+ * strip for people who did not come here to press a key at all.
+ */
+const BrsKeepBlocks = Extension.create({
+  name: "brsKeepBlocks",
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey("brsKeepBlocks"),
+        props: {
+          handleTextInput(view, _from, _to, text) {
+            const { state } = view;
+            const sel = state.selection;
+            if (!(sel instanceof NodeSelection)) return false;
+
+            /* Only whole blocks that cannot be typed into. An inline atom
+               sits in a line of prose and replacing it is the normal
+               thing; a textblock is not at risk here at all. */
+            const node = sel.node;
+            if (!node.isBlock || !node.isAtom) return false;
+
+            const paragraph = state.schema.nodes.paragraph;
+            if (!paragraph) return false;
+
+            const at = sel.from + node.nodeSize;
+            const tr = state.tr.insert(at, paragraph.create(null, state.schema.text(text)));
+            // +1 to step inside the paragraph, then past the character.
+            tr.setSelection(TextSelection.create(tr.doc, at + 1 + text.length));
+            view.dispatch(tr.scrollIntoView());
+            return true;
+          },
+        },
+      }),
+    ];
+  },
+});
+
 /* ══ BrsCount ═════════════════════════════════════════════════════════
  *
  * A HEADLINE FIGURE THAT ARRIVES FROM ZERO.
@@ -3952,6 +4048,13 @@ export const BrsMotion = Extension.create({
  */
 function CountView({ node, updateAttributes, deleteNode, selected, editor }: NodeViewProps) {
   const to = countTo(node.attrs.to);
+  /* WHAT IS IN THE BOX WHILE IT IS BEING TYPED IN, which is not always a
+     number. `countTo` turns "" into 0, so a controlled input reading
+     straight from the attribute could never be EMPTIED: clear it to type
+     250 and a 0 appeared under the caret, and you got 0250 unless you
+     knew to select the whole field first. The draft holds the raw text
+     until focus leaves; the document still only ever stores a number. */
+  const [draft, setDraft] = useState<string | null>(null);
   const prefix = countText(node.attrs.prefix, 8);
   const suffix = countText(node.attrs.suffix, 8);
   const label = countText(node.attrs.label);
@@ -3986,8 +4089,12 @@ function CountView({ node, updateAttributes, deleteNode, selected, editor }: Nod
             <input
               type="number"
               min={0}
-              value={to}
-              onChange={(e) => updateAttributes({ to: countTo(e.target.value) })}
+              value={draft ?? String(to)}
+              onChange={(e) => {
+                setDraft(e.target.value);
+                updateAttributes({ to: countTo(e.target.value) });
+              }}
+              onBlur={() => setDraft(null)}
               className="adm-input ml-2 w-28 py-1 text-body-s"
             />
           </label>
@@ -4301,6 +4408,9 @@ export const RICH_EXTENSIONS = [
   BrsCountdown,
   BrsDragHandle,
   BrsTab,
+  /* Guards every block atom declared above from being wiped by the next
+     character typed after it was clicked. */
+  BrsKeepBlocks,
   /* LAST, and the only one that is not a node or a mark: it adds the
      entrance, the stagger and the hover to blocks declared above it.
      Global attributes are collected after every extension is read, so

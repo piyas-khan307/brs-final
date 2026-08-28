@@ -3134,7 +3134,7 @@
   .adm-richtext-body .rt-spacer-shell {
     position: relative;
   }
-  .adm-richtext-body :is(.rt-band-shell, .rt-callout-shell, .rt-details-shell) > .rt-tools {
+  .adm-richtext-body :is(.rt-band-shell, .rt-callout-shell) > .rt-tools {
     position: absolute;
     right: 0;
     bottom: calc(100% + var(--spacing-1));
@@ -3143,21 +3143,91 @@
   .adm-richtext-body .rt-band-shell:hover > .rt-tools,
   .adm-richtext-body .rt-band-shell:focus-within > .rt-tools,
   .adm-richtext-body .rt-callout-shell:hover > .rt-tools,
-  .adm-richtext-body .rt-callout-shell:focus-within > .rt-tools,
-  .adm-richtext-body .rt-details-shell:hover > .rt-tools,
-  .adm-richtext-body .rt-details-shell:focus-within > .rt-tools {
+  .adm-richtext-body .rt-callout-shell:focus-within > .rt-tools {
     opacity: 1;
     visibility: visible;
   }
 
-  /* AN ACCORDION IS ALWAYS OPEN IN THE EDITOR. It is a plain block
-     here, not a <details> — a writer cannot fix a paragraph they cannot
-     see, and `open` is what the READER gets. */
-  .adm-richtext-body .rt-details-inner > .rt-summary {
-    cursor: text;
+  /* ══ A COLLAPSIBLE SECTION, WHILE IT IS BEING WRITTEN ══════════════
+     On the page it is two hairlines, which is right there and wrong
+     here: in the editor it made a section indistinguishable from a
+     heading followed by a paragraph. You could not see where it began,
+     what was inside it, or that it collapsed for a reader at all — and
+     its two controls hung in the floating strip ABOVE the block, on top
+     of the paragraph before it, visible only while hovered.
+
+     So here it is drawn as what it is: an outlined box with a bar
+     naming it, the reader's starting state in words, and its controls
+     always on. The body is indented under the title, so "inside the
+     section" and "after the section" are two different places on the
+     screen. None of this reaches the page — every rule is under
+     `.adm-richtext-body`, and Preview renders the published markup.
+
+     AND IT IS ALWAYS OPEN IN THE EDITOR. A plain block, not a
+     <details>: a writer cannot fix a paragraph they cannot see. ── */
+  .adm-richtext-body .rt-details-shell {
+    border: 1px solid var(--color-line-strong);
+    border-top: 1px solid var(--color-line-strong);
+    border-bottom: 1px solid var(--color-line-strong);
+    background-color: var(--color-bg-raised);
+    margin-block: var(--spacing-6);
   }
-  .adm-richtext-body .rt-details-inner > * + * {
-    margin-top: var(--spacing-4);
+  .adm-richtext-body .rt-details-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-3);
+    border-bottom: 1px solid var(--color-line-hairline);
+    background-color: var(--color-bg-inset);
+  }
+  .adm-richtext-body .rt-details-kind {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+  }
+  .adm-richtext-body .rt-details-state {
+    font-size: var(--text-micro);
+    color: var(--color-text-tertiary);
+  }
+  /* Pushed to the far end so the two chips are always in the same place
+     however long the sentence beside them runs. */
+  .adm-richtext-body .rt-details-acts {
+    display: flex;
+    gap: var(--spacing-2);
+    margin-left: auto;
+  }
+  .adm-richtext-body .rt-details-inner {
+    padding: var(--spacing-3) var(--spacing-4) var(--spacing-4);
+  }
+  /* THE EXTRA `> *` IS NOT A TYPO. React's node view puts its own
+     wrapper <div> between `.rt-details-inner` and the summary and
+     paragraphs it holds, so a child selector on the inner element
+     reaches that wrapper and stops. The old spacing rule was written
+     without it and had therefore never matched anything. Both forms are
+     listed so the rule survives if that wrapper ever goes away. */
+  .adm-richtext-body .rt-details-inner .rt-summary {
+    cursor: text;
+    padding-block: 0;
+  }
+  /* The chevron points DOWN in the editor because the section is open in
+     the editor — always, whatever a reader will get. What a reader gets
+     is written out in words in the bar above, where it cannot be
+     misread as the state of the thing on screen. */
+  .adm-richtext-body .rt-details-inner .rt-summary::before {
+    transform: rotate(45deg);
+  }
+  /* The body, set in from the title it belongs to. The rule down the
+     left is the boundary the block did not have: everything beside it
+     is inside the section. */
+  .adm-richtext-body .rt-details-inner > * + *,
+  .adm-richtext-body .rt-details-inner > [data-node-view-content-react] > * + * {
+    margin-top: var(--spacing-3);
+    margin-left: var(--spacing-4);
+    padding-left: var(--spacing-4);
+    border-left: 2px solid var(--color-line-hairline);
   }
 
   /* Empty space has to be visible in order to be selected and resized.
@@ -4379,6 +4449,19 @@
      be wider than it is. A picture set to Small is a quarter of the
      column; the toolbar inside it would be one button per line. */
   .adm-richtext-body .rt-figure {
+    position: relative;
+  }
+  /* ── AND SO DOES EVERY OTHER NODE THAT CARRIES ONE ──
+     `.rt-toolbar` is absolutely positioned with `top: 100%`, which means
+     "below my positioned ancestor" — and a counter's wrapper was
+     `static`, so the nearest one was the WHOLE EDITOR. Measured: a
+     counter at y=818 with its settings panel at y=1242, four hundred
+     pixels away, past the bottom edge of the editor and over the form
+     underneath. It read as a panel belonging to nothing.
+
+     One line, because the rule below is already right — it just had
+     nothing to hang from. */
+  .adm-richtext-body .rt-node {
     position: relative;
   }
   .adm-richtext-body .rt-toolbar {
