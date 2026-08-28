@@ -1403,11 +1403,30 @@ export const countTo = (v: unknown): number => {
   return Math.min(RICH_COUNT_MAX, Math.max(0, Math.round(n)));
 };
 
-/** A short label beside the number, or an empty string. Length-capped
- *  here rather than in the node view so the renderer cannot be handed a
- *  paragraph pretending to be a caption. */
-export const countText = (v: unknown, max = 48): string =>
-  typeof v === "string" ? v.trim().slice(0, max) : "";
+/**
+ * A short label beside the number, or an empty string. Length-capped
+ * here rather than in the node view so the renderer cannot be handed a
+ * paragraph pretending to be a caption.
+ *
+ * ── IT DOES NOT TRIM, AND THAT IS THE WHOLE POINT ──
+ * It used to, and the field it guards is a CONTROLLED input that runs
+ * this on every keystroke. So typing "Until registration closes" went:
+ * "Until", then space → "Until " → trimmed back to "Until" → the space
+ * deleted before the next letter arrived → "Untilregistrationcloses".
+ * The label could not contain a space at all, in the counter or the
+ * countdown.
+ *
+ * Line breaks and control characters are still removed — a caption is
+ * one line — and the length cap still holds. A value that is nothing
+ * but whitespace is empty, so a stray space cannot produce an empty
+ * element on the page; a space BETWEEN words is a space between words.
+ */
+export const countText = (v: unknown, max = 48): string => {
+  if (typeof v !== "string") return "";
+  // eslint-disable-next-line no-control-regex
+  const oneLine = v.replace(/[\u0000-\u001f\u007f]+/g, " ").slice(0, max);
+  return oneLine.trim() ? oneLine : "";
+};
 
 /**
  * THE INSTANT A COUNTDOWN IS COUNTING TO.
