@@ -446,24 +446,43 @@ function node(n: PMNode, o: RenderOptions): string {
       const titleAttr = attr(n, "title");
       const title =
         typeof titleAttr === "string" && titleAttr.trim() ? titleAttr.trim() : doc.title;
-      // The size an editor dragged the box to in the admin panel,
-      // carried through so the published page matches. Width is a
-      // percent of the column (fluid, like a picture's); height is a
-      // fixed pixel count (a PDF page has a real printed size, unlike a
-      // photograph whose height a percent-width plus its own aspect
-      // ratio already determines).
       const heightAttr = attr(n, "height");
       const height =
         typeof heightAttr === "number" && heightAttr > 0 ? Math.round(heightAttr) : 512;
-      const widthAttr = attr(n, "width");
-      const width =
-        typeof widthAttr === "number" && widthAttr > 0 ? Math.round(widthAttr) : 100;
+      // Two independent edges, not one width — see the long comment on
+      // PdfView's startResize for why. Falls back through the same
+      // legacy data-width reading BrsPdf's parseHTML does, so a PDF
+      // published from before this change still renders at its old
+      // size instead of collapsing.
+      const leftAttr = attr(n, "leftEdge");
+      const rightAttr = attr(n, "rightEdge");
+      const legacyWidthAttr = attr(n, "width");
+      const leftEdge = typeof leftAttr === "number" ? leftAttr : 0;
+      const rightEdge =
+        typeof rightAttr === "number"
+          ? rightAttr
+          : typeof legacyWidthAttr === "number"
+            ? Math.min(100, legacyWidthAttr)
+            : 100;
+      const width = Math.max(0, rightEdge - leftEdge);
       const alignAttr = attr(n, "align");
       const align = alignAttr === "left" || alignAttr === "center" || alignAttr === "right"
         ? alignAttr
         : "left";
+      // Margin + width, computed the same way PdfView's boxStyle is —
+      // matching, not merely similar, is the whole point: what an
+      // editor sees while dragging the box is what publishes. The
+      // gutter margin on the non-positioning side keeps wrapped text
+      // from running flush against the box's edge; centered gets none,
+      // since nothing wraps beside a centered box to begin with.
+      const positionStyle =
+        align === "right"
+          ? `margin-right:${100 - rightEdge}%;margin-left:var(--spacing-6);width:${width}%`
+          : align === "left"
+            ? `margin-left:${leftEdge}%;margin-right:var(--spacing-6);width:${width}%`
+            : `margin-left:${leftEdge}%;width:${width}%`;
       return (
-        `<figure class="rt-pdf-embed rt-pdf-embed-${align}" style="width:${width}%;height:${height}px">` +
+        `<figure class="rt-pdf-embed rt-pdf-embed-${align}" style="${positionStyle};height:${height}px">` +
         `<iframe class="rt-pdf-embed-frame" src="${escape(doc.src)}" title="${escape(title)}" loading="lazy"></iframe>` +
         `<figcaption class="rt-pdf-embed-caption">` +
         `<span class="rt-pdf-title">${escape(title)}</span>` +

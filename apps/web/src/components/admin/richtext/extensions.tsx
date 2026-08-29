@@ -1009,10 +1009,12 @@ function PdfView({
   const documentId = node.attrs.documentId as string;
   const titleAttr = (node.attrs.title as string | null) ?? "";
   const height = (node.attrs.height as number | null) ?? DEFAULT_PDF_HEIGHT;
-  const width = (node.attrs.width as number | null) ?? DEFAULT_PDF_WIDTH;
+  const leftEdge = (node.attrs.leftEdge as number | null) ?? DEFAULT_PDF_LEFT_EDGE;
+  const rightEdge = (node.attrs.rightEdge as number | null) ?? DEFAULT_PDF_RIGHT_EDGE;
   const align = (node.attrs.align as PdfAlign | null) ?? DEFAULT_PDF_ALIGN;
+  const width = rightEdge - leftEdge;
   const [doc, setDoc] = useState(() => peekDocument(documentId));
-  const [dragging, setDragging] = useState<"width" | "height" | "scale" | null>(null);
+  const [dragging, setDragging] = useState<"left" | "right" | "height" | "scale" | null>(null);
   const frame = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -1022,27 +1024,28 @@ function PdfView({
   }, [documentId, doc]);
 
   /**
-   * DRAG A CORNER OR AN EDGE TO RESIZE — SAME GRIPS AS A PICTURE'S.
+   * TWO INDEPENDENT EDGES, NOT ONE WIDTH.
    *
-   * BrsImage's corner grip only ever touches `width`, because a
-   * photograph's height is never stored — the browser derives it from
-   * the image's own natural ratio via `height: auto`. A PDF has no
-   * natural ratio; its height is a number we store, same as its width.
-   * So here the three gestures are:
+   * The earlier version stored a single `width` and relied on CSS
+   * float to pin whichever side the float direction implied — which
+   * meant only ONE edge could ever be draggable at a time; the other
+   * was wherever the float put it, full stop. That's a real CSS
+   * constraint, not a bug, but it also isn't what a person resizing a
+   * box actually wants: drag the left edge, the right edge should stay
+   * exactly where it was, and vice versa — independently, regardless
+   * of alignment.
    *
-   *   corner   both width% and height(px) move together, height scaled
-   *            by the ratio the box already had — "bigger", not "wider
-   *            or taller"
-   *   e / w    width only — the box gets wider or narrower, its own
-   *            height untouched
-   *   n / s    height only — the box gets taller or shorter, its own
-   *            width untouched
+   * So the box's horizontal extent is now genuinely two numbers,
+   * `leftEdge` and `rightEdge` (both a % of the column, 0–100), not
+   * one. Dragging "w" moves ONLY leftEdge; dragging "e" moves ONLY
+   * rightEdge. Whichever one you're not dragging is untouched by
+   * definition, because it's a different stored number.
    *
-   * Percent for width (fluid — the measure is the containing column,
-   * same reasoning as BrsImage), pixels for height (a PDF page has a
-   * real, fixed printed size, so "600px of reading room" is a more
-   * stable unit for it than "40% of a column that could be a phone
-   * screen or a monitor").
+   * Height still only grows downward — see the comment on
+   * visibleHandlesForAlign below for why that one's a real CSS limit
+   * that two-edge tracking doesn't change (there's no equivalent
+   * "topEdge" that would mean anything for a box positioned by normal
+   * document flow rather than absolute coordinates).
    */
   const startResize = (e: React.PointerEvent, handle: Handle) => {
     e.preventDefault();
@@ -1056,46 +1059,65 @@ function PdfView({
     const rect = box.getBoundingClientRect();
     const startX = e.clientX;
     const startY = e.clientY;
-    const startWidthPx = rect.width;
     const startHeightPx = rect.height;
-    const aspect = startHeightPx / startWidthPx;
+    const startLeftEdge = leftEdge;
+    const startRightEdge = rightEdge;
+    const aspect = startHeightPx / rect.width;
 
-    const kind: "scale" | "width" | "height" =
-      handle.length === 2 ? "scale" : handle === "n" || handle === "s" ? "height" : "width";
+    const kind: "scale" | "left" | "right" | "height" =
+      handle === "se" ? "scale" : handle === "s" ? "height" : handle.includes("w") ? "left" : "right";
 
     e.currentTarget.setPointerCapture?.(e.pointerId);
-    setDragging(kind);
+    setDragging(kind === "scale" ? "scale" : kind);
 
-    const asPercent = (px: number) =>
-      Math.min(
-        PDF_WIDTH_MAX,
-        Math.max(PDF_WIDTH_MIN, Math.round((px / columnWidth) * 100)),
-      );
     const clampHeight = (px: number) =>
       Math.min(PDF_HEIGHT_MAX, Math.max(PDF_HEIGHT_MIN, Math.round(px)));
+    const toPercent = (px: number) => (px / columnWidth) * 100;
 
     const move = (ev: PointerEvent) => {
       if (kind === "height") {
-        const dy = handle === "s" ? ev.clientY - startY : startY - ev.clientY;
+        // Bottom-anchored only — see visibleHandlesForAlign's comment
+        // for why "north" was removed entirely rather than fixed.
+        const dy = ev.clientY - startY;
         updateAttributes({ height: clampHeight(startHeightPx + dy) });
         return;
       }
 
-      const dx = handle.includes("e") ? ev.clientX - startX : startX - ev.clientX;
-      const nextWidthPx = Math.max(24, startWidthPx + dx);
-      const nextWidthPct = asPercent(nextWidthPx);
+      const dxPct = toPercent(ev.clientX - startX);
 
-      if (kind === "scale") {
-        // Same aspect the box already had, at the new width — a corner
-        // drag makes the whole thing bigger or smaller, not squashed.
-        updateAttributes({
-          width: nextWidthPct,
-          height: clampHeight(nextWidthPx * aspect),
-        });
+      if (kind === "left") {
+        // Only leftEdge moves. rightEdge is a different stored number
+        // and this branch never touches it — that IS the fix.
+        const next = Math.min(
+          Math.max(0, startLeftEdge + dxPct),
+          startRightEdge - PDF_MIN_WIDTH_PCT,
+        );
+        updateAttributes({ leftEdge: Math.round(next) });
         return;
       }
 
-      updateAttributes({ width: nextWidthPct });
+      if (kind === "right") {
+        const next = Math.max(
+          Math.min(100, startRightEdge + dxPct),
+          startLeftEdge + PDF_MIN_WIDTH_PCT,
+        );
+        updateAttributes({ rightEdge: Math.round(next) });
+        return;
+      }
+
+      // "scale" — the one remaining corner (se): right edge and height
+      // move together, aspect preserved, left edge untouched — the
+      // same "bigger, not squashed" idea the old single-width version
+      // had, just anchored on the side that's actually fixed here too.
+      const nextRight = Math.max(
+        Math.min(100, startRightEdge + dxPct),
+        startLeftEdge + PDF_MIN_WIDTH_PCT,
+      );
+      const nextWidthPx = ((nextRight - startLeftEdge) / 100) * columnWidth;
+      updateAttributes({
+        rightEdge: Math.round(nextRight),
+        height: clampHeight(nextWidthPx * aspect),
+      });
     };
     const stop = () => {
       setDragging(null);
@@ -1112,16 +1134,38 @@ function PdfView({
   const src = doc ? documentUrl(doc) : null;
   const editable = editor.isEditable;
 
+  /**
+   * MARGIN + WIDTH, ALWAYS INLINE — no CSS variable, no percentage
+   * class doing the math. `leftEdge`/`rightEdge` are computed here,
+   * once, into the exact numbers CSS needs; globals.css's
+   * .rt-pdf-left/-right/-center classes now only set `float`/`clear`
+   * (which side text wraps on), nothing about size or position — that
+   * ambiguity between "which file sets the actual number" was part of
+   * how the earlier compounding bug happened in the first place.
+   *
+   * The margin on the POSITIONING side (marginLeft for left/center,
+   * marginRight for right) IS the box's stored position — that one has
+   * to be exact. The margin on the OPPOSITE side is a fixed gutter
+   * (var(--spacing-6)), same as the write-up editor's picture float
+   * already uses, so wrapped text doesn't run flush against the box's
+   * edge; centered boxes get no gutter on either side, matching how
+   * they never had one before (nothing wraps beside a centered box to
+   * begin with).
+   */
+  const boxStyle: React.CSSProperties =
+    align === "right"
+      ? { marginRight: `${100 - rightEdge}%`, marginLeft: "var(--spacing-6)", width: `${width}%` }
+      : align === "left"
+        ? { marginLeft: `${leftEdge}%`, marginRight: "var(--spacing-6)", width: `${width}%` }
+        : { marginLeft: `${leftEdge}%`, width: `${width}%` };
+
   return (
-    <NodeViewWrapper
-      className="rt-node relative block"
-      style={{ "--rt-w": `${width}%` } as React.CSSProperties}
-    >
-      <div contentEditable={false} className={`rt-pdf rt-pdf-${align}`}>
+    <NodeViewWrapper className="rt-node relative block">
+      <div contentEditable={false} className={`rt-pdf rt-pdf-${align}`} style={boxStyle}>
         <div
           ref={frame}
           className={`rt-frame rt-pdf-frame-outer${selected ? " rt-node-selected" : ""}`}
-          style={{ width: `${width}%`, height: `${height}px` }}
+          style={{ height: `${height}px` }}
         >
           {src ? (
             <iframe src={src} title={label} className="rt-pdf-frame" />
@@ -1161,21 +1205,20 @@ function PdfView({
             </span>
           ) : null}
 
-          {/* Same eight grips as a picture, and the same rule for when
-              they show: only once selected, so a write-up with three
-              PDFs in it is not eight-times-three grab dots at rest. */}
           {editable && selected ? (
             <>
-              {HANDLES.map((h) => (
+              {visibleHandlesForAlign(align).map((h) => (
                 <span
                   key={h}
                   role="presentation"
                   title={
-                    h === "n" || h === "s"
+                    h === "s"
                       ? "Drag to change the height"
-                      : h === "e" || h === "w"
-                        ? "Drag to change the width"
-                        : "Drag to resize the whole box"
+                      : h === "w"
+                        ? "Drag — only the left edge moves"
+                        : h === "e"
+                          ? "Drag — only the right edge moves"
+                          : "Drag to resize the whole box"
                   }
                   className={`rt-handle rt-h-${h}`}
                   onPointerDown={(e) => startResize(e, h)}
@@ -1183,7 +1226,13 @@ function PdfView({
               ))}
               {dragging ? (
                 <span className="rt-size-badge">
-                  {dragging === "height" ? `${height}px` : `${width}%`}
+                  {dragging === "height"
+                    ? `${height}px`
+                    : dragging === "left"
+                      ? `left ${Math.round(leftEdge)}%`
+                      : dragging === "right"
+                        ? `right ${Math.round(rightEdge)}%`
+                        : `${Math.round(width)}%`}
                 </span>
               ) : null}
             </>
@@ -1217,19 +1266,38 @@ function PdfView({
               onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                updateAttributes({ align: a });
+                if (a === "center") {
+                  // Centering used to be CSS's job (margin-inline: auto),
+                  // which kept re-balancing on its own forever — exactly
+                  // the behaviour that made independent left/right
+                  // dragging impossible while centered. Now it's a
+                  // one-time placement: figure out where centered would
+                  // put this box AT ITS CURRENT WIDTH, store that as
+                  // plain leftEdge/rightEdge, and from then on it's a
+                  // normal, freely-draggable position that happens to
+                  // start centered — the same way clicking "center" in
+                  // PowerPoint doesn't lock an object to the middle
+                  // forever, it just puts it there once.
+                  const half = (100 - width) / 2;
+                  updateAttributes({
+                    align: a,
+                    leftEdge: Math.max(0, Math.round(half)),
+                    rightEdge: Math.min(100, Math.round(half + width)),
+                  });
+                } else {
+                  updateAttributes({ align: a });
+                }
               }}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                updateAttributes({ align: a });
               }}
               aria-pressed={align === a}
               title={
                 a === "left"
-                  ? "Left — text can wrap in the space beside it"
+                  ? "Left — text can wrap on the right"
                   : a === "right"
-                    ? "Right — text can wrap in the space beside it"
+                    ? "Right — text can wrap on the left"
                     : "Centered — always starts its own row"
               }
               className={`border px-2 py-1 text-micro uppercase transition-colors ${
@@ -1261,9 +1329,10 @@ function PdfView({
 /** 32rem at the default 16px root — the height a freshly inserted PDF
  *  gets, until it's dragged. */
 export const DEFAULT_PDF_HEIGHT = 512;
-/** Full width by default — matches how a PDF used to always render,
- *  before it became resizable. */
-export const DEFAULT_PDF_WIDTH = 100;
+/** Full width by default (0 to 100) — matches how a PDF used to always
+ *  render, before it became resizable. */
+export const DEFAULT_PDF_LEFT_EDGE = 0;
+export const DEFAULT_PDF_RIGHT_EDGE = 100;
 
 export type PdfAlign = "left" | "center" | "right";
 /** Left, not center — same reasoning RICH_IMAGE_DEFAULT_ALIGN gives for
@@ -1275,8 +1344,27 @@ export type PdfAlign = "left" | "center" | "right";
  *  is even possible. */
 export const DEFAULT_PDF_ALIGN: PdfAlign = "left";
 
-const PDF_WIDTH_MIN = 25;
-const PDF_WIDTH_MAX = 100;
+/**
+ * WHICH HANDLES CORRESPOND TO AN EDGE THAT CAN ACTUALLY MOVE.
+ *
+ * Now that both edges are independently stored, width is no longer the
+ * limit — "w" and "e" are available for every alignment; dragging one
+ * only ever changes its own edge, the other stays exactly where it
+ * was, regardless of left/center/right.
+ *
+ * Height is the one direction that's still genuinely constrained: the
+ * box has no `top` coordinate, only a position in normal document
+ * flow, so there is no equivalent "topEdge" number that would mean
+ * anything — extra height can only ever appear below the box. That's
+ * why "n" (and the two corners that would combine it with a horizontal
+ * drag, "nw"/"ne") are never offered, for any alignment.
+ */
+function visibleHandlesForAlign(_align: PdfAlign): readonly Handle[] {
+  void _align;
+  return ["w", "e", "s", "sw", "se"];
+}
+
+const PDF_MIN_WIDTH_PCT = 15;
 const PDF_HEIGHT_MIN = 200;
 const PDF_HEIGHT_MAX = 1600;
 
@@ -1313,17 +1401,36 @@ export const BrsPdf = Node.create({
         renderHTML: (a: Record<string, unknown>) =>
           a.height ? { "data-height": String(a.height) } : {},
       },
-      width: {
-        default: DEFAULT_PDF_WIDTH,
+      leftEdge: {
+        default: DEFAULT_PDF_LEFT_EDGE,
+        // Falls back to reading the OLD `data-width` attribute (from
+        // before this became two edges) as leftEdge=0, so a PDF
+        // inserted before this change still renders at a sane size
+        // instead of collapsing — see rightEdge's parseHTML for the
+        // other half of that fallback.
         parseHTML: (el: HTMLElement) => {
-          const raw = el.getAttribute("data-width");
+          const raw = el.getAttribute("data-left-edge");
           const n = raw ? Number(raw) : NaN;
-          return Number.isFinite(n) && n > 0
-            ? Math.min(PDF_WIDTH_MAX, Math.max(PDF_WIDTH_MIN, n))
-            : DEFAULT_PDF_WIDTH;
+          return Number.isFinite(n) && n >= 0 && n <= 100 ? n : DEFAULT_PDF_LEFT_EDGE;
         },
         renderHTML: (a: Record<string, unknown>) =>
-          a.width ? { "data-width": String(a.width) } : {},
+          a.leftEdge != null ? { "data-left-edge": String(a.leftEdge) } : {},
+      },
+      rightEdge: {
+        default: DEFAULT_PDF_RIGHT_EDGE,
+        parseHTML: (el: HTMLElement) => {
+          const raw = el.getAttribute("data-right-edge");
+          const n = raw ? Number(raw) : NaN;
+          if (Number.isFinite(n) && n >= 0 && n <= 100) return n;
+          // Old documents: data-width was leftEdge(0) + width, so it
+          // converts directly to a rightEdge.
+          const legacyWidth = Number(el.getAttribute("data-width"));
+          return Number.isFinite(legacyWidth) && legacyWidth > 0
+            ? Math.min(100, legacyWidth)
+            : DEFAULT_PDF_RIGHT_EDGE;
+        },
+        renderHTML: (a: Record<string, unknown>) =>
+          a.rightEdge != null ? { "data-right-edge": String(a.rightEdge) } : {},
       },
       align: {
         default: DEFAULT_PDF_ALIGN,

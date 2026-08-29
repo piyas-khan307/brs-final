@@ -34,7 +34,12 @@ import { assetUrl, type AssetRow } from "../PhotoPicker";
 import { Button, Empty, Field, Input, Modal, Notice } from "../ui";
 import { primeAssets } from "./asset-cache";
 import { primeDocuments } from "./document-cache";
-import { DEFAULT_PDF_ALIGN, DEFAULT_PDF_HEIGHT, DEFAULT_PDF_WIDTH } from "./extensions";
+import {
+  DEFAULT_PDF_ALIGN,
+  DEFAULT_PDF_HEIGHT,
+  DEFAULT_PDF_LEFT_EDGE,
+  DEFAULT_PDF_RIGHT_EDGE,
+} from "./extensions";
 
 /* ── Links ────────────────────────────────────────────────────────────
  *
@@ -783,7 +788,8 @@ export function PdfDialog({
           documentId,
           title: docTitle || null,
           height: DEFAULT_PDF_HEIGHT,
-          width: DEFAULT_PDF_WIDTH,
+          leftEdge: DEFAULT_PDF_LEFT_EDGE,
+          rightEdge: DEFAULT_PDF_RIGHT_EDGE,
           align: DEFAULT_PDF_ALIGN,
         },
       })

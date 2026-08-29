@@ -1669,17 +1669,26 @@
      React's node-view machinery can attach resize/select chrome to it
      the way it does for a picture.
 
-     `.rt-pdf` itself takes its width from `--rt-w`, the same custom
-     property PdfView sets on the NodeViewWrapper — so the caption row
-     lines up with the frame above it rather than stretching to the
-     full column width while the frame it describes is narrower.
+     `.rt-pdf` no longer takes its size from a CSS variable — margin
+     and width are set as an inline style directly by PdfView (and,
+     for the published page, by render.ts), because the box's
+     horizontal extent is now two independent numbers (leftEdge,
+     rightEdge — see PdfView's startResize for why), and computing that
+     pair in CSS would have meant re-deriving it in two places that
+     could drift. The classes below now only decide `float`/`clear` —
+     which side of the box text is allowed to wrap on — nothing about
+     its size or position.
 
      ALIGNMENT — left/center/right — is the exact same mechanism
      BrsImage already uses (`.rt-figure-left/-center/-right` above),
      for the same reasons: left and right float, so a narrow PDF can
      sit beside a paragraph of text the way a picture does; center
      clears onto its own row, because nothing can wrap around a box
-     that's positioned in the middle of the column. */
+     that's positioned in the middle of the column. Centering itself is
+     no longer CSS's job either (no more `margin-inline: auto`) — see
+     the "Center" button's onMouseDown in PdfView for why: auto-margins
+     re-balance forever, which is exactly what made independent
+     left/right dragging impossible while centered. */
   .rt-pdf {
     margin-block: var(--spacing-6);
     border: 1px solid var(--color-line-hairline);
@@ -1687,49 +1696,37 @@
   }
   .rt-pdf-left {
     float: left;
-    width: var(--rt-w, 100%);
     max-width: 100%;
-    margin-right: var(--spacing-6);
   }
   .rt-pdf-right {
     float: right;
-    width: var(--rt-w, 100%);
     max-width: 100%;
-    margin-left: var(--spacing-6);
   }
   .rt-pdf-center {
     clear: both;
     display: block;
-    width: var(--rt-w, 100%);
     max-width: 100%;
-    margin-inline: auto;
   }
 
   .rt-pdf-embed {
     margin-block: var(--spacing-6);
     border: 1px solid var(--color-line-hairline);
     background: var(--color-bg-raised);
-    /* Width and height both arrive as an inline style from render.ts —
-       the size an editor left the box at. No fallback needed here the
-       way `.rt-pdf`'s var(--rt-w, 100%) has one: the published HTML
-       always carries both, since brsPdf's width/height attrs always
-       have a default. */
+    /* margin and width both arrive as an inline style from render.ts —
+       same reasoning as `.rt-pdf` above. */
   }
   .rt-pdf-embed-left {
     float: left;
     max-width: 100%;
-    margin-right: var(--spacing-6);
   }
   .rt-pdf-embed-right {
     float: right;
     max-width: 100%;
-    margin-left: var(--spacing-6);
   }
   .rt-pdf-embed-center {
     clear: both;
     display: block;
     max-width: 100%;
-    margin-inline: auto;
   }
 
   /* Half a column is not much room to read a PDF in on a phone — same
@@ -1742,7 +1739,7 @@
     .rt-pdf-embed-right {
       float: none;
       width: 100% !important;
-      margin-inline: 0;
+      margin-inline: 0 !important;
     }
   }
 
@@ -2501,24 +2498,31 @@
     position: relative;
     display: block;
   }
-  /* THE PDF (AND VIDEO) EQUIVALENT OF THE "PHANTOM RECTANGLE" ABOVE.
-     BrsImage's NodeViewWrapper IS `.rt-figure` — the width-constraining
-     class sits on the outermost rendered element, so there is nothing
-     left unconstrained. BrsPdf and BrsEmbed instead render a generic
-     `.rt-node` wrapper with the sized box (`.rt-pdf`) as ITS CHILD —
-     and `.rt-node` itself, as a plain `display: block` element with no
-     width rule, defaulted to `width: auto`, which for a block box means
-     "fill the containing block", i.e. always the FULL column width,
-     no matter how far `.rt-pdf` inside it had been resized down. The
-     visible frame shrank; the space reserved around it did not — which
-     is exactly "there is a space allocated for it that doesn't resize
-     to scale." Reads `--rt-w` for the same reason `.rt-pdf` does: it is
-     the identical custom property, set once on this same element by
-     PdfView, so the two can never disagree. Falls back to 100% so
-     BrsEmbed (which never sets the variable) is unaffected. */
-  .adm-richtext-body .rt-node {
-    width: var(--rt-w, 100%);
-  }
+  /* THIS USED TO SET width: var(--rt-w, 100%) HERE — WRONG, LEFT AS A
+     WARNING. `.rt-node` is the DIRECT PARENT of `.rt-pdf` (and, for a
+     video, `.rt-embed`), and both of THOSE already read `--rt-w`
+     themselves as their own width — the same custom property,
+     inherited straight down from where PdfView/BrsEmbed set it via
+     inline style on this very element. Giving `.rt-node` a width off
+     that SAME variable meant the percentage got applied TWICE: `.rt-node`
+     shrank to (say) 40% of the true column, and then `.rt-pdf` inside it
+     computed its OWN 40% against that ALREADY-shrunk box — 40% of 40%,
+     16% of the real column, not 40%. That compounding, not a fresh bug,
+     was the "extended blank box that doesn't scale with the visible
+     PDF" reported after this rule shipped: the correctly-sized `.rt-node`
+     was the outer edge; the doubly-shrunk `.rt-pdf` inside it was
+     visibly smaller than that outer edge, and the gap between them was
+     mistaken for empty reserved space.
+
+     `.rt-node` needs to stay at ITS default (`width: auto`, i.e. 100%
+     of the true column, since a plain block box does not shrink to fit
+     a floated child) so that `.rt-pdf`/`.rt-embed`'s OWN `--rt-w` is
+     the only place the percentage is ever actually applied. A floated
+     child inside a wider, unstyled, invisible parent is completely
+     normal CSS and paints nothing extra — there is no visible "phantom
+     rectangle" here the way there was for the Tiptap-generated
+     `node-brs*` wrapper above, because `.rt-node` has no background or
+     border of its own for a mismatched size to ever show through. */
   /* The controls for a selected picture hang BELOW it and are allowed to
      be wider than it is. A picture set to Small is a quarter of the
      column; the toolbar inside it would be one button per line. */
