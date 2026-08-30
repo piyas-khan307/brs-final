@@ -934,26 +934,17 @@
             "type": "string"
           },
           "category": {
-            "type": "string"
-          },
-          "categoryName": {
-            "type": "string"
-          },
-          "categoryParent": {
-            "type": "object",
-            "properties": {
-              "slug": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "slug",
-              "name"
-            ],
-            "additionalProperties": false
+            "type": "string",
+            "enum": [
+              "workshop",
+              "competition",
+              "robo-carnival",
+              "intra-buet",
+              "seminar",
+              "reception",
+              "agm",
+              "co-organised"
+            ]
           },
           "series": {
             "type": "string"
@@ -973,6 +964,9 @@
                 "description": "ISO-8601 date, e.g. 2024-02-01"
               }
             },
+            "required": [
+              "start"
+            ],
             "additionalProperties": false
           },
           "venue": {
@@ -1217,8 +1211,7 @@
                 "type": "string",
                 "enum": [
                   "html",
-                  "md",
-                  "doc"
+                  "md"
                 ]
               },
               "content": {
@@ -1260,7 +1253,6 @@
           "slug",
           "title",
           "category",
-          "categoryName",
           "dates",
           "cover",
           "gallery",
@@ -1286,34 +1278,17 @@
             "type": "string"
           },
           "department": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "type": "string"
           },
           "batch": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "type": "string"
           },
           "committeeOrdinal": {
             "type": "integer",
             "exclusiveMinimum": 0,
             "maximum": 9007199254740991
           },
-          "section": {
-            "type": "string"
-          },
-          "group": {
+          "team": {
             "type": "string"
           },
           "portrait": {
@@ -1435,28 +1410,14 @@
             "type": "string"
           },
           "termStart": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": -9007199254740991,
-                "maximum": 9007199254740991
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "termEnd": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": -9007199254740991,
-                "maximum": 9007199254740991
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "moderator": {
             "type": "object",
@@ -1479,7 +1440,6 @@
             "additionalProperties": false
           },
           "groups": {
-            "default": [],
             "type": "array",
             "items": {
               "type": "object",
@@ -1487,175 +1447,137 @@
                 "name": {
                   "type": "string"
                 },
-                "note": {
-                  "type": "string"
-                },
-                "sections": {
-                  "default": [],
+                "members": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
+                      "id": {
+                        "type": "string"
+                      },
                       "name": {
                         "type": "string"
                       },
-                      "members": {
-                        "default": [],
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "designation": {
-                              "type": "string"
-                            },
-                            "department": {
-                              "anyOf": [
-                                {
-                                  "type": "string"
-                                },
-                                {
-                                  "type": "null"
-                                }
-                              ]
-                            },
-                            "batch": {
-                              "anyOf": [
-                                {
-                                  "type": "string"
-                                },
-                                {
-                                  "type": "null"
-                                }
-                              ]
-                            },
-                            "committeeOrdinal": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0,
-                              "maximum": 9007199254740991
-                            },
-                            "section": {
-                              "type": "string"
-                            },
-                            "group": {
-                              "type": "string"
-                            },
-                            "portrait": {
+                      "designation": {
+                        "type": "string"
+                      },
+                      "department": {
+                        "type": "string"
+                      },
+                      "batch": {
+                        "type": "string"
+                      },
+                      "committeeOrdinal": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "team": {
+                        "type": "string"
+                      },
+                      "portrait": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          },
+                          "alt": {
+                            "type": "string",
+                            "minLength": 12,
+                            "maxLength": 280
+                          },
+                          "width": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "height": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "lqip": {
+                            "type": "string"
+                          },
+                          "plate": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "ratio": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "1:1",
+                                  "4:3",
+                                  "3:2",
+                                  "16:9",
+                                  "4:5"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "credit": {
+                            "type": "string"
+                          },
+                          "sources": {
+                            "default": [],
+                            "type": "array",
+                            "items": {
                               "type": "object",
                               "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "url": {
-                                  "type": "string"
-                                },
-                                "alt": {
+                                "format": {
                                   "type": "string",
-                                  "minLength": 12,
-                                  "maxLength": 280
+                                  "enum": [
+                                    "avif",
+                                    "webp"
+                                  ]
                                 },
                                 "width": {
                                   "type": "integer",
                                   "exclusiveMinimum": 0,
                                   "maximum": 9007199254740991
                                 },
-                                "height": {
-                                  "type": "integer",
-                                  "exclusiveMinimum": 0,
-                                  "maximum": 9007199254740991
-                                },
-                                "lqip": {
+                                "url": {
                                   "type": "string"
-                                },
-                                "plate": {
-                                  "type": "integer",
-                                  "exclusiveMinimum": 0,
-                                  "maximum": 9007199254740991
-                                },
-                                "ratio": {
-                                  "anyOf": [
-                                    {
-                                      "type": "string",
-                                      "enum": [
-                                        "1:1",
-                                        "4:3",
-                                        "3:2",
-                                        "16:9",
-                                        "4:5"
-                                      ]
-                                    },
-                                    {
-                                      "type": "null"
-                                    }
-                                  ]
-                                },
-                                "credit": {
-                                  "type": "string"
-                                },
-                                "sources": {
-                                  "default": [],
-                                  "type": "array",
-                                  "items": {
-                                    "type": "object",
-                                    "properties": {
-                                      "format": {
-                                        "type": "string",
-                                        "enum": [
-                                          "avif",
-                                          "webp"
-                                        ]
-                                      },
-                                      "width": {
-                                        "type": "integer",
-                                        "exclusiveMinimum": 0,
-                                        "maximum": 9007199254740991
-                                      },
-                                      "url": {
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "format",
-                                      "width",
-                                      "url"
-                                    ],
-                                    "additionalProperties": false
-                                  }
                                 }
                               },
                               "required": [
-                                "id",
-                                "url",
-                                "alt",
+                                "format",
                                 "width",
-                                "height",
-                                "lqip",
-                                "ratio",
-                                "sources"
+                                "url"
                               ],
                               "additionalProperties": false
                             }
-                          },
-                          "required": [
-                            "id",
-                            "name",
-                            "designation",
-                            "department",
-                            "batch",
-                            "committeeOrdinal"
-                          ],
-                          "additionalProperties": false
-                        }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "url",
+                          "alt",
+                          "width",
+                          "height",
+                          "lqip",
+                          "ratio",
+                          "sources"
+                        ],
+                        "additionalProperties": false
                       }
                     },
                     "required": [
+                      "id",
                       "name",
-                      "members"
+                      "designation",
+                      "department",
+                      "batch",
+                      "committeeOrdinal"
                     ],
                     "additionalProperties": false
                   }
@@ -1663,7 +1585,7 @@
               },
               "required": [
                 "name",
-                "sections"
+                "members"
               ],
               "additionalProperties": false
             }
@@ -1893,34 +1815,17 @@
                   "type": "string"
                 },
                 "department": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
+                  "type": "string"
                 },
                 "batch": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
+                  "type": "string"
                 },
                 "committeeOrdinal": {
                   "type": "integer",
                   "exclusiveMinimum": 0,
                   "maximum": 9007199254740991
                 },
-                "section": {
-                  "type": "string"
-                },
-                "group": {
+                "team": {
                   "type": "string"
                 },
                 "portrait": {
@@ -2321,8 +2226,7 @@
                 "type": "string",
                 "enum": [
                   "html",
-                  "md",
-                  "doc"
+                  "md"
                 ]
               },
               "content": {

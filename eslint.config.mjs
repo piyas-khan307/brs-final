@@ -65,11 +65,6 @@ export default [
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
-      /* Hand-listed rather than pulled from a `globals` package, because
-         the set a build script legitimately reaches for is small and
-         worth reading. Timers, FormData and Blob are Node's own since
-         18 — the scripts here upload with them, and without them named
-         `no-undef` called a stock library global an undefined variable. */
       globals: {
         process: "readonly",
         console: "readonly",
@@ -77,12 +72,6 @@ export default [
         fetch: "readonly",
         Buffer: "readonly",
         __dirname: "readonly",
-        setTimeout: "readonly",
-        clearTimeout: "readonly",
-        setInterval: "readonly",
-        clearInterval: "readonly",
-        FormData: "readonly",
-        Blob: "readonly",
       },
     },
     rules: {

@@ -378,6 +378,20 @@ function memberPermissions(policyId) {
     },
     { policy: policyId, collection: "assets", action: "read", fields: ["*"], permissions: {} },
 
+    // Same shape as the two `assets` grants above, for PDFs. A Member
+    // can upload a document and read the library to pick an existing
+    // one, but cannot unpublish or delete somebody else's upload —
+    // that stays an Administrator's call, same as it does for images.
+    {
+      policy: policyId,
+      collection: "documents",
+      action: "create",
+      fields: ["title", "credit", "source_ref"],
+      permissions: {},
+      presets: { published: false },
+    },
+    { policy: policyId, collection: "documents", action: "read", fields: ["*"], permissions: {} },
+
     // Read-only, so a byline can point at the right person.
     { policy: policyId, collection: "members", action: "read", fields: ["id", "name"], permissions: {} },
   ];

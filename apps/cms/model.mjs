@@ -180,6 +180,17 @@ export const COLLECTIONS = [
       "upload — you never need to resize anything before uploading.",
   },
   {
+    name: "documents",
+    label: "PDF Documents",
+    singular: "Document",
+    icon: "picture_as_pdf",
+    folder: "media",
+    note:
+      "PDFs embedded inline in write-ups — reports, posters, handouts. Unlike a " +
+      "photograph, nothing is generated on upload: the original file is what the " +
+      "reader's browser opens directly.",
+  },
+  {
     name: "collections",
     label: "Curated Collections",
     singular: "Collection",
@@ -208,6 +219,13 @@ export const COLLECTIONS = [
   {
     name: "event_assets",
     label: "Event ↔ Image Links",
+    icon: "link",
+    folder: "technical",
+    hidden: true,
+  },
+  {
+    name: "event_documents",
+    label: "Event ↔ Document Links",
     icon: "link",
     folder: "technical",
     hidden: true,
@@ -266,6 +284,26 @@ export const FIELDS = {
       readonly: true,
       note: "Detected automatically. Empty means the image is not one of the design shapes.",
     },
+    source_ref: { label: "Where it came from", note: "Original filename or folder, for provenance." },
+  },
+
+  documents: {
+    title: {
+      label: "Title",
+      required: true,
+      note:
+        "What the document is — shown in the library and, unless overridden in the " +
+        "article, as its caption. At least 12 characters. '1.pdf' will be rejected.",
+    },
+    credit: { label: "Credit", note: "Who produced it, if known." },
+    published: {
+      label: "Show on the website",
+      note: "Untick to keep a PDF in the archive without publishing it.",
+    },
+    storage_key: { label: "Storage key", readonly: true, note: "Set automatically. Do not edit." },
+    checksum: { label: "Checksum", readonly: true, hidden: true },
+    provider: { label: "Storage provider", readonly: true, hidden: true },
+    bytes: { label: "File size (bytes)", readonly: true },
     source_ref: { label: "Where it came from", note: "Original filename or folder, for provenance." },
   },
 

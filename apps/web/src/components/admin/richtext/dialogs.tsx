@@ -2,19 +2,14 @@
 
 /**
  * ══════════════════════════════════════════════════════════════════════
- * THE THINGS YOU INSERT RATHER THAN FORMAT.
+ * THE THREE THINGS YOU INSERT RATHER THAN FORMAT.
  *
- * Bold is a property of text you already typed. A link, a photograph, a
- * video and a button are not — each needs something the document does
- * not contain yet, so each gets a proper dialog instead of
- * window.prompt(). The old editor used prompt() for links, which cannot
- * be styled, cannot show two fields, cannot validate before it closes,
- * and on some browsers is suppressed entirely.
- *
- * A ROW OF COLUMNS HAS NO DIALOG, and that is not an oversight. Its only
- * question is "how many?", which is one chip-press to change once the
- * row is on the page — so asking first would be a modal whose answer is
- * always revised afterwards anyway.
+ * Bold is a property of text you already typed. A link, a photograph and
+ * a video are not — each needs something the document does not contain
+ * yet, so each gets a proper dialog instead of window.prompt(). The old
+ * editor used prompt() for links, which cannot be styled, cannot show
+ * two fields, cannot validate before it closes, and on some browsers is
+ * suppressed entirely.
  *
  * VIDEO WAS REMOVED ONCE AND IS BACK, on client direction both times.
  * Only the dialog ever went: the node, its editor view, the renderer and
@@ -24,38 +19,27 @@
  * ══════════════════════════════════════════════════════════════════════
  */
 
-import { NodeSelection } from "@tiptap/pm/state";
 import type { Editor } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { items } from "@/lib/admin/client";
-import { uploadAsset } from "@/lib/admin/ingest";
+import { uploadAsset, uploadDocument } from "@/lib/admin/ingest";
 import {
-  buttonAttrs,
-  buttonColour,
-  buttonVars,
-  buttonWeight,
-  buttonHasFill,
-  buttonRadius,
-  buttonSize,
-  buttonVariant,
-  isPdfDataUrl,
   parseVideoUrl,
-  RICH_BUTTON_SIZES,
-  RICH_BUTTON_SIZE_DEFAULT,
-  RICH_BUTTON_VARIANTS,
-  RICH_BUTTON_RADII,
-  RICH_BUTTON_RADIUS_DEFAULT,
-  RICH_BUTTON_VARIANT_DEFAULT,
-  RICH_BUTTON_WEIGHTS,
-  RICH_BUTTON_WEIGHT_DEFAULT,
   RICH_IMAGE_DEFAULT_ALIGN,
   RICH_IMAGE_DEFAULT_WIDTH,
-  RICH_PDF_MAX_BYTES,
 } from "@/lib/richtext/palette";
+import { type DocumentRow } from "../documents";
 import { assetUrl, type AssetRow } from "../PhotoPicker";
-import { Button, Empty, Field, Input, Modal, Notice, Select } from "../ui";
+import { Button, Empty, Field, Input, Modal, Notice } from "../ui";
 import { primeAssets } from "./asset-cache";
+import { primeDocuments } from "./document-cache";
+import {
+  DEFAULT_PDF_ALIGN,
+  DEFAULT_PDF_HEIGHT,
+  DEFAULT_PDF_LEFT_EDGE,
+  DEFAULT_PDF_RIGHT_EDGE,
+} from "./extensions";
 
 /* ── Links ────────────────────────────────────────────────────────────
  *
@@ -115,7 +99,7 @@ export function LinkDialog({
   };
 
   return (
-    <Modal title="Add a link" isOpen={isOpen} onClose={onClose}>
+    <Modal title="Add a link" isOpen={isOpen} onClose={onClose} className="rt-modal-pop">
       <div className="space-y-5">
         {error ? <Notice tone="error">{error}</Notice> : null}
         <Field label="Text to display">
@@ -277,7 +261,7 @@ export function VideoDialog({
   };
 
   return (
-    <Modal title="Add a video" isOpen={isOpen} onClose={onClose}>
+    <Modal title="Add a video" isOpen={isOpen} onClose={onClose} className="rt-modal-pop">
       <div className="space-y-5">
         {error ? <Notice tone="error">{error}</Notice> : null}
 
@@ -356,121 +340,6 @@ export function VideoDialog({
     </Modal>
   );
 }
-
-/**
- * ADD A PDF — A FILE INPUT AND A SIZE LIMIT.
- *
- * Unlike a picture, there is no library and no ingest service behind
- * this: the file becomes a data URL and the data URL becomes the node.
- * So the two things this screen does are the two things that decision
- * makes necessary — refuse a file that is not a PDF, and refuse one too
- * large to live inside a document (RICH_PDF_MAX_BYTES). Everything else
- * a writer might set — width, height, alignment — is set on the block
- * once it is on the page, by dragging it, the same as a picture.
- *
- * The read is FileReader.readAsDataURL, which yields exactly the
- * `data:<mime>;base64,…` shape the renderer's validator demands — and
- * the validator runs here too, so a file the browser typed as something
- * other than application/pdf is caught in front of the person who chose
- * it rather than silently dropped at publish.
- */
-export function PdfDialog({
-  editor,
-  isOpen,
-  onClose,
-}: {
-  editor: Editor;
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isOpen) setError(null);
-  }, [isOpen]);
-
-  const choose = (file: File | null) => {
-    if (!file) return;
-    setError(null);
-
-    if (file.type !== "application/pdf" && !/\.pdf$/i.test(file.name)) {
-      setError("That is not a PDF. Choose a file ending in .pdf.");
-      return;
-    }
-    if (file.size > RICH_PDF_MAX_BYTES) {
-      const mb = (RICH_PDF_MAX_BYTES / (1024 * 1024)).toFixed(0);
-      setError(
-        `That PDF is ${(file.size / (1024 * 1024)).toFixed(1)} MB. A PDF shown inside a page ` +
-          `has to fit inside the page, so the limit is ${mb} MB — a larger one belongs behind a link.`,
-      );
-      return;
-    }
-
-    setBusy(true);
-    const reader = new FileReader();
-    reader.onerror = () => {
-      setBusy(false);
-      setError("The file could not be read. Try again.");
-    };
-    reader.onload = () => {
-      setBusy(false);
-      const url = typeof reader.result === "string" ? reader.result : "";
-      // The MIME the browser stamped can be `application/octet-stream`
-      // for a PDF on some systems; rewrite the prefix to the one the
-      // validator and the renderer both require, since the bytes are a
-      // PDF either way. Only the prefix, and only when the tail is
-      // already base64 — never inventing content.
-      const normalised = url.replace(/^data:[^;,]*;base64,/, "data:application/pdf;base64,");
-      if (!isPdfDataUrl(normalised)) {
-        setError("That file did not read as a valid PDF. Try re-saving it and uploading again.");
-        return;
-      }
-      editor
-        .chain()
-        .focus()
-        .insertContent({
-          type: "brsPdf",
-          attrs: { src: normalised, name: file.name },
-        })
-        .run();
-      onClose();
-    };
-    reader.readAsDataURL(file);
-  };
-
-  return (
-    <Modal title="Add a PDF" isOpen={isOpen} onClose={onClose}>
-      <div className="space-y-5">
-        {error ? <Notice tone="error">{error}</Notice> : null}
-
-        <Field
-          label="The PDF file"
-          hint={`Shown whole, in the reader's own PDF viewer. Up to ${(RICH_PDF_MAX_BYTES / (1024 * 1024)).toFixed(0)} MB.`}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            accept="application/pdf,.pdf"
-            disabled={busy}
-            onChange={(e) => choose(e.target.files?.[0] ?? null)}
-            className="block w-full text-body-s text-text-secondary file:mr-4 file:border file:border-line-strong file:bg-bg-raised file:px-4 file:py-2 file:text-body-s file:text-text-primary hover:file:border-accent"
-          />
-        </Field>
-
-        {busy ? <p className="text-body-s text-text-secondary">Reading the file…</p> : null}
-
-        <div className="flex gap-3">
-          <Button variant="quiet" onClick={onClose}>
-            Cancel
-          </Button>
-        </div>
-      </div>
-    </Modal>
-  );
-}
-
 
 /**
  * THE UPLOAD FORM, WHICH IS A FILE INPUT AND NOTHING ELSE.
@@ -572,7 +441,6 @@ export function ImageDialog({
   isOpen,
   onClose,
   attachedAssetIds,
-  pickOne,
 }: {
   editor: Editor;
   isOpen: boolean;
@@ -580,20 +448,6 @@ export function ImageDialog({
   /** Photographs already attached to this event, newest strand of the
    *  archive first. Shown above the library — see `own` below. */
   attachedAssetIds?: string[];
-  /**
-   * WHEN THIS IS SET, THE DIALOG HANDS BACK AN ID INSTEAD OF INSERTING.
-   *
-   * A band's background needs the same grid, the same search, the same
-   * uploader and the same "this event's own photographs first" — it
-   * differs only in what happens at the end. A second dialog would have
-   * been four hundred lines of picker whose bugs are fixed twice; this
-   * is the one branch that actually differs.
-   *
-   * Only the first of a multiple selection is taken. A band has one
-   * background, and the grid's numbered badges make it obvious which
-   * one that is.
-   */
-  pickOne?: (assetId: string) => void;
 }) {
   const [tab, setTab] = useState<"library" | "upload">("library");
   const [rows, setRows] = useState<AssetRow[] | null>(null);
@@ -668,12 +522,6 @@ export function ImageDialog({
 
   const insert = (assetIds: string[]) => {
     if (!assetIds.length) return;
-    if (pickOne) {
-      const [first] = assetIds;
-      if (first) pickOne(first);
-      onClose();
-      return;
-    }
     editor
       .chain()
       .focus()
@@ -749,11 +597,7 @@ export function ImageDialog({
   );
 
   return (
-    <Modal
-      title={pickOne ? "Choose a background" : "Add a picture"}
-      isOpen={isOpen}
-      onClose={onClose}
-    >
+    <Modal title="Add a picture" isOpen={isOpen} onClose={onClose} className="rt-modal-pop">
       <div className="space-y-4">
         <div className="flex gap-1">
           {(
@@ -831,11 +675,7 @@ export function ImageDialog({
 
             <div className="flex items-center gap-3 border-t border-line-hairline pt-4">
               <Button variant="primary" disabled={!picked.length} onClick={() => insert(picked)}>
-                {pickOne
-                  ? "Use as background"
-                  : picked.length > 1
-                    ? `Insert ${picked.length} pictures`
-                    : "Insert picture"}
+                {picked.length > 1 ? `Insert ${picked.length} pictures` : "Insert picture"}
               </Button>
               <Button variant="quiet" onClick={onClose}>
                 Cancel
@@ -851,332 +691,293 @@ export function ImageDialog({
   );
 }
 
-/* ── A button ─────────────────────────────────────────────────────────
+/* ── PDFs ─────────────────────────────────────────────────────────────
  *
- * ONE DIALOG THAT BOTH MAKES AND EDITS.
+ * ONE FIELD BEYOND THE FILE, and it is required rather than filled in
+ * with a placeholder the way a picture's alt text is. A photograph
+ * still shows something if the description is generic; a PDF in the
+ * library grid is a blank rectangle with a filename under it unless a
+ * person names it. So this dialog asks up front, before the upload
+ * starts, rather than after — same reasoning as PhotoPicker's alt-text
+ * rule (see its own comment), applied to the one field a PDF actually
+ * needs.
  *
- * The alternative was an insert dialog plus a separate edit dialog, and
- * they would have been the same five fields twice — the second copy
- * being the one that quietly stops matching the first when a sixth
- * field is added. Which of the two it is doing is read from the
- * selection: a selected brsButton is edited in place, anything else
- * gets a new one.
- *
- * ── WHY THE ADDRESS IS CHECKED HERE ──
- * render.ts drops a button whose href it cannot keep, so an unchecked
- * address would be a control that looks right in the editor, saves
- * without complaint, and is simply missing from the page a week later.
- * The same reasoning as the video dialog: refuse it in front of the
- * person who typed it.
+ * Library tab, same shape as ImageDialog's: this event's own PDFs
+ * first, then the rest, search by title. Multi-select is not offered —
+ * a write-up embeds a document as its own paragraph-sized block, and
+ * inserting six at once is six full-height frames dropped into the
+ * article at once, which nobody actually wants done in bulk the way a
+ * contact sheet of photographs is.
  */
-/** An on/off switch drawn as a button rather than a checkbox: these
- *  three are text formatting, and a writer already knows what a pressed
- *  I means. `aria-pressed` is what makes that legible to anything that
- *  is not looking at it. */
-function Toggle({
-  on,
-  label,
-  onPress,
-  children,
-}: {
-  on: boolean;
-  label: string;
-  onPress: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      title={label}
-      aria-label={label}
-      aria-pressed={on}
-      onClick={onPress}
-      className={`h-9 w-9 border text-body-m transition-colors ${
-        on
-          ? "border-accent bg-bg-inset text-text-primary"
-          : "border-line-hairline text-text-secondary hover:border-accent hover:text-text-primary"
-      }`}
-      style={{ fontVariationSettings: "'wght' 600" }}
-    >
-      {children}
-    </button>
-  );
-}
-
-/**
- * A COLOUR, AND A WAY BACK TO NOT HAVING ONE.
- *
- * The reset is not decoration. A native colour input has no empty
- * state — it always shows something, and once it has been opened there
- * is no gesture inside it that means "actually, use the style's
- * colour". Without a way back, the first accidental click on the swatch
- * would permanently detach a button from the theme, and the writer
- * would have no idea why it stopped following the palette.
- */
-function ColourField({
-  label,
-  value,
-  fallback,
-  disabled,
-  onChange,
-}: {
-  label: string;
-  /** null means "whatever the style says" — the usual answer. */
-  value: string | null;
-  /** What the style would show, so the swatch is not lying while unset. */
-  fallback: string;
-  disabled?: boolean;
-  onChange: (next: string | null) => void;
-}) {
-  /* NO HINT. The line beside the swatch already reads "from the style"
-     or "not used by this style", and a paragraph under the label
-     repeating it in other words was the same sentence twice — printed
-     identically under both pickers, where it also knocked the two
-     swatches out of line with each other. */
-  return (
-    <Field label={label}>
-      <span className="flex items-center gap-3">
-        <input
-          type="color"
-          aria-label={label}
-          disabled={disabled}
-          value={value ?? fallback}
-          onChange={(e) => onChange(e.target.value.toLowerCase())}
-          className="h-9 w-14 cursor-pointer border border-line-hairline bg-transparent p-1 disabled:cursor-not-allowed disabled:opacity-40"
-        />
-        <span className="font-mono text-body-s text-text-secondary">
-          {disabled ? "not used by this style" : (value ?? "from the style")}
-        </span>
-        {value && !disabled ? (
-          <button
-            type="button"
-            onClick={() => onChange(null)}
-            className="ml-auto border border-line-hairline px-2 py-1 text-micro uppercase text-text-secondary transition-colors hover:border-accent hover:text-text-primary"
-          >
-            Reset
-          </button>
-        ) : null}
-      </span>
-    </Field>
-  );
-}
-
-export function ButtonDialog({
+export function PdfDialog({
   editor,
   isOpen,
   onClose,
+  attachedDocumentIds,
 }: {
   editor: Editor;
   isOpen: boolean;
   onClose: () => void;
+  /** PDFs already attached to this event. Shown above the library, same
+   *  reasoning as ImageDialog's `attachedAssetIds`. */
+  attachedDocumentIds?: string[];
 }) {
-  const [label, setLabel] = useState("");
-  const [href, setHref] = useState("");
-  const [variant, setVariant] = useState<string>(RICH_BUTTON_VARIANT_DEFAULT);
-  const [size, setSize] = useState<string>(RICH_BUTTON_SIZE_DEFAULT);
-  const [radius, setRadius] = useState<string>(RICH_BUTTON_RADIUS_DEFAULT);
-  const [bg, setBg] = useState<string | null>(null);
-  const [weight, setWeight] = useState<string>(RICH_BUTTON_WEIGHT_DEFAULT);
-  const [italic, setItalic] = useState(false);
-  const [underline, setUnderline] = useState(false);
-  const [caps, setCaps] = useState(false);
-  const [fg, setFg] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
+  const [tab, setTab] = useState<"library" | "upload">("library");
+  const [rows, setRows] = useState<DocumentRow[] | null>(null);
+  const [own, setOwn] = useState<DocumentRow[]>([]);
+  const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const input = useRef<HTMLInputElement>(null);
 
-  /** The selected node, when the selection IS a button. Read at open and
-   *  again at submit, because the modal does not move it. */
-  const selectedButton = useCallback(() => {
-    const sel = editor.state.selection;
-    return sel instanceof NodeSelection && sel.node.type.name === "brsButton" ? sel.node : null;
-  }, [editor]);
+  const attachedKey = (attachedDocumentIds ?? []).join(",");
+
+  const refresh = useCallback(async () => {
+    try {
+      const found = await items.list<DocumentRow>("documents", {
+        fields: "id,title,bytes,storage_key,credit",
+        sort: "-id",
+        limit: 200,
+      });
+      setRows(found);
+      primeDocuments(found);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }, []);
+
+  const loadOwn = useCallback(async () => {
+    const ids = attachedKey ? attachedKey.split(",") : [];
+    if (!ids.length) {
+      setOwn([]);
+      return;
+    }
+    try {
+      const found = await items.list<DocumentRow>("documents", {
+        fields: "id,title,bytes,storage_key,credit",
+        "filter[id][_in]": ids.join(","),
+        limit: ids.length,
+      });
+      const byId = new Map(found.map((d) => [d.id, d]));
+      setOwn(ids.map((i) => byId.get(i)).filter((d): d is DocumentRow => Boolean(d)));
+      primeDocuments(found);
+    } catch {
+      setOwn([]);
+    }
+  }, [attachedKey]);
 
   useEffect(() => {
     if (!isOpen) return;
-    const node = selectedButton();
-    if (node) {
-      setLabel(typeof node.attrs.label === "string" ? node.attrs.label : "");
-      setHref(typeof node.attrs.href === "string" ? node.attrs.href : "");
-      setVariant(buttonVariant(node.attrs.variant));
-      setSize(buttonSize(node.attrs.size));
-      setRadius(buttonRadius(node.attrs.radius));
-      setBg(buttonColour(node.attrs.bg));
-      setFg(buttonColour(node.attrs.fg));
-      setWeight(buttonWeight(node.attrs.weight));
-      setItalic(Boolean(node.attrs.italic));
-      setUnderline(Boolean(node.attrs.underline));
-      setCaps(Boolean(node.attrs.caps));
-      setEditing(true);
-    } else {
-      // Opening on a selection uses those words as the label, the same
-      // courtesy the link dialog does.
-      const { from, to } = editor.state.selection;
-      setLabel(editor.state.doc.textBetween(from, to, " "));
-      setHref("");
-      setVariant(RICH_BUTTON_VARIANT_DEFAULT);
-      setSize(RICH_BUTTON_SIZE_DEFAULT);
-      setRadius(RICH_BUTTON_RADIUS_DEFAULT);
-      setBg(null);
-      setFg(null);
-      setWeight(RICH_BUTTON_WEIGHT_DEFAULT);
-      setItalic(false);
-      setUnderline(false);
-      setCaps(false);
-      setEditing(false);
-    }
     setError(null);
-  }, [isOpen, editor, selectedButton]);
+    setTab("library");
+    setTitle("");
+    setFile(null);
+    void refresh();
+    void loadOwn();
+  }, [isOpen, refresh, loadOwn]);
 
-  const submit = () => {
-    const words = label.trim();
-    const url = href.trim();
-    if (!words) return setError("Give the button its words — “Register now”, “Read the rules”.");
-    if (!url) return setError("A button needs somewhere to go.");
-    if (!/^(https?:\/\/|mailto:|\/)/i.test(url)) {
-      return setError(
-        "An address must start with https:// , http:// or mailto: — or with / for a page on this site. Anything else is dropped when the page is built.",
-      );
-    }
+  const insert = (documentId: string, docTitle: string) => {
+    editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: "brsPdf",
+        attrs: {
+          documentId,
+          title: docTitle || null,
+          height: DEFAULT_PDF_HEIGHT,
+          leftEdge: DEFAULT_PDF_LEFT_EDGE,
+          rightEdge: DEFAULT_PDF_RIGHT_EDGE,
+          align: DEFAULT_PDF_ALIGN,
+        },
+      })
+      .run();
 
-    const attrs = { label: words, href: url, variant, size, radius, bg, fg, weight, italic, underline, caps };
-    if (selectedButton()) {
-      editor.chain().focus().updateAttributes("brsButton", attrs).run();
+    // insertContent leaves the atom node itself SELECTED (a NodeSelection),
+    // not a text cursor after it — correct for "the box is now the
+    // thing you're acting on", wrong for "I want to keep writing". Same
+    // fix as ImageDialog would need for the same reason, applied here:
+    // look at what follows the box, and if it isn't a paragraph to type
+    // into, make one and put the caret in it.
+    const { state } = editor;
+    const after = state.selection.to;
+    const $after = state.doc.resolve(after);
+    const nodeAfter = $after.nodeAfter;
+    if (nodeAfter?.isTextblock) {
+      editor.chain().focus().setTextSelection(after + 1).run();
     } else {
-      const { from } = editor.state.selection;
       editor
         .chain()
         .focus()
-        .insertContentAt(from, { type: "brsButton", attrs })
+        .insertContentAt(after, { type: "paragraph" })
+        .setTextSelection(after + 1)
         .run();
     }
+
     onClose();
   };
 
-  /* Built by the same function the editor and the renderer use, so this
-     is the button rather than a drawing of one. Seven settings is more
-     than anybody can hold in their head as a description; one of them
-     has to be shown. */
-  const look = buttonAttrs({ variant, size, radius, bg, fg, weight, italic, underline, caps });
-  const hasFill = buttonHasFill(variant);
+  const match = (d: DocumentRow) => {
+    const q = query.trim().toLowerCase();
+    return q ? d.title.toLowerCase().includes(q) : true;
+  };
+  const ownShown = own.filter(match);
+  const ownIds = new Set(own.map((d) => d.id));
+  const shown = (rows ?? []).filter((d) => !ownIds.has(d.id) && match(d));
+
+  const submitUpload = async () => {
+    if (!file) return setError("Choose a PDF to upload.");
+    if (title.trim().length < 12) {
+      return setError("Give the document a title — at least 12 characters.");
+    }
+    setError(null);
+    setUploading(true);
+    try {
+      const documentId = await uploadDocument(file, { title: title.trim() });
+      insert(documentId, title.trim());
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const heading = (text: string) => (
+    <p className="mb-2 font-mono text-micro uppercase text-text-tertiary">{text}</p>
+  );
+
+  const list = (items_: DocumentRow[]) => (
+    <ul className="space-y-2">
+      {items_.map((d) => (
+        <li key={d.id}>
+          <button
+            type="button"
+            onClick={() => insert(d.id, d.title)}
+            className="flex w-full items-center justify-between gap-3 border border-line-hairline px-3 py-2 text-left transition-colors hover:border-accent"
+          >
+            <span className="truncate text-body-s text-text-primary">{d.title}</span>
+            <span className="shrink-0 font-mono text-micro uppercase text-text-tertiary">
+              {(d.bytes / 1048576).toFixed(1)} MB
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
-    <Modal title={editing ? "Edit the button" : "Add a button"} isOpen={isOpen} onClose={onClose}>
+    <Modal title="Add a PDF" isOpen={isOpen} onClose={onClose} className="rt-modal-pop">
       <div className="space-y-5">
+        <div className="flex gap-2">
+          {(
+            [
+              ["library", "Choose from the library"],
+              ["upload", "Upload a new PDF"],
+            ] as const
+          ).map(([key, label]) => (
+            <Button
+              key={key}
+              variant={tab === key ? "secondary" : "quiet"}
+              aria-pressed={tab === key}
+              onClick={() => setTab(key)}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
+
         {error ? <Notice tone="error">{error}</Notice> : null}
 
-        <Field label="Words on the button" required>
-          <Input
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="Register now"
-          />
-        </Field>
-
-        <Field label="Where it goes" required>
-          <Input
-            value={href}
-            onChange={(e) => setHref(e.target.value)}
-            placeholder="https://"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                submit();
-              }
-            }}
-          />
-        </Field>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Style">
-            <Select value={variant} onChange={(e) => setVariant(e.target.value)}>
-              {RICH_BUTTON_VARIANTS.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.label}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <Field label="Size">
-            <Select value={size} onChange={(e) => setSize(e.target.value)}>
-              {RICH_BUTTON_SIZES.map((z) => (
-                <option key={z.id} value={z.id}>
-                  {z.label}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <Field label="Corners">
-            <Select value={radius} onChange={(e) => setRadius(e.target.value)}>
-              {RICH_BUTTON_RADII.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.label}
-                </option>
-              ))}
-            </Select>
-          </Field>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <ColourField
-            label="Button colour"
-            value={bg}
-            fallback="#7a1f2b"
-            disabled={!hasFill}
-            onChange={setBg}
-          />
-          <ColourField
-            label="Word colour"
-            value={fg}
-            fallback={hasFill ? "#ffffff" : "#7a1f2b"}
-            onChange={setFg}
-          />
-        </div>
-
-        <Field label="The words">
-          <span className="flex flex-wrap items-center gap-3">
-            <Select
-              aria-label="Weight"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              className="w-auto"
+        {tab === "upload" ? (
+          <div className="space-y-4">
+            <Field
+              label="Title"
+              required
+              hint="What the document is — its own title in the library grid and, unless overridden, the caption under it in the article."
             >
-              {RICH_BUTTON_WEIGHTS.map((w) => (
-                <option key={w.id} value={w.id}>
-                  {w.label}
-                </option>
-              ))}
-            </Select>
-            {/* Bold is absent on purpose: bold IS a weight, and a
-                switch beside the menu would be a second control for the
-                same property. */}
-            <Toggle on={italic} label="Italic" onPress={() => setItalic(!italic)}>
-              <span style={{ fontStyle: "italic" }}>I</span>
-            </Toggle>
-            <Toggle on={underline} label="Underline" onPress={() => setUnderline(!underline)}>
-              <span style={{ textDecoration: "underline" }}>U</span>
-            </Toggle>
-            <Toggle on={caps} label="Capitals" onPress={() => setCaps(!caps)}>
-              AA
-            </Toggle>
-          </span>
-        </Field>
-
-        <Field label="How it will look">
-          <span className="flex min-h-16 items-center justify-center border border-line-hairline bg-bg-inset p-4">
-            <span className={look.class} style={buttonVars({ variant, bg, fg, weight }) as React.CSSProperties}>
-              {label.trim() || "Button"}
-            </span>
-          </span>
-        </Field>
-
-        <div className="flex gap-3">
-          <Button variant="primary" onClick={submit}>
-            {editing ? "Save the button" : "Add button"}
-          </Button>
-          <Button variant="quiet" onClick={onClose}>
-            Cancel
-          </Button>
-        </div>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. 12th ExCom handover report — 2024"
+              />
+            </Field>
+            <div
+              className="border border-dashed border-line-strong bg-bg-base p-8 text-center"
+            >
+              <input
+                ref={input}
+                type="file"
+                accept="application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  setFile(e.target.files?.[0] ?? null);
+                  e.target.value = "";
+                }}
+              />
+              {uploading ? (
+                <p className="text-body-m text-text-secondary">
+                  Uploading — do not close this.
+                </p>
+              ) : (
+                <>
+                  <Button variant="primary" onClick={() => input.current?.click()}>
+                    {file ? file.name : "Choose a PDF"}
+                  </Button>
+                  <p className="mt-3 text-body-s text-text-tertiary">up to 40 MB</p>
+                </>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="primary"
+                disabled={uploading || !file}
+                onClick={submitUpload}
+              >
+                Upload and insert
+              </Button>
+              <Button variant="quiet" onClick={onClose}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <Input
+              placeholder="Search documents by title…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <div className="max-h-80 space-y-5 overflow-y-auto pr-1">
+              {rows === null ? (
+                <p className="py-8 text-center text-body-s text-text-tertiary">
+                  Loading documents…
+                </p>
+              ) : ownShown.length === 0 && shown.length === 0 ? (
+                <Empty>No matching documents.</Empty>
+              ) : (
+                <>
+                  {ownShown.length ? (
+                    <div>
+                      {heading(`Already on this event · ${ownShown.length}`)}
+                      {list(ownShown)}
+                    </div>
+                  ) : null}
+                  {shown.length ? (
+                    <div>
+                      {ownShown.length ? heading("Everything else") : null}
+                      {list(shown)}
+                    </div>
+                  ) : null}
+                </>
+              )}
+            </div>
+            <Button variant="quiet" onClick={onClose}>
+              Cancel
+            </Button>
+          </>
+        )}
       </div>
     </Modal>
   );

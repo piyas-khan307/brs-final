@@ -67,88 +67,6 @@ box.replaceChild(f,a);});`,
   );
 }
 
-/**
- * ══════════════════════════════════════════════════════════════════════
- * THE MOTION THE WRITE-UP ASKED FOR, IN TWENTY-ODD LINES OF DOM CODE.
- *
- * Three jobs, one script, and the same argument as the video facade
- * above: a client component here would be a React island — the ~110 KB
- * runtime floor plus a hydration boundary — to do what an
- * IntersectionObserver already does.
- *
- *   1  ENTRANCES. Add `.rt-in` to a block when it scrolls into view.
- *      Everything else about the animation is in globals.css.
- *   2  COUNTERS. Climb from zero to the number already in the markup.
- *   3  COUNTDOWNS. Replace the build's "Until 14 March 2026" with
- *      ticking cells, and stop at the instant rather than counting up
- *      into negative days forever.
- *
- * ── THE FIRST LINE IS THE IMPORTANT ONE ──
- * `documentElement.classList.add("rt-motion")` is what ARMS the start
- * states; every one of them is written `.rt-motion [data-rt-anim]`. So
- * the page is finished and fully visible until this line runs, and if
- * the script never runs — no JavaScript, a parse error, a blocked file,
- * prefers-reduced-motion — the reader gets the complete page with no
- * motion. There is no state in which content is hidden waiting for an
- * event that will not come.
- *
- * ── WHY IT UNOBSERVES, AND WHY IT DOES NOT REVERSE ──
- * A block that has arrived is done: re-hiding it on the way back up
- * makes scrolling upward through a page feel broken, and keeping the
- * observer alive for a hundred blocks that will never change again is
- * work for nothing.
- */
-function RichMotion() {
-  return (
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `(function(){
-var d=document,root=d.documentElement;
-var still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-var fmt=function(n){return n.toLocaleString("en-GB")};
-function count(el){
-var to=parseInt(el.getAttribute("data-to"),10)||0,
-p=el.getAttribute("data-prefix")||"",s=el.getAttribute("data-suffix")||"",
-box=el.querySelector(".rt-count-value");if(!box)return;
-var t0=0,dur=1400;
-function step(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/dur);
-box.textContent=p+fmt(Math.round(to*(1-Math.pow(1-k,3))))+s;
-if(k<1)requestAnimationFrame(step)}
-box.textContent=p+fmt(0)+s;requestAnimationFrame(step)}
-function tick(el){
-var end=Date.parse(el.getAttribute("data-to"));if(isNaN(end))return;
-var units=[["Days",86400000],["Hours",3600000],["Minutes",60000],["Seconds",1000]];
-function draw(){
-var left=end-Date.now();
-if(left<=0){el.innerHTML='<span class="rt-countdown-date">This has now started.</span>';return}
-var out="";for(var i=0;i<units.length;i++){
-var v=Math.floor(left/units[i][1]);left-=v*units[i][1];
-out+='<span class="rt-countdown-cell"><span class="rt-countdown-n">'+
-(v<10?"0":"")+v+'</span><span class="rt-countdown-u">'+units[i][0]+"</span></span>"}
-el.innerHTML=out;setTimeout(draw,1000)}
-draw()}
-/* A COUNTDOWN TICKS EVEN FOR A READER WHO ASKED FOR LESS MOVEMENT.
-   The preference is about animation — things travelling, scaling and
-   parallaxing — and this is a clock. "Until 1 December" does not answer
-   the question a countdown exists to answer, and a digit changing once
-   a second moves nothing across the screen. Entrances and the climbing
-   number are decoration and are skipped; the time left is information
-   and is not. */
-d.querySelectorAll("[data-rt-countdown]").forEach(tick);
-if(still)return;
-root.classList.add("rt-motion");
-var io=new IntersectionObserver(function(es){
-es.forEach(function(e){if(!e.isIntersecting)return;
-var el=e.target;el.classList.add("rt-in");
-if(el.hasAttribute("data-rt-count"))count(el);
-io.unobserve(el)})},{rootMargin:"0px 0px -10% 0px"});
-d.querySelectorAll("[data-rt-anim],[data-rt-count]").forEach(function(el){io.observe(el)});
-})();`,
-      }}
-    />
-  );
-}
-
 export function generateStaticParams() {
   return EVENTS.map((e) => ({ slug: e.slug }));
 }
@@ -288,11 +206,6 @@ export default async function EventArticle({ params }: Params) {
                 dangerouslySetInnerHTML={{ __html: event.html }}
               />
               {event.html.includes("rt-embed") ? <EmbedFacade /> : null}
-              {/* Same test, same reason: a write-up with no motion in it
-                  ships no motion script. Most of the archive is prose. */}
-              {/data-rt-anim|data-rt-count|data-rt-countdown/.test(event.html) ? (
-                <RichMotion />
-              ) : null}
             </>
           ) : (
             <p className="mx-auto mt-16 max-w-content text-body-l text-text-secondary">
