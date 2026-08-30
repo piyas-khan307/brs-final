@@ -1,6 +1,6 @@
 # Fonts
 
-Three families, self-hosted. No third-party font CDN (`PROJECT_SPEC.md`
+**This directory is the CRITICAL PATH.** Three families, self-hosted. No third-party font CDN (`PROJECT_SPEC.md`
 §17.6) — latency, privacy, and a single point of failure.
 
 **Do not edit these files by hand.** They are fetched reproducibly:
@@ -73,3 +73,37 @@ The serif is the third family against a two-family rule. It exists because
 the club asked for `/executive-committee` not to look like *"the current
 simple font style"*, and no amount of Plex Sans answers that — a grotesque
 set larger is still a grotesque. It is the last exception.
+
+
+## The other bucket: `public/fonts/`
+
+Seventeen more families live in `apps/web/public/fonts/`, fetched by
+`scripts/fetch-content-fonts.mjs`. They are the families offered in the
+write-up editor's font menu — Roboto, Merriweather, Bebas Neue, Pacifico
+and so on — and they are **not** part of the 110 KB above.
+
+That is not an exemption; it is a different measurement. The three
+families here carry `<link rel="preload">` and are fetched before
+anything renders, so every reader of every page pays for them and §4.7
+caps what they may cost. The seventeen are declared as bare `@font-face`
+rules and preloaded by nothing. A `@font-face` is inert until a rule
+matches it, so:
+
+- an event page whose write-up sets no font downloads **none** of them;
+- one that sets a pull-quote in Lora downloads **Lora**, once;
+- the critical path is byte-for-byte what it was before they existed.
+
+Measured, not assumed: a page using one family fetched exactly one file.
+
+They are still self-hosted — §17.6 forbids a third-party font CDN, and an
+optional face is not an exception to that. Nothing at runtime talks to
+Google.
+
+Their own gate is 700 KB across all seventeen (currently 577 KB). It is
+not comparable to the 110 KB and must never be added to it; it exists to
+catch a family accidentally pulled in with a CJK subset, not to ration
+the menu.
+
+Georgia and Times New Roman are in the menu but not on disk. They are on
+the reader's machine already, and shipping a download for glyphs someone
+already has is paying twice.

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { plexSans, plexMono, sourceSerif } from "./fonts";
-import { richtextFontVariables } from "./fonts-richtext";
 import "./globals.css";
 
 /**
@@ -10,16 +9,6 @@ import "./globals.css";
  * Both variable families vary on WEIGHT ONLY — Plex Sans 100-700, Source
  * Serif 200-900, neither with a width or optical-size axis. See fonts.ts
  * for what each family is allowed to set.
- *
- * `richtextFontVariables` (fonts-richtext.ts) is a DELIBERATE, scoped
- * exception to that rule, added at explicit direction for the write-up
- * editor's font picker: seventeen further families, fetched via
- * `next/font/google` rather than vendored as .woff2 like the two above.
- * The files themselves are still self-hosted at serve time — a reader's
- * browser never talks to Google — but the build itself needs internet
- * access at least once to fetch them, unlike plexSans/sourceSerif's
- * fully offline, reproducible fetch script. See fonts-richtext.ts for
- * the full reasoning.
  */
 
 export const metadata: Metadata = {
@@ -43,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // background pure dark"), so there is no theme to switch between.
     <html
       lang="en"
-      className={`${plexSans.variable} ${plexMono.variable} ${sourceSerif.variable} ${richtextFontVariables}`}
+      className={`${plexSans.variable} ${plexMono.variable} ${sourceSerif.variable}`}
     >
       <body className="bg-bg-base text-text-primary antialiased">{children}</body>
     </html>

@@ -341,18 +341,11 @@ export function Modal({
   isOpen,
   onClose,
   children,
-  className = "",
 }: {
   title: string;
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  /** Opt-in only — appended to the panel, not the backdrop. Left empty
-   *  by every caller except the RichText dialogs, which is deliberate:
-   *  see the "nothing moves" note at the top of this file. A modal
-   *  confirming a delete elsewhere in the admin panel should still
-   *  just appear. */
-  className?: string;
 }) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -373,7 +366,7 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
       <div
-        className={`w-full max-w-lg border border-line-strong bg-bg-raised p-6 md:p-8 ${className}`}
+        className="w-full max-w-lg border border-line-strong bg-bg-raised p-6 md:p-8"
         role="dialog"
         aria-modal="true"
       >

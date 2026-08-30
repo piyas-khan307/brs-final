@@ -15,7 +15,6 @@
 import { readFileSync } from "node:fs";
 import { join, dirname, relative, sep } from "node:path";
 
-const CACHE = new Map();
 
 /** Walk up for apps/web/config/client-allowlist.json. */
 function loadAllowlist(fromFile) {

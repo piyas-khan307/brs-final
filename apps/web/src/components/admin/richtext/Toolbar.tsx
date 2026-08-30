@@ -22,20 +22,38 @@
  * ══════════════════════════════════════════════════════════════════════
  */
 
-import { NodeSelection } from "@tiptap/pm/state";
+import { NodeSelection, Selection } from "@tiptap/pm/state";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { useEffect, useRef, useState } from "react";
 
 import {
   RICH_FONTS,
+  RICH_FONT_GROUPS,
   RICH_INKS,
   RICH_LEADS,
   RICH_MARKS,
   RICH_SIZES,
   RICH_SIZE_DEFAULT,
-  RICH_SPACINGS,
+  RICH_ANIMS,
+  RICH_HOVERS,
+  richAnim,
+  richHover,
   richLead,
+  richStagger,
 } from "@/lib/richtext/palette";
+import {
+  ANIMATABLE,
+  HOVERABLE,
+  STAGGERABLE,
+  emptyColumns,
+  emptyGrid,
+  emptyDetails,
+  emptySection,
+  emptyTable,
+  motionAttr,
+  setMotionAttr,
+  TABLE_ACTIONS,
+} from "./extensions";
 
 /* ── Icons ────────────────────────────────────────────────────────────
  * Drawn, not typed, for the reason the previous editor gave and which
@@ -72,8 +90,12 @@ const PATHS = {
   alignJustify: "M3 6h18M3 12h18M3 18h18",
   image: "M3 5h18v14H3zM3 16l5-5 4 4 3-3 5 5M8.5 9.5h.01",
   video: "M4 5h16v14H4zM10 9l5 3-5 3z",
-  pdf: "M6 2h9l5 5v15H6zM15 2v5h5M9 13h2a1.5 1.5 0 0 1 0 3H9v-3zm0 3v2m5-5v5m0-3h2m-2 0v3",
+  pdf: "M6 2h8l4 4v16H6zM14 2v4h4M9 13h1.5a1.5 1.5 0 0 1 0 3H9zM9 13v6",
   hr: "M3 12h18",
+  /* A control you press, and a page split into columns. Both drawn as
+     the outline of the thing itself rather than as a metaphor — an
+     editor's toolbar has no room for a metaphor. */
+  button: "M4 8h16a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1zM8.5 12h7",
   clear: "M4 7h16M9 7l1 12M15 7l-1 12M5 4l14 14",
   /* The two colour controls. An "A" for the letterform whose colour is
      being set, and a marker for the thing you paint over it — the pair
@@ -112,7 +134,7 @@ function Tool({
         e.preventDefault();
         if (!disabled) onClick();
       }}
-      className={`rt-tool min-w-8 border px-2 py-1 text-body-s disabled:opacity-40 ${
+      className={`min-w-8 border px-2 py-1 text-body-s transition-colors disabled:opacity-40 ${
         active
           ? "border-accent bg-bg-base text-text-primary"
           : "border-transparent text-text-secondary hover:border-line-hairline hover:text-text-primary"
@@ -305,18 +327,39 @@ function ColourControl({
 
 /* ── The bar ──────────────────────────────────────────────────────── */
 
+/** What the Insert menu can make. A table rather than a chain of `else
+ *  if`, so adding a block is one line and the menu and the handler
+ *  cannot drift apart. */
+const BLOCKS: Record<string, () => unknown> = {
+  callout: () => ({ type: "brsCallout", content: [{ type: "paragraph" }] }),
+  /* THREE TO START, and not because three is special: the row's own
+     chips change it to 2 or 4, and "+ Card" adds a seventh. Seven cards
+     in a four-across row is four and then three, which is the shape a
+     segments grid actually has. */
+  cards: () => emptyColumns(3),
+  details: () => emptyDetails(),
+  table: () => emptyTable(),
+  band: () => emptySection(),
+  grid: () => emptyGrid(),
+  spacer: () => ({ type: "brsSpacer" }),
+  count: () => ({ type: "brsCount", attrs: { to: 100 } }),
+  countdown: () => ({ type: "brsCountdown" }),
+};
+
 export function Toolbar({
   editor,
   onAddLink,
   onAddImage,
   onAddVideo,
   onAddPdf,
+  onAddButton,
 }: {
   editor: Editor;
   onAddLink: () => void;
   onAddImage: () => void;
   onAddVideo: () => void;
   onAddPdf: () => void;
+  onAddButton: () => void;
 }) {
   const s = useEditorState({
     editor,
@@ -342,6 +385,7 @@ export function Toolbar({
         blockquote: e.isActive("blockquote"),
         h2: e.isActive("heading", { level: 2 }),
         h3: e.isActive("heading", { level: 3 }),
+        h4: e.isActive("heading", { level: 4 }),
         isImageSelected,
         alignLeft: isImageSelected ? imageAlign === "left" : e.isActive({ textAlign: "left" }),
         alignCenter: isImageSelected ? imageAlign === "center" : e.isActive({ textAlign: "center" }),
@@ -349,6 +393,23 @@ export function Toolbar({
         alignJustify: isImageSelected ? false : e.isActive({ textAlign: "justify" }),
         canUndo: e.can().undo(),
         canRedo: e.can().redo(),
+        // The table group is the only part of this bar that appears and
+        // disappears. Eight controls that do nothing outside a table is
+        // eight controls in everybody's way for the 99% of write-ups
+        // that have no table in them.
+        inTable: e.isActive("table"),
+        /* ── THE MOTION READOUT ──────────────────────────────────────
+           Three separate questions, because they are about three
+           different scopes: the entrance belongs to the innermost block
+           the cursor is in, the stagger to the nearest container around
+           it, and the hover to the nearest card, button or picture.
+           Each control disappears rather than lying when there is
+           nothing for it to act on. */
+        anim: richAnim(motionAttr(e.state, ANIMATABLE, "anim")),
+        stagger: richStagger(motionAttr(e.state, STAGGERABLE, "stagger")),
+        canStagger: motionAttr(e.state, STAGGERABLE, "stagger") !== undefined,
+        hover: richHover(motionAttr(e.state, HOVERABLE, "hover")),
+        canHover: motionAttr(e.state, HOVERABLE, "hover") !== undefined,
         /* The line spacing of the block the cursor is in. Read from
            whichever of the two types is active, because the attribute
            lives on the block rather than on a mark. */
@@ -359,7 +420,6 @@ export function Toolbar({
         size: typeof style.size === "number" ? style.size : RICH_SIZE_DEFAULT,
         ink: typeof style.ink === "string" ? style.ink : null,
         mark: typeof style.mark === "string" ? style.mark : null,
-        spacing: typeof style.spacing === "string" ? style.spacing : "normal",
         /* Whether that colour is waiting to be typed rather than sitting
            on text. getAttributes already folds storedMarks in, so the
            swatch shows either way — but the two states need to LOOK
@@ -373,6 +433,57 @@ export function Toolbar({
   if (!s) return null;
 
   const chain = () => editor.chain().focus();
+
+  /**
+   * INSERT A BLOCK, AND LEAVE A PLACE TO STAND AFTER IT.
+   *
+   * `insertContent` replaces the selection, and after inserting a block
+   * the selection IS that block — so choosing two things from this menu
+   * in a row put the second one where the first had just been, and the
+   * first was gone. Reproduced before fixing: spacer then spacer left
+   * ONE spacer; table then spacer left one spacer and no table. It was
+   * never specific to the two blocks added with the animations; every
+   * entry on this menu has behaved that way.
+   *
+   * Moving the caret to the next valid position is not enough on its
+   * own — "next valid position" descends INTO whatever follows, so
+   * inserting a spacer above a row of cards left the caret inside the
+   * first card, and the following insert either landed in the card or
+   * was refused by the schema and did nothing at all. Measured, not
+   * guessed: the caret came to rest at `doc > brsColumns > brsCard >
+   * heading`.
+   *
+   * So: if the thing after the new block is not something you can type
+   * in, put an empty paragraph there and stand in it. That is also what
+   * the writer needs for the ordinary reason — a table at the end of a
+   * document with nothing after it is a document you cannot add to.
+   * Inserting twice in a row does not accumulate blank lines, because
+   * the second insert replaces the empty paragraph the first left.
+   */
+  const insertBlock = (content: unknown) => {
+    chain()
+      .insertContent(content as never)
+      .command(({ tr, dispatch }) => {
+        if (!dispatch) return true;
+        const $to = tr.doc.resolve(tr.selection.to);
+        // DEPTH 1: the position after the TOP-LEVEL block the insert
+        // landed in, not after the innermost node containing the
+        // caret. A table puts the caret in its first cell, and
+        // standing after that cell's paragraph leaves the next insert
+        // inside the table, where the schema refuses most blocks and
+        // the menu silently does nothing. Measured the same way as
+        // the note above: table, then spacer, produced no spacer.
+        const after = $to.depth > 0 ? $to.after(1) : tr.selection.to;
+        const next = tr.doc.nodeAt(after);
+        if (!next?.isTextblock) {
+          const paragraph = tr.doc.type.schema.nodes.paragraph;
+          if (paragraph) tr.insert(after, paragraph.create());
+        }
+        tr.setSelection(Selection.near(tr.doc.resolve(after + 1), 1));
+        return true;
+      })
+      .run();
+  };
 
   /**
    * Set one attribute of the single style mark, leaving the other three
@@ -404,7 +515,7 @@ export function Toolbar({
   const style = (attrs: Record<string, unknown>) =>
     chain().setMark("brsStyle", attrs).run();
 
-  const block = s.h2 ? "h2" : s.h3 ? "h3" : s.blockquote ? "quote" : "p";
+  const block = s.h2 ? "h2" : s.h3 ? "h3" : s.h4 ? "h4" : s.blockquote ? "quote" : "p";
 
   const setBlock = (value: string) => {
     const c = chain();
@@ -413,6 +524,7 @@ export function Toolbar({
     if (s.blockquote && value !== "quote") c.lift("blockquote");
     if (value === "h2") c.setNode("heading", { level: 2 });
     else if (value === "h3") c.setNode("heading", { level: 3 });
+    else if (value === "h4") c.setNode("heading", { level: 4 });
     else if (value === "quote") c.setNode("paragraph").wrapIn("blockquote");
     else c.setNode("paragraph");
     c.run();
@@ -454,6 +566,10 @@ export function Toolbar({
         <option value="p">Normal text</option>
         <option value="h2">Heading</option>
         <option value="h3">Subheading</option>
+        {/* h4 and NOT h1 — the event page already owns the page's only
+            <h1>, and "make it bigger" is what the size control is for.
+            See RICH_HEADING_LEVELS. */}
+        <option value="h4">Small heading</option>
         <option value="quote">Quote</option>
       </select>
 
@@ -463,59 +579,19 @@ export function Toolbar({
         onChange={(e) => style({ font: e.target.value === "body" ? null : e.target.value })}
         className="adm-input w-auto py-1 text-body-s"
       >
-        {RICH_FONTS.slice(0, 6).map((f) => (
-          <option key={f.id} value={f.id}>
-            {f.label}
-          </option>
+        {/* GROUPED, because twenty-five families in one flat list is a
+            scroll rather than a choice. The groups come from the entries
+            themselves — see RICH_FONT_GROUPS — so a family added to the
+            palette cannot land in a heading this never renders. */}
+        {RICH_FONT_GROUPS.map((g) => (
+          <optgroup key={g} label={g}>
+            {RICH_FONTS.filter((f) => f.group === g).map((f) => (
+              <option key={f.id} value={f.id} style={{ fontFamily: "inherit" }}>
+                {f.label}
+              </option>
+            ))}
+          </optgroup>
         ))}
-        {/* The 17 next/font/google families, grouped exactly as
-            requested — an unbroken flat list of 23 fonts is a scroll,
-            not a choice. */}
-        <optgroup label="Sans-serif">
-          {RICH_FONTS.filter((f) =>
-            ["gf-roboto", "gf-open-sans", "gf-montserrat", "gf-lato", "gf-poppins"].includes(f.id),
-          ).map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.label}
-            </option>
-          ))}
-        </optgroup>
-        <optgroup label="Serif">
-          {RICH_FONTS.filter((f) => ["gf-merriweather", "gf-playfair", "gf-lora"].includes(f.id)).map(
-            (f) => (
-              <option key={f.id} value={f.id}>
-                {f.label}
-              </option>
-            ),
-          )}
-        </optgroup>
-        <optgroup label="Display">
-          {RICH_FONTS.filter((f) => ["gf-oswald", "gf-bebas", "gf-lobster"].includes(f.id)).map(
-            (f) => (
-              <option key={f.id} value={f.id}>
-                {f.label}
-              </option>
-            ),
-          )}
-        </optgroup>
-        <optgroup label="Monospace">
-          {RICH_FONTS.filter((f) =>
-            ["gf-space-mono", "gf-inconsolata", "gf-courier-prime"].includes(f.id),
-          ).map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.label}
-            </option>
-          ))}
-        </optgroup>
-        <optgroup label="Script / handwriting">
-          {RICH_FONTS.filter((f) =>
-            ["gf-pacifico", "gf-great-vibes", "gf-dancing-script"].includes(f.id),
-          ).map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.label}
-            </option>
-          ))}
-        </optgroup>
       </select>
 
       {/* The brief asked for the size "showing as number", so it is the
@@ -535,23 +611,6 @@ export function Toolbar({
         {RICH_SIZES.map((n) => (
           <option key={n} value={n}>
             {n}
-          </option>
-        ))}
-      </select>
-
-      {/* Letter-spacing — the other half of "spacing" besides the line
-          spacing control (RICH_LEADS) elsewhere in this toolbar. */}
-      <select
-        aria-label="Letter spacing"
-        title="Letter spacing"
-        value={s.spacing}
-        onChange={(e) => style({ spacing: e.target.value === "normal" ? null : e.target.value })}
-        className="adm-input w-auto py-1 text-body-s"
-      >
-        <option value="normal">Spacing</option>
-        {RICH_SPACINGS.map((sp) => (
-          <option key={sp.id} value={sp.id}>
-            {sp.label}
           </option>
         ))}
       </select>
@@ -666,11 +725,11 @@ export function Toolbar({
 
       {/* THE GAP BETWEEN THE LINES, per paragraph.
           A select rather than buttons for the same reason the paragraph
-          style is one: a block has exactly one line spacing, and four
+          style is one: a block has exactly one line spacing, and five
           toggles that are secretly a radio group is the control people
-          press twice. The numbers are the ones every word processor
-          shows, and "Single" is the site's own leading rather than 1.0
-          — see RICH_LEADS. */}
+          press twice. The numbers are the multipliers every word
+          processor shows, and 1 is the site's own leading rather than a
+          literal 1.0 — see RICH_LEADS. */}
       <select
         aria-label="Line spacing"
         title="Line spacing"
@@ -722,12 +781,189 @@ export function Toolbar({
       <Tool title="Add a video" onClick={onAddVideo}>
         <Icon d={PATHS.video} />
       </Tool>
+      {/* And a PDF, the third thing that is not writing — a rulebook, a
+          schedule, a brief, shown whole rather than linked. */}
       <Tool title="Add a PDF" onClick={onAddPdf}>
         <Icon d={PATHS.pdf} />
       </Tool>
       <Tool title="Horizontal line" onClick={() => chain().setHorizontalRule().run()}>
         <Icon d={PATHS.hr} />
       </Tool>
+
+      <Gap />
+
+      {/* ── THE PAGE FURNITURE ──────────────────────────────────────
+          Its own group, after the media, because this is the control
+          that is not about the writing at all — it is about what an
+          announcement needs and an account does not.
+
+          A row of columns used to sit beside it and was removed: the
+          layout area does the same job better, and offering both was
+          two gestures for one result. The node itself is still in the
+          schema, so a document that already holds one opens and
+          publishes unchanged — there is just no longer a way to make a
+          new one. */}
+      <Tool title="Add a button" onClick={onAddButton}>
+        <Icon d={PATHS.button} />
+      </Tool>
+
+      <Gap />
+
+      {/* ── MOTION ───────────────────────────────────────────────────
+          What the block does when the reader reaches it, what its
+          children do after it, and what it does under the pointer.
+
+          Selects rather than a row of icons: there are eleven
+          entrances, and eleven more glyphs on a bar that already has
+          twenty-two would be a wall. A select also states the current
+          value, which an icon row can only do by highlighting one of
+          eleven look-alike buttons.
+
+          The entrance control is always here, because there is always a
+          block; the other two appear only when the cursor is somewhere
+          they mean something. */}
+      {/* NEVER DISABLED. It was, when the selection had nothing to hang
+          an entrance on — and a greyed box reading "No animation" that
+          will not open is indistinguishable from a broken feature. It
+          reached a real writer that way. The two states that produced
+          it are handled in motionTarget now; if some third one ever
+          turns up, the control opens, the choice does nothing, and the
+          writer tries something else — which is a far cheaper failure
+          than a control that looks dead on arrival. */}
+      <select
+        aria-label="Entrance animation"
+        title="How this block arrives when the reader scrolls to it"
+        value={s.anim ?? ""}
+        onChange={(e) =>
+          setMotionAttr(editor, ANIMATABLE, "anim", richAnim(e.target.value))
+        }
+        className="adm-input w-auto py-1 text-body-s"
+      >
+        <option value="">No animation</option>
+        {RICH_ANIMS.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.label}
+          </option>
+        ))}
+      </select>
+
+      {s.canStagger ? (
+        <Tool
+          title="Bring the things inside this one in one after another"
+          active={s.stagger}
+          onClick={() => setMotionAttr(editor, STAGGERABLE, "stagger", !s.stagger)}
+        >
+          <span className="text-micro uppercase">Stagger</span>
+        </Tool>
+      ) : null}
+
+      {s.canHover ? (
+        <select
+          aria-label="Hover effect"
+          title="What this does when the pointer is over it"
+          value={s.hover ?? ""}
+          onChange={(e) =>
+            setMotionAttr(editor, HOVERABLE, "hover", richHover(e.target.value))
+          }
+          className="adm-input w-auto py-1 text-body-s"
+        >
+          <option value="">No hover effect</option>
+          {RICH_HOVERS.map((h) => (
+            <option key={h.id} value={h.id}>
+              {h.label}
+            </option>
+          ))}
+        </select>
+      ) : null}
+
+      <Gap />
+
+      {/* ── THE REST OF THE BLOCKS, AS ONE MENU ──────────────────────
+          A button each would be five more icons on a bar that already
+          has twenty-two, and the five below are reached once a page
+          rather than once a paragraph. They are all on the slash menu
+          too — this is the half of the pair that can be FOUND without
+          knowing it exists.
+
+          A <select> and not a popover: it is a list of one-shot
+          actions, the native control already handles its own keyboard,
+          its own escape key and its own scrolling on a phone, and the
+          three selects to the left of it set the precedent. It snaps
+          back to the placeholder after firing, because it reports
+          nothing — nothing here is a state the document is IN. */}
+      <select
+        aria-label="Insert a block"
+        title="Insert a block"
+        value=""
+        onChange={(e) => {
+          const what = e.target.value;
+          e.target.value = "";
+          const block = BLOCKS[what];
+          if (block) insertBlock(block());
+        }}
+        className="adm-input w-auto py-1 text-body-s"
+      >
+        <option value="">Insert…</option>
+        <option value="callout">Callout box</option>
+        <option value="details">Collapsible section</option>
+        <option value="table">Table</option>
+        <option value="band">Full-width band</option>
+        {/* A ROW OF CARDS, PUT BACK. It was taken off this menu on the
+            grounds that the layout area below does the same job, and it
+            does not: a layout area gives you positioned boxes, and a
+            card is a bordered panel with an icon, a variant and a link
+            of its own. Removing the only way to make one left the whole
+            card feature — its node, its node view, its stylesheet and
+            its renderer — reachable only by documents written before
+            the removal. */}
+        <option value="cards">Row of cards</option>
+        {/* THE ONE PLACE THINGS ARE PLACED BY HAND. There were two for
+            a while — this and a free canvas that stored exact points —
+            and two tools for one job is worse than either. The canvas
+            went, because a grid cannot overlap and cannot break. */}
+        <option value="grid">Layout area — drag things into place</option>
+        <option value="spacer">Blank space</option>
+        {/* The two blocks an announcement has and an archive entry does
+            not: a headline figure that climbs, and a clock. */}
+        <option value="count">Counting number</option>
+        <option value="countdown">Countdown to a date</option>
+      </select>
+
+      {/* ── ONLY INSIDE A TABLE ──────────────────────────────────────
+          Every one of these is a raw prosemirror-tables command, run
+          through Tiptap's `command` so the chain still owns the
+          transaction and undo still sees one step. */}
+      {s.inTable ? (
+        <>
+          <Gap />
+          {(
+            [
+              ["Row +", "Add a row below", TABLE_ACTIONS.addRow],
+              ["Row −", "Delete this row", TABLE_ACTIONS.deleteRow],
+              ["Col +", "Add a column to the right", TABLE_ACTIONS.addColumn],
+              ["Col −", "Delete this column", TABLE_ACTIONS.deleteColumn],
+              ["Head", "Turn the top row into headings", TABLE_ACTIONS.toggleHeaderRow],
+              ["Merge", "Merge the selected cells", TABLE_ACTIONS.mergeCells],
+              ["Split", "Split this cell", TABLE_ACTIONS.splitCell],
+              ["Delete", "Delete the whole table", TABLE_ACTIONS.deleteTable],
+            ] as const
+          ).map(([label, title, run]) => (
+            <Tool
+              key={label}
+              title={title}
+              onClick={() =>
+                editor
+                  .chain()
+                  .focus()
+                  .command(({ state, dispatch }) => run(state, dispatch))
+                  .run()
+              }
+            >
+              <span className="text-micro uppercase">{label}</span>
+            </Tool>
+          ))}
+        </>
+      ) : null}
 
       <Gap />
 

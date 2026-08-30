@@ -76,4 +76,3 @@ Thumbs.db
 backup-before-*.sql.gz
 *.sql.gz
 *.dump
-*.zip
