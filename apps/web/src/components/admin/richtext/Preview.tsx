@@ -15,14 +15,12 @@
  * on this side of the API to hand it.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { renderMarkdown } from "@/lib/markdown";
-import { collectAssetIds, collectDocumentIds, parseRichDoc, renderRichDoc } from "@/lib/richtext/render";
-import { documentUrl } from "../documents";
+import { collectAssetIds, parseRichDoc, renderRichDoc } from "@/lib/richtext/render";
 import { assetUrl } from "../PhotoPicker";
 import { loadAsset, onAssetsChanged, peekAsset } from "./asset-cache";
-import { loadDocument, onDocumentsChanged, peekDocument } from "./document-cache";
 
 export function RichPreview({ content, format }: { content: string; format: string }) {
   /* Bumped when a photograph this document points at finishes loading.
@@ -38,14 +36,9 @@ export function RichPreview({ content, format }: { content: string; format: stri
   // Pull in whatever the document points at, then repaint as they land.
   useEffect(() => {
     if (!doc) return;
-    const offAssets = onAssetsChanged(() => force((n) => n + 1));
-    const offDocuments = onDocumentsChanged(() => force((n) => n + 1));
+    const off = onAssetsChanged(() => force((n) => n + 1));
     for (const id of collectAssetIds(doc)) void loadAsset(id);
-    for (const id of collectDocumentIds(doc)) void loadDocument(id);
-    return () => {
-      offAssets();
-      offDocuments();
-    };
+    return off;
   }, [doc]);
 
   const html = useMemo(() => {
@@ -69,15 +62,116 @@ export function RichPreview({ content, format }: { content: string; format: stri
             lqip: row.lqip,
           };
         },
-        document: (id) => {
-          const row = peekDocument(id);
-          if (!row) return null;
-          return { src: documentUrl(row), title: row.title };
-        },
       });
     }
     return renderMarkdown(content);
   }, [doc, content, format, arrivals]);
+
+  /* ── MOTION, PLAYED HERE AND NOWHERE ELSE IN THE ADMIN ─────────────
+   *
+   * The published page arms its animations with an inline script (see
+   * RichMotion in app/events/[slug]/page.tsx). This is that script as a
+   * React effect, and it is deliberately a COPY for the same reason the
+   * video swap above is: the page's version has to be an inline
+   * <script> string — the whole point is that it costs no React island
+   * — so there is nothing importable to share. If one changes, both
+   * change, and the pair name each other.
+   *
+   * ── ONE REAL DIFFERENCE, AND IT IS THE POINT OF THE TAB ──
+   * The page puts `rt-motion` on <html>; this puts it on the preview
+   * BOX. Every start state in globals.css is written as a descendant of
+   * `.rt-motion`, so scoping it here is what keeps the writing surface
+   * still: blocks do not fade and slide while somebody is trying to
+   * type into them, and Preview is where the writer goes to watch it
+   * play. Pressing Preview again replays it, which is what anybody
+   * checking an entrance wants.
+   */
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const root = box.current;
+    if (!root) return;
+    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+
+    const timers: number[] = [];
+    const fmt = (n: number) => n.toLocaleString("en-GB");
+
+    const count = (el: Element) => {
+      const to = Number.parseInt(el.getAttribute("data-to") ?? "", 10) || 0;
+      const pre = el.getAttribute("data-prefix") ?? "";
+      const post = el.getAttribute("data-suffix") ?? "";
+      const value = el.querySelector(".rt-count-value");
+      if (!value) return;
+      let t0 = 0;
+      const dur = 1400;
+      const step = (t: number) => {
+        if (!t0) t0 = t;
+        const k = Math.min(1, (t - t0) / dur);
+        value.textContent = pre + fmt(Math.round(to * (1 - Math.pow(1 - k, 3)))) + post;
+        if (k < 1) requestAnimationFrame(step);
+      };
+      value.textContent = pre + fmt(0) + post;
+      requestAnimationFrame(step);
+    };
+
+    const UNITS: [string, number][] = [
+      ["Days", 86400000],
+      ["Hours", 3600000],
+      ["Minutes", 60000],
+      ["Seconds", 1000],
+    ];
+    const tick = (el: Element) => {
+      const end = Date.parse(el.getAttribute("data-to") ?? "");
+      if (Number.isNaN(end)) return;
+      const draw = () => {
+        let left = end - Date.now();
+        if (left <= 0) {
+          el.innerHTML = '<span class="rt-countdown-date">This has now started.</span>';
+          return;
+        }
+        let out = "";
+        for (const [unit, ms] of UNITS) {
+          const v = Math.floor(left / ms);
+          left -= v * ms;
+          out +=
+            `<span class="rt-countdown-cell"><span class="rt-countdown-n">` +
+            `${v < 10 ? "0" : ""}${v}</span><span class="rt-countdown-u">${unit}</span></span>`;
+        }
+        el.innerHTML = out;
+        timers.push(window.setTimeout(draw, 1000));
+      };
+      draw();
+    };
+
+    /* The clock runs either way — see the note in RichMotion on the
+       event page. Entrances and the climb are decoration; time left is
+       information. */
+    root.querySelectorAll("[data-rt-countdown]").forEach(tick);
+    if (still) {
+      return () => {
+        for (const t of timers) window.clearTimeout(t);
+      };
+    }
+
+    root.classList.add("rt-motion");
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add("rt-in");
+          if (e.target.hasAttribute("data-rt-count")) count(e.target);
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: "0px 0px -10% 0px" },
+    );
+    root.querySelectorAll("[data-rt-anim],[data-rt-count]").forEach((el) => io.observe(el));
+
+    return () => {
+      io.disconnect();
+      for (const t of timers) window.clearTimeout(t);
+      root.classList.remove("rt-motion");
+    };
+  }, [html]);
 
   if (!content.trim()) {
     return <p className="text-body-m text-text-tertiary">Nothing written yet.</p>;
@@ -91,6 +185,7 @@ export function RichPreview({ content, format }: { content: string; format: stri
      line breaking; the width comes from the box. */
   return (
     <div
+      ref={box}
       className="prose rt-doc adm-richtext-body"
       /**
        * PRESSING PLAY HERE PLAYS THE VIDEO HERE.

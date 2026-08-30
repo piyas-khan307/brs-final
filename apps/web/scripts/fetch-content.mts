@@ -419,8 +419,6 @@ export const COMMITTEE: Committee = ${json(shapeCommittee(committee))};
  * matters — the escaping in lib/markdown.ts runs once, here, over input
  * that is already at rest. The pages receive inert HTML strings.
  */
-type Img = ReturnType<typeof toImage>;
-
 function toImage(image: ImageDTO) {
   return {
     alt: image.alt,

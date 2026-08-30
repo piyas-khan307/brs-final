@@ -16,7 +16,7 @@ import { Hono } from "hono";
 import pg from "pg";
 import { fromEnv } from "@brs/storage";
 
-import { ingest, ingestDocument, IngestError } from "./pipeline.js";
+import { ingest, IngestError } from "./pipeline.js";
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL ?? "postgres://brs:brs@localhost:5433/brs",
@@ -202,74 +202,6 @@ app.post("/ingest", async (c) => {
   } catch (e) {
     if (e instanceof IngestError) return c.json({ error: e.message }, 400);
     console.error("[ingest] failed:", e);
-    return c.json({ error: "Ingest failed", detail: (e as Error).message }, 500);
-  } finally {
-    client.release();
-  }
-});
-
-/**
- * Same shape as /ingest, for a PDF instead of a photograph:
- *
- *   file     the PDF itself
- *   title    required, enforced by the database (documents_title_check)
- *   credit, sourceRef, published   optional
- *
- * Covered by the same `/ingest/*` auth middleware above — no separate
- * token check needed.
- */
-const MAX_DOCUMENT_BYTES = 40 * 1024 * 1024;
-
-app.post("/ingest/document", async (c) => {
-  let form: FormData;
-  try {
-    form = await c.req.formData();
-  } catch {
-    return c.json({ error: "Expected multipart/form-data" }, 400);
-  }
-
-  const file = form.get("file");
-  if (!(file instanceof File)) return c.json({ error: "No file supplied" }, 400);
-
-  if (file.size > MAX_DOCUMENT_BYTES) {
-    return c.json(
-      {
-        error: `That file is ${(file.size / 1048576).toFixed(1)} MB. The limit is ` +
-          `${MAX_DOCUMENT_BYTES / 1048576} MB.`,
-      },
-      413,
-    );
-  }
-
-  const title = String(form.get("title") ?? "").trim();
-  if (!title) {
-    return c.json(
-      { error: "A title is required. Describe what the document is." },
-      400,
-    );
-  }
-
-  const client = await pool.connect();
-  try {
-    const result = await ingestDocument(
-      {
-        bytes: new Uint8Array(await file.arrayBuffer()),
-        title,
-        ...(form.get("credit") ? { credit: String(form.get("credit")) } : {}),
-        ...(form.get("sourceRef")
-          ? { sourceRef: String(form.get("sourceRef")) }
-          : c.get("uploaderId")
-            ? { sourceRef: `admin-upload:${c.get("uploaderId")}` }
-            : {}),
-        published: String(form.get("published") ?? "") === "true",
-      },
-      store,
-      client,
-    );
-    return c.json(result, result.deduplicated ? 200 : 201);
-  } catch (e) {
-    if (e instanceof IngestError) return c.json({ error: e.message }, 400);
-    console.error("[ingest] document failed:", e);
     return c.json({ error: "Ingest failed", detail: (e as Error).message }, 500);
   } finally {
     client.release();

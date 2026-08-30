@@ -28,6 +28,20 @@
  * tab close, which turns one XSS into a permanent account takeover. In
  * memory means a page refresh has to re-mint from the refresh cookie —
  * one extra request, and the tradeoff is not close.
+ *
+ * ── AND HOW LONG IT LIVES ──
+ * Fifteen minutes, which is Directus's default and is not negotiable
+ * from here. Writing up an event takes an hour, so for most of that hour
+ * the token in this module is EXPIRED, and the only thing that ever
+ * noticed was the next request — which is a rotten place to find out.
+ *
+ * So the token is now renewed on a schedule rather than on a failure:
+ * `ensureFreshToken()` re-mints it whenever it is inside a minute of
+ * running out, every outbound call goes through it first, and the panel
+ * calls it on a timer and whenever the tab comes back to the front.
+ * Each renewal slides the refresh cookie's own window forward, so a
+ * session that is being used does not end — which is the promise the
+ * panel makes and the one it was quietly breaking.
  * ══════════════════════════════════════════════════════════════════════
  */
 
@@ -36,6 +50,12 @@ export const DIRECTUS_URL =
 
 /** The access token for this tab. Never persisted. */
 let accessToken: string | null = null;
+/** When `accessToken` stops being accepted, as an epoch ms. Directus
+ *  reports this on every mint; 0 means "no token, or we were not told". */
+let expiresAt = 0;
+/** How close to the wire is too close. A minute covers a slow network and
+ *  the upload that is about to spend several seconds in flight. */
+const RENEW_SKEW_MS = 60_000;
 /** Set when a refresh is in flight, so ten parallel requests that all hit
  *  a stale token queue behind ONE refresh rather than racing to mint ten. */
 let refreshing: Promise<string | null> | null = null;
@@ -48,12 +68,10 @@ export function setOnSignedOut(fn: (() => void) | null) {
   onSignedOut = fn;
 }
 
-export function setAccessToken(token: string | null) {
-  accessToken = token;
-}
-export function getAccessToken() {
-  return accessToken;
-}
+/* There is deliberately no `getAccessToken()`. Handing the raw token to a
+   caller is how the upload path came to send an expired one for months:
+   it read the token, and nothing told it the token was stale. Everything
+   that needs one now asks `ensureFreshToken()` for a token that works. */
 
 export class AdminError extends Error {
   constructor(
@@ -134,6 +152,10 @@ type Options = {
 };
 
 export async function directus<T = unknown>(path: string, opts: Options = {}): Promise<T> {
+  /* Renew BEFORE asking, not after being refused. `/auth/*` is excluded
+     or the refresh call would ask itself to refresh first. */
+  if (!path.startsWith("/auth/")) await ensureFreshToken();
+
   const res = await fetch(`${DIRECTUS_URL}${path}`, {
     method: opts.method ?? (opts.body ? "POST" : "GET"),
     headers: {
@@ -212,11 +234,12 @@ export type Me = {
 };
 
 export async function login(email: string, password: string): Promise<void> {
-  const data = await directus<{ access_token: string }>("/auth/login", {
+  const data = await directus<{ access_token: string; expires?: number }>("/auth/login", {
     body: { email, password, mode: "cookie" },
     noRetry: true,
   });
   accessToken = data.access_token;
+  expiresAt = mintedAt(data.expires);
 }
 
 export async function logout(): Promise<void> {
@@ -224,7 +247,19 @@ export async function logout(): Promise<void> {
     await directus("/auth/logout", { body: { mode: "cookie" }, noRetry: true });
   } finally {
     accessToken = null;
+    expiresAt = 0;
   }
+}
+
+/**
+ * Directus reports a token's life as MILLISECONDS REMAINING, not as an
+ * instant. Turn it into one, and treat a missing or absurd value as ten
+ * minutes: erring short costs one extra request, erring long hands out a
+ * token that is already dead.
+ */
+function mintedAt(expiresIn: number | undefined): number {
+  const ms = typeof expiresIn === "number" && expiresIn > 0 ? expiresIn : 600_000;
+  return Date.now() + ms;
 }
 
 /** Mint a new access token from the refresh cookie. Null when there is no
@@ -233,20 +268,45 @@ export async function refreshSession(): Promise<string | null> {
   if (refreshing) return refreshing;
   refreshing = (async () => {
     try {
-      const data = await directus<{ access_token: string }>("/auth/refresh", {
+      const data = await directus<{ access_token: string; expires?: number }>("/auth/refresh", {
         body: { mode: "cookie" },
         noRetry: true,
       });
       accessToken = data.access_token;
+      expiresAt = mintedAt(data.expires);
       return accessToken;
     } catch {
       accessToken = null;
+      expiresAt = 0;
       return null;
     } finally {
       refreshing = null;
     }
   })();
   return refreshing;
+}
+
+/**
+ * THE TOKEN YOU SHOULD BE SENDING.
+ *
+ * Renews it when it is spent or nearly spent, and hands back what is
+ * already in hand otherwise — so calling this before every request costs
+ * a subtraction, not a round trip.
+ *
+ * This is what keeps a long write-up alive. The refresh cookie's clock
+ * restarts on every mint, so a session in use slides forward indefinitely
+ * and only an idle one runs out.
+ */
+export async function ensureFreshToken(): Promise<string | null> {
+  if (accessToken && Date.now() < expiresAt - RENEW_SKEW_MS) return accessToken;
+  return refreshSession();
+}
+
+/** Milliseconds until the current token expires; 0 when there is none.
+ *  Exported for the panel's keep-alive, which has no business reading
+ *  module state directly. */
+export function tokenLifeLeft(): number {
+  return accessToken ? Math.max(0, expiresAt - Date.now()) : 0;
 }
 
 export async function me(): Promise<Me> {
